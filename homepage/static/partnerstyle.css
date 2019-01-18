@@ -1,0 +1,78 @@
+h1{
+  margin: 0;
+  text-align: center;
+  position: relative;
+  color: white;
+  top: 250px;
+  /* text-shadow:  */
+}
+.bcg1 {
+  background: url("/static/media/surf.jpg");
+  min-height: 200px;
+  height: 100vh;
+  width: 100vw;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bcg2 {
+  background: url("/static/media/surf2.jpg");
+  min-height: 200px;
+  height: 100vh;
+  width: 100vw;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bcg3 {
+  background: url("/static/media/surf3.jpg");
+  min-height: 200px;
+  height: 100vh;
+  width: 100vw;
+  background-attachment: fixed;
+  background-position: 50% 75%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* MOBILE
+_____________________________________________________________ */
+
+@media only screen and (max-width: 800px) {
+  .bcg1 {
+    background: url("../static/media/surf.jpg");
+    min-height: 200px;
+    height: 100vh;
+    width: 100vw;
+    background-attachment:scroll;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .bcg2 {
+    background: url("../static/media/surf2.jpg");
+    min-height: 200px;
+    height: 100vh;
+    width: 100vw;
+    background-attachment: scroll;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .bcg3 {
+    background: url("../static/media/surf3.jpg");
+    min-height: 200px;
+    height: 100vh;
+    width: 100vw;
+    background-attachment: inherit;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+}

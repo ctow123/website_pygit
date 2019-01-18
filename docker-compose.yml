@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  web:
+    build: ./app
+    command: python /usr/src/app/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 8000:8000
+    environment:
+      - SECRET_KEY="pjs_^p6=2b1@!#qw0khd3q2a%c5t$e41j0_ge*!&isp%cx6lrw"
