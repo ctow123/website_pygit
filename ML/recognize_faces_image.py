@@ -30,10 +30,8 @@ resize = cv2.imread(args["image"])
 width, height = resize.shape[:2]
 # print(width, height)
 if width > 1000 or height > 1000:
-    resize = cv2.resize(resize, (1000,1000))
+    resize = cv2.resize(resize, (1000, 1000))
 rgb = cv2.cvtColor(resize, cv2.COLOR_BGR2RGB)
-
-
 
 # detect the (x, y)-coordinates of the bounding boxes corresponding
 # to each face in the input image, then compute the facial embeddings
@@ -78,16 +76,17 @@ for encoding in encodings:
 
 # building dictionary with additional info for each name
 print(names)
-namesdict = ['alan_grant', 'ian_malcolm','Unknown', 'john_hammond']
+namesdict = ['alan_grant', 'ian_malcolm', 'Unknown', 'john_hammond', 'babe_dailey', 'mason_ratcliff',
+             'kam_kila', 'quillin_gaffey', 'owen_grady', ]
 
-f = open( 'peopleinfo.csv', 'r')
+f = open('peopleinfo.csv', 'r')
 
-reader = csv.DictReader( f, fieldnames = ( "age","eye color","phone" ))
+reader = csv.DictReader(f, fieldnames=("age", "eye color", "phone"))
 dictlist = []
 for row in reader:
     # print(row)
     dictlist.append(row)
-peopledict = dict(zip(namesdict,dictlist))
+peopledict = dict(zip(namesdict, dictlist))
 # result: ['ian_malcolm', 'alan_grant']
 
 
@@ -98,7 +97,7 @@ for ((top, right, bottom, left), name) in zip(boxes, names):
     y = top - 15 if top - 15 > 15 else top + 15
     cv2.putText(resize, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
                 0.75, (0, 255, 0), 2)
-    cv2.putText(resize, peopledict[name]["phone"], (left, y-15), cv2.FONT_HERSHEY_SIMPLEX,
+    cv2.putText(resize, peopledict[name]["phone"], (left, y - 15), cv2.FONT_HERSHEY_SIMPLEX,
                 0.75, (0, 255, 0), 2)
     print(name + " " + peopledict[name]["phone"])
 # show the output image
