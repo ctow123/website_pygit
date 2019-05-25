@@ -30,7 +30,8 @@ resize = cv2.imread(args["image"])
 width, height = resize.shape[:2]
 # print(width, height)
 if width > 1000 or height > 1000:
-    resize = cv2.resize(resize, (1000, 1000))
+    resize = cv2.resize(resize, None, fx=.5, fy=.5)
+    # resize = cv2.resize(resize, (1000, 1000))
 rgb = cv2.cvtColor(resize, cv2.COLOR_BGR2RGB)
 
 # detect the (x, y)-coordinates of the bounding boxes corresponding
@@ -77,7 +78,7 @@ for encoding in encodings:
 # building dictionary with additional info for each name
 print(names)
 namesdict = ['alan_grant', 'ian_malcolm', 'Unknown', 'john_hammond', 'babe_dailey', 'mason_ratcliff',
-             'kam_kila', 'quillin_gaffey', 'owen_grady', ]
+             'kam_kila', 'quillin_gaffey', 'owen_grady', 'sara_valtonen','lydia_fierce','david_yeh', ]
 
 f = open('peopleinfo.csv', 'r')
 
