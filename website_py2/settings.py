@@ -25,7 +25,7 @@ SECRET_KEY = 'pjs_^p6=2b1@!#qw0khd3q2a%c5t$e41j0_ge*!&isp%cx6lrw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','thenubes.ddns.net','www.thenubes.ddns.net',]
+ALLOWED_HOSTS = ['127.0.0.1','thenubes.ddns.net','www.thenubes.ddns.net','localhost']
 
 # Application definition
 CORS_ORIGIN_ALLOW_ALL = True

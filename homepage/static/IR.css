@@ -1,13 +1,13 @@
 @font-face {
   font-family: 'apple';
-  src: url('../SF-Compact/SFCompactDisplay-Thin.otf');
+  src: url('./SF-Compact/SFCompactDisplay-Thin.otf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'applebold';
-  src: url('../SF-Compact/SFCompactDisplay-Bold.otf');
+  src: url('./SF-Compact/SFCompactDisplay-Bold.otf');
   font-weight: normal;
   font-style: normal;
 }
