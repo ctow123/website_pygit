@@ -25,13 +25,15 @@ SECRET_KEY = 'pjs_^p6=2b1@!#qw0khd3q2a%c5t$e41j0_ge*!&isp%cx6lrw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','thenubes.ddns.net','www.thenubes.ddns.net','localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'thenubes.ddns.net',
+                 'www.thenubes.ddns.net', 'localhost']
 
 # Application definition
 CORS_ORIGIN_ALLOW_ALL = True
 
 INSTALLED_APPS = [
-    'homepage.apps.HomepageConfig',
+    'database',
+    'homepage',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -80,8 +82,10 @@ WSGI_APPLICATION = 'website_py2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': '/usr/local/etc/my.cnf',
+        },
     }
 }
 

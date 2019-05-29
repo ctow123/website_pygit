@@ -1,8 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
-import Button from "@material-ui/core/Button";
+
 //import Navbar from 'react-bootstrap/Navbar'
 import FormControl from "@material-ui/core/FormControl";
 import "bootstrap/dist/css/bootstrap.min.css";

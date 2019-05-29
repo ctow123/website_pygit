@@ -10,7 +10,6 @@ import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 
 const routing = (
   <Router>
-    <Switch>
     {/*
       <Route
         exact
@@ -18,8 +17,7 @@ const routing = (
         render={props => <Welcome {...props} isAuthed={true} />}
       />
 */}
-      <Route path="/" component={App}/>
-    </Switch>
+    <Route path="/" component={App} />
   </Router>
 );
 
