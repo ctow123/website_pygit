@@ -51,7 +51,7 @@ function downloadimg(nameparam) {
   var name = nameparam;
   $.ajax({
     type: "POST",
-    url: 'http://127.0.0.1:9000/downloadimgs',
+    url: 'http://127.0.0.1:8000/downloadimgs',
     crossDomain: true,
     data: {
       "name": name
@@ -77,14 +77,14 @@ function send(image) {
     console.log(image.name)
     $.ajax({
       type: "POST",
-      url: 'http://thenubes.ddns.net/sendimgs/',
+      url: 'http://localhost:8000/sendimgs/',
       data: formdata,
       contentType: false,
       processData: false, // needed saying data sent should not be processed as string or encoded at UTF-8/xml req
       dataType: 'json',
       success: function(response) {
         console.log('Data submit worked. Response was:\n' + JSON.stringify(response))
-        $('#img-download').attr('src', '/pics/'+ image.name.split('.')[0] + 'ML.' +image.name.split('.')[1]);
+        $('#img-download').attr('src', '/pics/'+ image.name.split('.')[0]  +image.name.split('.')[1]);
       }
     });
   };
@@ -114,8 +114,8 @@ $(document).ready(function() {
 
   function readURL(input) {
     if (input.files && input.files[0]) {
-      // console.log(input.files);
-      // console.log(input.files[0]);
+       console.log(input.files);
+       console.log(input.files[0]);
       var reader = new FileReader();
       var imgurl;
       reader.onload = function(e) {

@@ -27,10 +27,12 @@ const styles = theme => ({
 const Comments = ({ classes, ...props }) => {
   console.log(props);
   const [message, updateMessage] = useState(null);
-  let [values, setValues] = useState({ username: "", password: "" });
+  let [values, setValues] = useState({ name: "", comment: "" });
 
   let handleChange = event => {
-    let { name, value } = event.target;
+    console.log(event.target);
+    let { name, comment } = event.target;
+    setValues(name,comment);
   };
 
   let handleSubmit = () => {};
@@ -46,8 +48,8 @@ const Comments = ({ classes, ...props }) => {
           <CardContent>
             <TextField
               type="text"
-              name="username"
-              label="Username"
+              name="name"
+              label="name"
               value={values.username}
               fullWidth
               margin="normal"
@@ -59,9 +61,9 @@ const Comments = ({ classes, ...props }) => {
               </Typography>
             )}
             <TextField
-              type="password"
-              name="password"
-              label="Password"
+              type="text"
+              name="comment"
+              label="comment"
               fullWidth
               margin="normal"
               value={values.password}
@@ -69,7 +71,7 @@ const Comments = ({ classes, ...props }) => {
             />
           </CardContent>
           <CardActions className={classes.centerChildren}>
-            <Button type="submit">Login</Button>
+            <Button type="submit">Submit</Button>
           </CardActions>
         </form>
       </Card>
@@ -78,6 +80,10 @@ const Comments = ({ classes, ...props }) => {
         <CardContent>
           <Typography color="error" variant="body1">
             {message}
+            {`aslkdfdsaklfaslkfjaklsdjfklasdjfkla
+
+
+            `}
           </Typography>
         </CardContent>
         <CardActions className={classes.centerChildren}>

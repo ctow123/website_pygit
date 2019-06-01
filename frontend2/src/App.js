@@ -5,7 +5,7 @@ import "./App.css";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import Welcome from "./pages/main.js";
 import Comments from "./pages/comments.js";
-import TabChooser from "./pages/TabChooser.js";
+import FaceID from "./pages/faceid.js";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 let App = props => {
@@ -56,6 +56,12 @@ let App = props => {
             path="/comments"
             label="comment"
             render={props => <Comments {...props} isAuthed={true} />}
+          />
+          <Route
+            exact
+            path="/faceid"
+            label="faceid"
+            render={props => <FaceID {...props} isAuthed={true} />}
           />
         </Switch>
 
