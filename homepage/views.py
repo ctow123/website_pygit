@@ -24,10 +24,11 @@ class UploadFileForm(forms.Form):
 #     return HttpResponse(template.render(context, request))
 
 def index(request):
-    print(request.META['PATH_INFO'])
+    print(request)
     # removing / in the path because already in curr dir
     str = request.META['PATH_INFO']
     str = str.replace(str[0], '', 1)
+    print("new string " + str)
     if request.META['PATH_INFO'] == '/':
         t = loader.get_template('index.html')
     else:

@@ -9,6 +9,10 @@ urlpatterns = [
     path('sendimgs/', views.sendimgs, name='sendimages'),
     path('downloadimgs/', views.downloadimgs, name='downloadimages'),
 
+   # The first parameter is the url path.
+    # The second parameter is the response function defined in views.py file.
+    # The third parameter is the url name which will be used in html file url tag.
+
     # '^$' means empty string
     # path('navbar.html', views.nav, name='nav')
     # # ex: /polls/5/
@@ -17,7 +21,9 @@ urlpatterns = [
     # path('<int:question_id>/results/', views.results, name='results'),
     # # ex: /polls/5/vote/
     # path('<int:question_id>/vote/', views.vote, name='vote'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # adds static support for media folder aka pics
 
 # catch all

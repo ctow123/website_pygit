@@ -8,7 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navgo = ({...props}) => {
-  console.log(props);
+  // console.log(props);
 
   return (
     <div className={`1`}>

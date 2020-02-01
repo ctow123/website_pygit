@@ -18,9 +18,11 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
     path('apidb/', include('database.urls')),
     re_path(r'^', include('homepage.urls')),
+    # re_path('react/r'^'', include('homepage.urls')),
     path('admin/', admin.site.urls),
+    # path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -7,13 +7,13 @@
   <meta name="keywords" content="capital, money, investing,connor towler, tree and stone capital">
   <meta name="description" content="Investing">
   <meta name="author" content="connor towler">
-
+  {% load static %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="/static/styles.css">
+  <link rel="stylesheet" type="text/css" href="{% static "styles.css" %}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="/static/client.js"></script>
+  <script src="{% static "client.js" %}"></script>
 
 
 
@@ -39,7 +39,7 @@
 
 
     <div class="container1">
-      <img class="logo" src="../static/media/Abstergo.jpg">
+      <img class="logo" src="{% static "/media/Abstergo.jpg" %}">
     </div>
 
   </section>
@@ -138,8 +138,8 @@
   <body>
     <section>
       <h1>What's life without a little fun HeHe</h1>
-      <img id="funnyelon" src="/static/media/bankwrupt.jpg" alt="">
-      <img id="funnyelon" src="/static/media/tesladrink.jpg" alt="">
+      <img id="funnyelon" src="../static/media/bankwrupt.jpg" alt="">
+      <img id="funnyelon" src="../static/media/tesladrink.jpg" alt="">
 
     </section>
   </body>

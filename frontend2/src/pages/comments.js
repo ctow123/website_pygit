@@ -8,6 +8,10 @@ import TextField from "@material-ui/core/TextField";
 import { Card, CardActions, CardContent } from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
+import { connect } from  'react-redux';
+import { login, setLoginSuccess, setLoginError } from '../redux/reducer'
+import { withRouter } from 'react-router-dom'
+import { useSelector,useDispatch } from 'react-redux'
 
 const styles = theme => ({
   centered: {
@@ -24,18 +28,56 @@ const styles = theme => ({
   }
 });
 
+// const mapStateToProps = (state) => {
+//   console.log(state);
+//   return {
+//     isLoginPending: state.isLoginPending,
+//     isLoginSuccess: state.isLoginSuccess,
+//     loginError: state.loginError
+//   };
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     login: (email, password) => dispatch(login(email, password))
+//   };
+// }
+
 const Comments = ({ classes, ...props }) => {
   console.log(props);
   const [message, updateMessage] = useState(null);
   let [values, setValues] = useState({ name: "", comment: "" });
 
+  const isLoginSuccess = useSelector(state => state.isLoginSuccess);
+  const isLoginPending = useSelector(state => state.isLoginPending);
+    const loginError = useSelector(state => state.loginError);
+
+  const dispatch = useDispatch();
+
+  // console.log(isLoginSuccess);
   let handleChange = event => {
-    console.log(event.target);
-    let { name, comment } = event.target;
-    setValues(name,comment);
+      console.log(event.target);
+      // console.log(values);
+      let { name, value } = event.target;
+      // console.log(value);
+      setValues({ ...values, [name]: value });
+      // console.log({ ...values });
+      // setValues(name,comment);
+      dispatch(setLoginSuccess(true));
+      dispatch(setLoginError(null));
   };
 
-  let handleSubmit = () => {};
+// on submission, takes username and password and dispatches the login action
+  let handleSubmit = (e) => {
+    e.preventDefault();
+    // setValues("admin", "ad2");
+    console.log(values);
+    let returning = login("admin", "ad2");
+    returning(dispatch);
+    console.log(isLoginSuccess);
+    console.log(returning);
+    // set name and comment to ''
+  };
   return (
     <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
       <Navgo />
@@ -84,6 +126,9 @@ const Comments = ({ classes, ...props }) => {
 
 
             `}
+          { isLoginPending && 'Please wait' }
+         { isLoginSuccess && 'Success' }
+         { loginError && loginError.message }
           </Typography>
         </CardContent>
         <CardActions className={classes.centerChildren}>
@@ -93,4 +138,5 @@ const Comments = ({ classes, ...props }) => {
     </div>
   );
 };
-export default withStyles(styles)(Comments);
+
+export default (withStyles(styles)(Comments));

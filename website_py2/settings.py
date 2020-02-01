@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'pjs_^p6=2b1@!#qw0khd3q2a%c5t$e41j0_ge*!&isp%cx6lrw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'thenubes.ddns.net',
                  'www.thenubes.ddns.net', 'localhost']
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.core.files.uploadhandler.MemoryFileUploadHandler',
     # 'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+    # 'website_py2.middleware.auth_middleware.testthemiddle'
 ]
 
 ROOT_URLCONF = 'website_py2.urls'
@@ -82,10 +83,12 @@ WSGI_APPLICATION = 'website_py2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/usr/local/etc/my.cnf',
-        },
+        'ENGINE': 'djongo',
+        'NAME': 'app-db-1'
+
+        # 'OPTIONS': {
+        #     'read_default_file': '/usr/local/etc/my.cnf',
+        # },
     }
 }
 
@@ -107,6 +110,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -124,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'homepage/static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'pics/')  # 'data' is my media folder
 MEDIA_URL = '/pics/'
