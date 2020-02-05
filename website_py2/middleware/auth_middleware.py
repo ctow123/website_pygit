@@ -10,7 +10,9 @@ class testthemiddle(MiddlewareMixin):
     #     return self.get_response(request)
     # Check if client IP is allowed
     def process_request(self, request):
-        # WSGI request 
+        #this will get hit first before all the other middleware, uncomment line below to debug
+        import pdb; pdb.set_trace()
+        # WSGI request
         print("we are in the middle", request)
         # return HttpResponse("in exception")
         # return None

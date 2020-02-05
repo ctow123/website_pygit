@@ -17,8 +17,8 @@ from .serializers import LoginSerializer
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
+from django.conf import settings
 
-password = b"super secret password"
 key = 'super secert key'
 logger = logging.getLogger(__name__)
 
@@ -46,36 +46,60 @@ class LoginHandling(APIView):
 
 # take in username, plain text password, salt, hash and store in DB
     def post(self, request, format=None):
-        process_request(request)
-        if 'username' in request.data and 'password' in request.data:
-            user = LoginInfo.objects.get(username=request.data['username'])
-            print("this is the user ", type(user))
-            print(user.password)
-        # insert into database or used to validate user
-        # print(request.META)
-        # decoded = jwt.decode(encoded, key, algorithms='HS256')
-        # print(request.data)
-        hashed = bcrypt.hashpw(password, bcrypt.gensalt(7))
-        if bcrypt.checkpw(password, hashed):
-            encoded = jwt.encode({'some': 'payload', 'exp': datetime.now() + timedelta(hours=24)}, key, algorithm='HS256')
-            print("It Matches!")
-            # print(encoded)
-            return JsonResponse({'message': encoded.decode('utf8')})
-        else:
-            print("It Does not Match")
-        return JsonResponse({'message': 'Some Post Response'})
+        # process_request(request)
+        try:
+            if 'username' in request.data and 'password' in request.data:
+                user = LoginInfo.objects.get(username=request.data['username'])
+                retrievedpassword = user.password.encode('utf-8')
+                givenpassword = request.data['password'].encode('utf-8')
+                # print("this is the user ", type(givenpassword))
+                # print(user.password)
+                hashed = bcrypt.hashpw(givenpassword, bcrypt.gensalt(7))
+                if bcrypt.checkpw(retrievedpassword, hashed):
+                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
+                    ) + timedelta(hours=24)}, key, algorithm='HS256')
+                    if settings.DEBUG:
+                        print("It Matches!")
+                    return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')})
+            else:
+                if settings.DEBUG:
+                    print("It Does not Match")
+                return JsonResponse({'message': 'invalid login credentials'},status=400)
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=400)
 
 class AccountCreation(APIView):
-        def post(self, request, format=None):
-            if 'username' in request.data and 'password' in request.data and 'email' in request.data:
-                account = LoginInfo(username=request.data['username'], password=request.data['password'], email=request.data['email'] ,pincode=1234)
+    def post(self, request, format=None):
+        if 'username' in request.data and 'password' in request.data:
+            if request.data['username'] is not "" and request.data['password'] is not "":
+                try:
+                    user = LoginInfo.objects.get(username=request.data['username'])
+                    if user != None:
+                        return JsonResponse({'error': 'username already taken'}, status=400)
+                except LoginInfo.DoesNotExist:
+                    account = LoginInfo(username=request.data['username'], password=request.data['password'], email="", pincode=1234)
                 try:
                     account.save()
-                    return JsonResponse({'message': 'account created'},status=201)
+                    return JsonResponse({'message': 'account created'}, status=201)
                 except Exception as e:
-                    return JsonResponse({'message': str(e)},status=400)
-            else:
-                return JsonResponse({'message': 'invalid fields'},status=400)
+                    return JsonResponse({'error': str(e)}, status=400)
+        return JsonResponse({'error': 'invalid fields'}, status=400)
+
+
+class Auth(APIView):
+    def post(self, request, format=None):
+        print(request.headers)
+        # Authorization =  `Bearer ${token}`;
+        return JsonResponse({'message': 'account created'}, status=201)
+        # decoded = jwt.decode(encoded, key, algorithms='HS256')
+        # if 'username' in request.data and 'password' in request.data and 'email' in request.data:
+        #     try:
+        #         account.save()
+        #         return JsonResponse({'message': 'account created'},status=201)
+        #     except Exception as e:
+        #         return JsonResponse({'message': str(e)},status=400)
+        # else:
+        #     return JsonResponse({'message': 'no auth token found'},status=400)
 
 
 class Images(APIView):
@@ -102,7 +126,7 @@ class Images(APIView):
             myfile = request.data['image']
             print(myfile)
             print(os.getcwd())
-            filepath = os.getcwd()+"/database/pics/"
+            filepath = os.getcwd() + "/database/pics/"
             # print(myfile.name)
             # print(filepath)
             fs = FileSystemStorage(location=filepath)
@@ -110,7 +134,6 @@ class Images(APIView):
             return JsonResponse({'message': 'Some Post Response'})
         except Exception as e:
             print(e)
-
 
 
 def imagelist(request):
@@ -123,6 +146,8 @@ def imagelist(request):
         print(e)
 
 # some custom middleware
-def process_request(request):
+
+
+# def process_request(request):
     # WSGI request
-    print("we are in the middle", request.data)
+    # print("we are in the middle", request.data)

@@ -9,5 +9,8 @@ curl -i \
 
  curl -X POST -d '{"username":"billy","pass":"1234"}' --header "Content-Type: application/json" localhost:8000/apidb/customview
 
-new line 
+new line
 curl -X POST -d '{"username":"billy","email":"da.joker@gmail.com"}' --header "Content-Type: application/json" localhost:8000/apidb/create -w "\n"
+
+
+curl -X POST -d '{"username":"billy","password":"1234","email":"da.joker@gmail.com"}' --header "Content-Type: application/json" -H "Authtoken: eraeg2" localhost:8000/apidb/auth -w "\n"

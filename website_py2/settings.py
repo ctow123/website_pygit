@@ -30,12 +30,18 @@ ALLOWED_HOSTS = ['127.0.0.1', 'thenubes.ddns.net',
 
 # Application definition
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_WHITELIST = (
+#        'http://localhost:4200',
+# )
+ADMIN_ENABLED = False
 
 INSTALLED_APPS = [
     'database',
     'homepage',
     'corsheaders',
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -45,16 +51,18 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    # 'website_py2.middleware.auth_middleware.testthemiddle',
+    # ^ uncomment for debugging see file './middleware.auth_middleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.core.files.uploadhandler.MemoryFileUploadHandler',
     # 'django.core.files.uploadhandler.TemporaryFileUploadHandler',
-    # 'website_py2.middleware.auth_middleware.testthemiddle'
+
 ]
 
 ROOT_URLCONF = 'website_py2.urls'
@@ -112,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 

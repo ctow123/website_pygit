@@ -37,9 +37,8 @@ const styles = theme => ({
   }
 });
 
-const Welcome = ({ classes, ...props }) => {
-  console.log(props);
-
+const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
+  // console.log(props);
   return [
     <div>
       <Navgo />

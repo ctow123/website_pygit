@@ -3,12 +3,13 @@ from django.urls import path, re_path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from database.views import LoginHandling, Images,AccountCreation
+from database.views import LoginHandling, Images,AccountCreation, Auth
 
 urlpatterns = [
     # ex: /polls/
     path(r'login', LoginHandling.as_view(), name='login'),
     path(r'create', AccountCreation.as_view(), name='createaccount'),
+    path(r'auth', Auth.as_view(), name='createaccount'),
     path('image', Images.as_view()),
     path('image/', Images.as_view()),
     path('image/<str:image>', Images.as_view()),

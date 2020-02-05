@@ -3,9 +3,11 @@ export async function makeAPICall(method, url, body) {
     'Content-Type': 'application/json'
   };
   const token = localStorage.token;
-  if (token) {
+  // const token = 'kasdknksnkjankjenlknlnlkwnfwel';
+  if (token != null) {
     headers['Authorization'] = `Bearer ${token}`;
   }
+  console.log(headers);
   try {
     let req = fetch(url, {
       method,

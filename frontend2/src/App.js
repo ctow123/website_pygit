@@ -4,42 +4,25 @@ import "./App.css";
 
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import Welcome from "./pages/main.js";
-import Comments from "./pages/comments.js";
+import Login from "./pages/login.js";
 import FaceID from "./pages/faceid.js";
+import Comments from "./pages/comments.js";
+import CreateAccount from "./pages/createaccount.js";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+
 
 let App = props => {
   let [isDark, switchThemeFunc] = useState(false);
   console.log(props);
+  // console.log(localStorage.token);
+  // console.log(typeof localStorage.token);
   useEffect(() => {}, []);
 
   //-------------------------------------------------------------------------------
-  // current user related functions
-  // function parseJwt(token) {
-  //   const base64Url = token.split('.')[1];
-  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  //   const buff = new Buffer(base64, 'base64');
-  //   const payloadinit = buff.toString('ascii');
-  //   const payload = JSON.parse(payloadinit);
-  //   return payload;
-  // }
 
-  let initialUser;
-  // let token;
-  // if (typeof localStorage.token != 'undefined') {
-  //   token = parseJwt(localStorage.token); // how to decode token??
-  //   //console.log(token);
-  //   //initialUser = token;
-  //   initialUser = { ...token, authenticated: true };
-  // } else {
-  //   initialUser = { authenticated: false };
-  // }
-
+// using update user triggers re-render
   // eslint-disable-next-line
-  // curruser is current state and updateuser is way to change it
-  // {} is way to evaluate a function
-  let [currentUser, updateUser] = useState(initialUser);
-  //console.log(currentUser);
+
   // see https://material-ui.com/api/typography/
   return (
 
@@ -53,9 +36,9 @@ let App = props => {
           />
           <Route
             exact
-            path="/comments"
-            label="comment"
-            render={props => <Comments {...props} isAuthed={true} />}
+            path="/login"
+            label="Login"
+            render={props => <Login {...props}  isAuthed={true} />}
           />
           <Route
             exact
@@ -63,30 +46,22 @@ let App = props => {
             label="faceid"
             render={props => <FaceID {...props} isAuthed={true} />}
           />
+          <Route
+            exact
+            path="/comments"
+            label="comment"
+            render={props => <Comments {...props} isAuthed={true} />}
+          />
+          <Route
+            exact
+            path="/createaccount"
+            label="createaccount"
+            render={props => <CreateAccount {...props} isAuthed={false} />}
+          />
         </Switch>
 
   );
 };
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;
