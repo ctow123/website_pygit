@@ -12,12 +12,13 @@ import json
 from PIL import Image
 import base64
 from django.core import serializers
-from database.models import LoginInfo
+from database.models import LoginInfo, Comments
 from .serializers import LoginSerializer
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
+from .forms import CommentForm
 
 key = 'super secert key'
 logger = logging.getLogger(__name__)
@@ -145,9 +146,59 @@ def imagelist(request):
     except Exception as e:
         print(e)
 
+class Commentview(APIView):
+        def get(self, request, image='00001ML.png', format=None):
+            # print(request.META)
+            allthecomment = list(Comments.objects.values())
+            # print(allthecomment)
+            return JsonResponse({'message': 'success', 'data': allthecomment})
+        def post(self, request, format=None):
+            details = CommentForm(request.data)
+            if details.is_valid():
+                # check ipaddy instead of hardcoding it
+                comment = Comments(username=request.data['username'], comment=request.data['comment'], ipaddy="192.168.1.230")
+                try:
+                    comment.save()
+                    return JsonResponse({'message': 'comment submitted'}, status=201)
+                except Exception as e:
+                    return JsonResponse({'error': str(e)}, status=400)
+            else:
+                return JsonResponse({'error': 'invalid fields'}, status=400)
+                # list = details.errors.items()
+                # for key, value in list:
+                #     print(key, value[0])
+        # puts and delete
+
+
 # some custom middleware
 
 
 # def process_request(request):
     # WSGI request
     # print("we are in the middle", request.data)
+
+# getting client IP
+# def get_client_ip(request):
+#     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+#     if x_forwarded_for:
+#         ip = x_forwarded_for.split(',')[0]
+#     else:
+#         ip = request.META.get('REMOTE_ADDR')
+#     return ip
+
+# In a view or a middleware where the `request` object is available
+
+# pip install django-ipware
+# from ipware import get_client_ip
+# ip, is_routable = get_client_ip(request)
+# if ip is None:
+#     # Unable to get the client's IP address
+# else:
+#     # We got the client's IP address
+#     if is_routable:
+#         # The client's IP address is publicly routable on the Internet
+#     else:
+#         # The client's IP address is private
+#
+# # Order of precedence is (Public, Private, Loopback, None)
+# i, r = get_client_ip(request, request_header_order=['X_FORWARDED_FOR', 'REMOTE_ADDR'])

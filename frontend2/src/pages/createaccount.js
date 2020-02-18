@@ -5,9 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navgo from "./navbar.js";
 import TextField from "@material-ui/core/TextField";
 import { Card, CardActions, CardContent } from "@material-ui/core";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
-import { withRouter, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Redirect } from 'react-router';
 import { makeAPICall } from "../api/api.js";
 import apiprefix from "../api/apiprefix.js";

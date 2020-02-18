@@ -37,9 +37,12 @@ CORS_ALLOW_CREDENTIALS = False
 # )
 ADMIN_ENABLED = False
 
+# channels at top bc it overrides runserver command used with django development server
+# so to avoid conflicts where other apps override runsever use channels at top
 INSTALLED_APPS = [
+    'channels',
     'database',
-    'homepage',
+    # 'homepage',
     'corsheaders',
     # 'django.contrib.admin',
     'django.contrib.auth',
@@ -86,13 +89,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'website_py2.wsgi.application'
 
+# Channels
+ASGI_APPLICATION = 'website_py2.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'app-db-1'
+        'NAME': 'app-db-1',
+        # 'HOST' : 'mongodb://<dbuser>:<dbpassword>@ds259144.mlab.com:59144/<db-name>',
+       'USER' : 'superuser',
+       'PASSWORD' : 'qwe-34-vo'
+
 
         # 'OPTIONS': {
         #     'read_default_file': '/usr/local/etc/my.cnf',
