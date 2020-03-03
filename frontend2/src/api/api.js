@@ -7,7 +7,7 @@ export async function makeAPICall(method, url, body) {
   if (token != null) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  console.log(headers);
+  // console.log(headers);
   try {
     let req = fetch(url, {
       method,

@@ -8,6 +8,8 @@ import Login from "./pages/login.js";
 import FaceID from "./pages/faceid.js";
 import Comments from "./pages/comments.js";
 import CreateAccount from "./pages/createaccount.js";
+import YelpAddon from "./pages/yelp.js";
+import NotFound from "./pages/NotFound.js";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 
@@ -23,7 +25,7 @@ let App = props => {
 // using update user triggers re-render
   // eslint-disable-next-line
 
-  // see https://material-ui.com/api/typography/
+//  the last route is a catch all should go to a 404
   return (
 
 
@@ -58,6 +60,19 @@ let App = props => {
             label="createaccount"
             render={props => <CreateAccount {...props} isAuthed={false} />}
           />
+          <Route
+            exact
+            path="/yelpaddon"
+            label="yelpaddon"
+            render={props => <YelpAddon {...props} isAuthed={false} />}
+          />
+          <Route
+            exact
+            path="/admin"
+            label="admin"
+            render={props => <CreateAccount {...props} isAuthed={false} />}
+          />
+           <Route component={NotFound} />
         </Switch>
 
   );

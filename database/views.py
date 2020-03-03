@@ -9,6 +9,9 @@ import os
 import shlex
 import logging
 import json
+import requests
+import urllib
+from urllib.parse import *
 from PIL import Image
 import base64
 from django.core import serializers
@@ -170,8 +173,79 @@ class Commentview(APIView):
         # puts and delete
 
 
-# some custom middleware
 
+API_KEY= 'ZCAw9cQsX-ctjUl3dP8lt9uW47llaEy1PMIeSaqxSlPbRBTXciyDvjbyJbAZwKSKPmS4GJqZOdxA0utMF8C8XIhXQeFILEwjwPBLDRKnjp-Tkm2zBsB_6OHHM_hPXnYx'
+
+
+# API constants, you shouldn't have to change these.
+API_HOST = 'https://api.yelp.com'
+SEARCH_PATH = '/v3/businesses/search'
+BUSINESS_PATH = '/v3/businesses/'  # Business ID will come after slash.
+# can also use business/id/reviews
+
+# Defaults for our simple example.
+DEFAULT_TERM = 'dinner'
+DEFAULT_LOCATION = 'San Francisco, CA'
+SEARCH_LIMIT = 5
+class YelpView(APIView):
+        def get(self, request, image='00001ML.png', format=None):
+            # print(request.META)
+            allthecomment = list(Comments.objects.values())
+            # print(allthecomment)
+            return JsonResponse({'message': 'success', 'data': allthecomment})
+        def post(self, request, format=None):
+                print(request.data['searchparams']['limit'])
+                print(request.data['searchtype'] == 'business')
+                try:
+                    if request.data['searchtype'] == 'business':
+                        return businesspath(request)
+                    else:
+                        term = request.data['searchparams']['term'] if request.data['searchparams']['term'] is not '' else 'dinner'
+                        url_params = {}
+                        path = SEARCH_PATH
+                        url = '{0}{1}'.format(API_HOST, quote(path.encode('utf8')))
+                        url_params = {
+                            'term': term.replace(' ', '+'),
+                            'limit': SEARCH_LIMIT,
+                            'latitude': request.data['searchparams']['latitude'] if request.data['searchparams']['latitude'] is not '' else 37.7749,
+                            'longitude':  request.data['searchparams']['longitude'] if request.data['searchparams']['longitude'] is not '' else -122.4194,
+                            'radius':  request.data['searchparams']['radius'] if request.data['searchparams']['radius'] is not '' else 12000,
+                            'categories': request.data['searchparams']['radius'] if request.data['searchparams']['radius'] is not '' else 'restaurants',
+                            'price': request.data['searchparams']['price'] if request.data['searchparams']['price'] is not '' else '1,2,3',
+                            'open_now': request.data['searchparams']['open_now'] if request.data['searchparams']['open_now'] is not '' else True,
+                            'attributes': request.data['searchparams']['attributes'] if request.data['searchparams']['attributes'] is not '' else ''
+                        }
+                        headers = {
+                            'Authorization': 'Bearer %s' % API_KEY,
+                        }
+                        print(u'Querying {0} ...'.format(url))
+                        # print(url_params)
+                        response = requests.request('GET', url, headers=headers, params=url_params)
+                        # print(response.json())
+                        return JsonResponse({'res': response.json(), 'message': 'query completed'}, status=200)
+                except Exception as e:
+                    return JsonResponse({'error': str(e)}, status=400)
+
+
+def businesspath(request):
+    try:
+        url_params = {}
+        id = 'cQ00bfG7i-IKUlrJMVy86w'
+        path = BUSINESS_PATH + id
+        url = '{0}{1}'.format(API_HOST, quote(path.encode('utf8')))
+        headers = {
+            'Authorization': 'Bearer %s' % API_KEY,
+        }
+        print(u'Querying {0} ...'.format(url))
+        response = requests.request('GET', url, headers=headers, params=url_params)
+        # print(response.json())
+        return JsonResponse({'res': response.json(), 'message': 'query completed'}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+
+# some custom middleware
 
 # def process_request(request):
     # WSGI request

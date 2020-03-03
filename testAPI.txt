@@ -14,3 +14,5 @@ curl -X POST -d '{"username":"billy","email":"da.joker@gmail.com"}' --header "Co
 
 
 curl -X POST -d '{"username":"billy","password":"1234","email":"da.joker@gmail.com"}' --header "Content-Type: application/json" -H "Authtoken: eraeg2" localhost:8000/apidb/auth -w "\n"
+
+curl -X POST -d '{"username":"billy","email":"da.joker@gmail.com"}' localhost:8000/apidb/yelpappAPI -w "\n"
