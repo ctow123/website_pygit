@@ -20,6 +20,7 @@ urlpatterns = [
     path('image/', Images.as_view()),
     path('image/<str:image>', Images.as_view()),
     path('imagelist', views.imagelist, name='imglist'),
+    path('logyelpdata', views.yelptracking, name='yelptracking'),
     path('blog/<title>/<int:year>', response_error_handler, name='blog'),
     # re_path(r'^', response_error_handler),
     # path('sendimgs/', views.sendimgs, name='sendimages'),

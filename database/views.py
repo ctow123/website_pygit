@@ -15,7 +15,7 @@ from urllib.parse import *
 from PIL import Image
 import base64
 from django.core import serializers
-from database.models import LoginInfo, Comments
+from database.models import *
 from .serializers import LoginSerializer
 import bcrypt
 import jwt
@@ -148,6 +148,25 @@ def imagelist(request):
         # return HttpResponse(encoded_string, content_type="text")
     except Exception as e:
         print(e)
+
+def yelptracking(request):
+    requestdata = json.loads(request.body.decode('utf-8'))
+    try:
+        if requestdata['datatype'] == 'click':
+            loginfo = Yelpdata(
+                username=requestdata['username'], clickdata=requestdata['action'],
+                clicktime=requestdata['clicktime'], lat=requestdata['latitude'], long=requestdata['longitude'])
+            loginfo.save()
+        elif requestdata['datatype'] == 'review':
+            loginfo = YelpUserReviews(
+                username=requestdata['username'], comment=requestdata['comment'], ipaddy="192.168.1.230")
+            loginfo.save()
+        return JsonResponse({'message': 'success'})
+        # return HttpResponse(encoded_string, content_type="text")
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)}, status=400)
+
 
 class Commentview(APIView):
         def get(self, request, image='00001ML.png', format=None):

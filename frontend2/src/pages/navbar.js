@@ -4,12 +4,9 @@ import { Link } from "react-router-dom";
 import {Navbar,Nav, NavDropdown }from 'react-bootstrap'
 import {Form }from 'react-bootstrap'
 import Button from '@material-ui/core/Button';
-import {Redirect} from "react-router-dom"
-import FormControl from '@material-ui/core/FormControl';
 import { useHistory } from 'react-router-dom'
 import { parseJwt } from "./fcns.js"
-import { useSelector,useDispatch } from 'react-redux'
-import setUser from '../redux/reducer.js'
+import { useSelector } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navgo = ({...props}) => {

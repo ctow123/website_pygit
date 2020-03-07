@@ -22,3 +22,28 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.username
+
+# this tracks users click on the app page
+class Yelpdata(models.Model):
+    username = models.CharField(max_length=100)
+    clickdata = models.CharField(max_length=1000)
+    clicktime = models.IntegerField()
+    lat = models.FloatField()
+    long = models.FloatField()
+    
+# this is the user feedback via reviews on their experience @ resturant
+class YelpUserReviews(models.Model):
+    username = models.CharField(max_length=200)
+    experience = models.CharField(max_length=200)
+    experiencesuggested = models.BooleanField(default=True)
+    restaurant = models.CharField(max_length=200)
+    restaurantsuggested = models.BooleanField(default=True)
+    rating = models.IntegerField()
+
+# this is for picking the resturant for the experience
+class YelpRecommedations(models.Model):
+    experience = models.CharField(max_length=200)
+    restaurant = models.CharField(max_length=200)
+    rating = models.IntegerField()
+    lat = models.FloatField()
+    long = models.FloatField()
