@@ -22,6 +22,17 @@ const styles = theme => ({
 
   MuiButton: {
     padding: 0
+  },
+  listitem:{
+    height: '45px',
+    'border-bottom': '1px solid #ddd',
+    'border-bottom-width': '1px',
+    'border-bottom-style': 'solid',
+    'border-bottom-color': 'rgb(221, 221, 221)',
+    'margin-left':'20%',
+    'margin-right': '20%',
+    'text-align': 'center',
+    display:'grid'
   }
 });
 
@@ -40,16 +51,26 @@ const Welcome = ({ classes, ...props }) => {
     url.preventDefault();
     console.log(url.target);
     url = typeof url === "undefined" ? "" : url.target.innerHTML;
+    // let res = await makeAPICall(
+    //   "GET",
+    //   "http://127.0.0.1:8000/pics/bankwrupt.jpg"
+    // );
     let res = await makeAPICall(
       "GET",
-      "http://127.0.0.1:8000/apidb/image/" + url
+      "http://127.0.0.1:8000/pics/" + url
     );
-    let body = await res.json();
     console.log(res);
-    //console.log(body);
-    console.log(res.status);
+    console.log(res.headers);
+    let body = await res.blob();
+    // console.log(res);
+    console.log(body);
+    // console.log(res.status);
     if (res.status === 200) {
+      // console.log(body);
       updateData(body.message);
+      const objectURL = URL.createObjectURL(body);
+      console.log(objectURL);
+      updateData(objectURL);
     }
   };
 
@@ -105,7 +126,6 @@ const Welcome = ({ classes, ...props }) => {
   };
 
   useEffect(() => {
-    const API = "http://127.0.0.1:8000/apidb/image";
     //getImage();
     getImageList();
   }, []); // the []) ensures hook only called on mount not every page refresh
@@ -115,12 +135,13 @@ const Welcome = ({ classes, ...props }) => {
       <Navgo />;
     </div>,
     <div className={classes.root} style={{ backgroundColor: "white" }}>
-      <Typography align="center" variant="h5" gutterBottom>
-        Pictures Database{" "}
+      <Typography align="center" variant="body1" gutterBottom>
+        My design portfolio. A bunch of random things, i find aesthetically pleasing. click a name to see the picture. upload button disabled for now.
       </Typography>
+      <ul id="otis" style={{ 'list-style': "none" , 'height': '30vh', 'overflow': 'auto', padding: '0'}}>
       {list.map((val, index) => {
         return (
-          <li key={index}>
+          <li key={index} className={classes.listitem}>
             {
               <Button
                 className={classes.MuiButton}
@@ -134,21 +155,18 @@ const Welcome = ({ classes, ...props }) => {
           </li>
         );
       })}
+      </ul>
       <Card className={classes.centered}>
         <CardContent>
-          <img src={`data:image/jpeg;base64,${data}`} style={{maxWidth: '70vw', height: '70vh'}} />
+          <img src={`${data}`} style={{maxWidth: '100vw', height: '40vh'}} />
         </CardContent>
       </Card>
 
-      <Button variant="contained" component="label" onChange={uploadImage}>
+      <Button variant="contained" component="label" onChange={console.log('hi')} style={{left: '100vw', position: 'sticky', marginTop: '20px'}}>
         Upload File
         <input type="file" style={{ display: "none" }} />
       </Button>
-      {message && (
-        <Typography color="error" variant="body1">
-          {message}
-        </Typography>
-      )}
+
     </div>
   ];
 };

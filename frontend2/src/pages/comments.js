@@ -69,7 +69,7 @@ const Comments = ({ classes, ...props }) => {
           updateMessage('comment field cant be empty')
       }
       else{
-        // uploadComment(values.comment)
+        uploadComment(values.comment)
         socket.current.send(JSON.stringify({'message': 'comment submitted', 'update': true}));
       // window.location.reload();
         setValues({ 'comment': '' });

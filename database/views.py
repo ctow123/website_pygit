@@ -114,7 +114,7 @@ class Images(APIView):
         # request.body or request.get('search_term')
         try:
             print(request.path)
-            f = open(os.getcwd() + "/database/pics/" + image, "rb")
+            f = open(os.getcwd() + "/pics/" + image, "rb")
             encoded_string = base64.b64encode(f.read())
             print(type(encoded_string))
             return JsonResponse({'message': encoded_string.decode('utf-8')})
@@ -130,7 +130,7 @@ class Images(APIView):
             myfile = request.data['image']
             print(myfile)
             print(os.getcwd())
-            filepath = os.getcwd() + "/database/pics/"
+            filepath = os.getcwd() + "/pics/"
             # print(myfile.name)
             # print(filepath)
             fs = FileSystemStorage(location=filepath)
@@ -142,8 +142,9 @@ class Images(APIView):
 
 def imagelist(request):
     try:
-        list = os.listdir(os.getcwd() + "/database/pics/")
-        print(list)
+        # list = os.path.dirname(os.getcwd() + "/pics/")
+        list = os.listdir(os.getcwd() + "/pics/")
+        print((os.getcwd()))
         return JsonResponse({'list': list})
         # return HttpResponse(encoded_string, content_type="text")
     except Exception as e:

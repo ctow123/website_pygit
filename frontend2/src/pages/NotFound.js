@@ -6,7 +6,7 @@ const NotFound = () => {
   return (
     <div className={`not found tab`}>
       <Typography align="center" variant="h5" gutterBottom>
-        The page you are looking for could not be found
+        The page you are looking for could not be found or is being built
       </Typography>
 
     </div>

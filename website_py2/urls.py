@@ -20,9 +20,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('apidb/', include('database.urls')),
-    re_path(r'^', include('homepage.urls')),
+    # re_path(r'^', include('homepage.urls')),
     # re_path('react/r'^'', include('homepage.urls')),
     # path('admin/', admin.site.urls),
-    # path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    
 ]
+
+urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

@@ -36,14 +36,16 @@ const Navgo = ({...props}) => {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="/">Home</Nav.Link>
-          <Nav.Link href="/faceid">FaceID</Nav.Link>
+          <Nav.Link href="/aboutme">About Me</Nav.Link>
+          <Nav.Link href="/faceid">Design Portfolio</Nav.Link>
           <Nav.Link href="/login">Login</Nav.Link>
+          <Nav.Link href="/comments">Comments</Nav.Link>
           <NavDropdown title="Other" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Beta1.1</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Beta1.2</NavDropdown.Item>
-            <NavDropdown.Item href="/comments">Comments</NavDropdown.Item>
+            <NavDropdown.Item href="/stocks">Investments</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.2">Dreams</NavDropdown.Item>
+            <NavDropdown.Item href="/yelpaddon">Yelp Beta addon</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.4">Beta</NavDropdown.Item>
           </NavDropdown>
         </Nav>
         <Form inline>
@@ -57,9 +59,3 @@ const Navgo = ({...props}) => {
   );
 };
 export default Navgo;
-
-//Welcome = withStyles(styles)(Welcome); // apply HOC
-// <Form inline>
-//   <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-//   <Button variant="outline-success">Search</Button>
-// </Form>
