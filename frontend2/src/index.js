@@ -12,7 +12,7 @@ import store from './redux/store';
 
 const routing = (
   <Provider store={store}>
-  <Router>
+  <Router basename={`${process.env.PUBLIC_URL}`}>
     {/*
       <Route
         exact

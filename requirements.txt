@@ -1,5 +1,11 @@
-Django
+Django >= 2.0, <=2.2.9
 gunicorn
 djangorestframework
 dj-static
 djongo
+channels
+django-cors-headers
+requests
+pillow
+bcrypt
+jwt

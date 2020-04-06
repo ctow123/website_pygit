@@ -9,6 +9,7 @@ class LoginInfo(models.Model):
     password = models.CharField(max_length=100)
     pincode = models.IntegerField()
     email = models.CharField(max_length=150, null=True)
+    fromgoogle = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
@@ -30,7 +31,7 @@ class Yelpdata(models.Model):
     clicktime = models.IntegerField()
     lat = models.FloatField()
     long = models.FloatField()
-    
+
 # this is the user feedback via reviews on their experience @ resturant
 class YelpUserReviews(models.Model):
     username = models.CharField(max_length=200)

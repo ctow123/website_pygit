@@ -3254,3 +3254,865 @@ Traceback (most recent call last):
 [2020-03-18 09:31:42 -0500] [22896] [INFO] Worker exiting (pid: 22896)
 [2020-03-18 09:31:42 -0500] [22893] [INFO] Worker exiting (pid: 22893)
 [2020-03-18 23:31:43 +0900] [22890] [INFO] Shutting down: Master
+[2020-03-26 12:32:10 -0400] [35690] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x10e6808c8>
+  on_reload: <function OnReload.on_reload at 0x10e680a60>
+  when_ready: <function WhenReady.when_ready at 0x10e680bf8>
+  pre_fork: <function Prefork.pre_fork at 0x10e680d90>
+  post_fork: <function Postfork.post_fork at 0x10e680f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x10e689158>
+  worker_int: <function WorkerInt.worker_int at 0x10e6892f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x10e689488>
+  pre_exec: <function PreExec.pre_exec at 0x10e689620>
+  pre_request: <function PreRequest.pre_request at 0x10e6897b8>
+  post_request: <function PostRequest.post_request at 0x10e6898c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x10e689a60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x10e689bf8>
+  on_exit: <function OnExit.on_exit at 0x10e689d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-03-26 12:32:10 -0400] [35690] [INFO] Starting gunicorn 19.6.0
+[2020-03-26 12:32:10 -0400] [35690] [DEBUG] Arbiter booted
+[2020-03-26 12:32:10 -0400] [35690] [INFO] Listening at: http://127.0.0.1:8000 (35690)
+[2020-03-26 12:32:10 -0400] [35690] [INFO] Using worker: sync
+[2020-03-26 12:32:10 -0400] [35693] [INFO] Booting worker with pid: 35693
+[2020-03-26 12:32:10 -0400] [35695] [INFO] Booting worker with pid: 35695
+[2020-03-26 12:32:10 -0400] [35696] [INFO] Booting worker with pid: 35696
+[2020-03-26 12:32:10 -0400] [35697] [INFO] Booting worker with pid: 35697
+[2020-03-26 12:32:10 -0400] [35690] [DEBUG] 4 workers
+[2020-03-26 11:32:14 -0500] [35693] [DEBUG] OPTIONS /apidb/imagelist
+[2020-03-26 11:32:14 -0500] [35693] [DEBUG] GET /apidb/imagelist
+[2020-03-26 11:32:16 -0500] [35696] [DEBUG] OPTIONS /pics/california.PNG
+[2020-03-26 11:32:16 -0500] [35693] [DEBUG] GET /pics/california.PNG
+[2020-03-26 11:32:18 -0500] [35693] [DEBUG] GET /pics/california.PNG
+[2020-03-26 11:32:20 -0500] [35693] [DEBUG] OPTIONS /pics/renewnables_1.JPG
+[2020-03-26 11:32:20 -0500] [35693] [DEBUG] GET /pics/renewnables_1.JPG
+[2020-03-26 11:32:21 -0500] [35695] [DEBUG] OPTIONS /pics/cyberpunk.JPG
+[2020-03-26 11:32:21 -0500] [35697] [DEBUG] GET /pics/cyberpunk.JPG
+[2020-03-26 12:32:26 -0400] [35690] [INFO] Handling signal: int
+[2020-03-26 11:32:26 -0500] [35695] [INFO] Worker exiting (pid: 35695)
+[2020-03-26 11:32:26 -0500] [35693] [INFO] Worker exiting (pid: 35693)
+[2020-03-26 11:32:26 -0500] [35696] [INFO] Worker exiting (pid: 35696)
+[2020-03-26 11:32:26 -0500] [35697] [INFO] Worker exiting (pid: 35697)
+[2020-03-26 12:32:26 -0400] [35690] [INFO] Shutting down: Master
+[2020-03-26 13:17:59 -0400] [35972] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x105a8b8c8>
+  on_reload: <function OnReload.on_reload at 0x105a8ba60>
+  when_ready: <function WhenReady.when_ready at 0x105a8bbf8>
+  pre_fork: <function Prefork.pre_fork at 0x105a8bd90>
+  post_fork: <function Postfork.post_fork at 0x105a8bf28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x105a94158>
+  worker_int: <function WorkerInt.worker_int at 0x105a942f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x105a94488>
+  pre_exec: <function PreExec.pre_exec at 0x105a94620>
+  pre_request: <function PreRequest.pre_request at 0x105a947b8>
+  post_request: <function PostRequest.post_request at 0x105a948c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x105a94a60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x105a94bf8>
+  on_exit: <function OnExit.on_exit at 0x105a94d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-03-26 13:17:59 -0400] [35972] [INFO] Starting gunicorn 19.6.0
+[2020-03-26 13:17:59 -0400] [35972] [DEBUG] Arbiter booted
+[2020-03-26 13:17:59 -0400] [35972] [INFO] Listening at: http://127.0.0.1:8000 (35972)
+[2020-03-26 13:17:59 -0400] [35972] [INFO] Using worker: sync
+[2020-03-26 13:17:59 -0400] [35975] [INFO] Booting worker with pid: 35975
+[2020-03-26 13:17:59 -0400] [35976] [INFO] Booting worker with pid: 35976
+[2020-03-26 13:17:59 -0400] [35977] [INFO] Booting worker with pid: 35977
+[2020-03-26 13:17:59 -0400] [35978] [INFO] Booting worker with pid: 35978
+[2020-03-26 13:17:59 -0400] [35972] [DEBUG] 4 workers
+[2020-03-26 12:18:03 -0500] [35976] [DEBUG] GET /pics/renewnables_1.JPG
+[2020-03-26 13:18:14 -0400] [35972] [INFO] Handling signal: int
+[2020-03-26 12:18:14 -0500] [35976] [INFO] Worker exiting (pid: 35976)
+[2020-03-26 12:18:14 -0500] [35977] [INFO] Worker exiting (pid: 35977)
+[2020-03-26 12:18:14 -0500] [35978] [INFO] Worker exiting (pid: 35978)
+[2020-03-26 12:18:14 -0500] [35975] [INFO] Worker exiting (pid: 35975)
+[2020-03-26 13:18:14 -0400] [35972] [INFO] Shutting down: Master
+[2020-03-26 13:18:26 -0400] [36003] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x102b1f8c8>
+  on_reload: <function OnReload.on_reload at 0x102b1fa60>
+  when_ready: <function WhenReady.when_ready at 0x102b1fbf8>
+  pre_fork: <function Prefork.pre_fork at 0x102b1fd90>
+  post_fork: <function Postfork.post_fork at 0x102b1ff28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x102b28158>
+  worker_int: <function WorkerInt.worker_int at 0x102b282f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x102b28488>
+  pre_exec: <function PreExec.pre_exec at 0x102b28620>
+  pre_request: <function PreRequest.pre_request at 0x102b287b8>
+  post_request: <function PostRequest.post_request at 0x102b288c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x102b28a60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x102b28bf8>
+  on_exit: <function OnExit.on_exit at 0x102b28d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-03-26 13:18:26 -0400] [36003] [INFO] Starting gunicorn 19.6.0
+[2020-03-26 13:18:26 -0400] [36003] [DEBUG] Arbiter booted
+[2020-03-26 13:18:26 -0400] [36003] [INFO] Listening at: http://127.0.0.1:8000 (36003)
+[2020-03-26 13:18:26 -0400] [36003] [INFO] Using worker: sync
+[2020-03-26 13:18:26 -0400] [36006] [INFO] Booting worker with pid: 36006
+[2020-03-26 13:18:26 -0400] [36008] [INFO] Booting worker with pid: 36008
+[2020-03-26 13:18:26 -0400] [36009] [INFO] Booting worker with pid: 36009
+[2020-03-26 13:18:26 -0400] [36010] [INFO] Booting worker with pid: 36010
+[2020-03-26 13:18:26 -0400] [36003] [DEBUG] 4 workers
+[2020-03-26 12:18:34 -0500] [36009] [DEBUG] GET /pics/renewnables_2.JPG
+[2020-03-26 13:18:47 -0400] [36003] [INFO] Handling signal: int
+[2020-03-26 12:18:47 -0500] [36009] [INFO] Worker exiting (pid: 36009)
+[2020-03-26 12:18:47 -0500] [36010] [INFO] Worker exiting (pid: 36010)
+[2020-03-26 12:18:47 -0500] [36008] [INFO] Worker exiting (pid: 36008)
+[2020-03-26 12:18:47 -0500] [36006] [INFO] Worker exiting (pid: 36006)
+[2020-03-26 13:18:47 -0400] [36003] [INFO] Shutting down: Master
+[2020-03-26 13:18:48 -0400] [36016] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x10c5c78c8>
+  on_reload: <function OnReload.on_reload at 0x10c5c7a60>
+  when_ready: <function WhenReady.when_ready at 0x10c5c7bf8>
+  pre_fork: <function Prefork.pre_fork at 0x10c5c7d90>
+  post_fork: <function Postfork.post_fork at 0x10c5c7f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x10c5d0158>
+  worker_int: <function WorkerInt.worker_int at 0x10c5d02f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x10c5d0488>
+  pre_exec: <function PreExec.pre_exec at 0x10c5d0620>
+  pre_request: <function PreRequest.pre_request at 0x10c5d07b8>
+  post_request: <function PostRequest.post_request at 0x10c5d08c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x10c5d0a60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x10c5d0bf8>
+  on_exit: <function OnExit.on_exit at 0x10c5d0d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-03-26 13:18:48 -0400] [36016] [INFO] Starting gunicorn 19.6.0
+[2020-03-26 13:18:48 -0400] [36016] [DEBUG] Arbiter booted
+[2020-03-26 13:18:48 -0400] [36016] [INFO] Listening at: http://127.0.0.1:8000 (36016)
+[2020-03-26 13:18:48 -0400] [36016] [INFO] Using worker: sync
+[2020-03-26 13:18:48 -0400] [36019] [INFO] Booting worker with pid: 36019
+[2020-03-26 13:18:48 -0400] [36020] [INFO] Booting worker with pid: 36020
+[2020-03-26 13:18:48 -0400] [36022] [INFO] Booting worker with pid: 36022
+[2020-03-26 13:18:48 -0400] [36023] [INFO] Booting worker with pid: 36023
+[2020-03-26 13:18:48 -0400] [36016] [DEBUG] 4 workers
+[2020-03-26 12:18:53 -0500] [36019] [DEBUG] OPTIONS /pics/officespace_1.JPG
+[2020-03-26 12:18:53 -0500] [36023] [DEBUG] GET /pics/officespace_1.JPG
+[2020-03-26 12:18:55 -0500] [36023] [DEBUG] OPTIONS /pics/spaceman.PNG
+[2020-03-26 12:18:55 -0500] [36023] [DEBUG] GET /pics/spaceman.PNG
+[2020-03-26 12:18:56 -0500] [36023] [DEBUG] GET /pics/spaceman.PNG
+[2020-03-26 12:18:57 -0500] [36023] [DEBUG] GET /pics/spaceman.PNG
+[2020-03-26 12:18:58 -0500] [36020] [DEBUG] OPTIONS /pics/surf.PNG
+[2020-03-26 12:18:58 -0500] [36020] [DEBUG] GET /pics/surf.PNG
+[2020-03-26 12:19:00 -0500] [36020] [DEBUG] GET /pics/surf.PNG
+[2020-03-26 12:19:11 -0500] [36019] [DEBUG] OPTIONS /pics/charleston%20bridge.jpg
+[2020-03-26 12:19:11 -0500] [36019] [DEBUG] GET /pics/charleston%20bridge.jpg
+[2020-03-26 12:19:18 -0500] [36020] [DEBUG] GET /pics/spaceman.PNG
+[2020-03-26 12:19:37 -0500] [36019] [DEBUG] GET /pics/officespace_1.JPG
+[2020-03-26 12:20:04 -0500] [36023] [DEBUG] OPTIONS /pics/gradients_2.JPG
+[2020-03-26 12:20:04 -0500] [36020] [DEBUG] GET /pics/gradients_2.JPG
+[2020-03-26 12:22:45 -0500] [36022] [DEBUG] GET /pics/california.PNG
+[2020-03-26 12:22:48 -0500] [36023] [DEBUG] GET /pics/house_2.JPG
+[2020-03-26 12:22:49 -0500] [36022] [DEBUG] OPTIONS /pics/house_1.JPG
+[2020-03-26 12:22:49 -0500] [36023] [DEBUG] GET /pics/house_1.JPG
+[2020-03-26 12:22:50 -0500] [36019] [DEBUG] GET /pics/charleston%20bridge.jpg
+[2020-03-26 12:22:53 -0500] [36019] [DEBUG] OPTIONS /pics/%3Cspan%20class=%22MuiButton-label%22%3Egradients_1.JPG%20%3C/span%3E%3Cspan%20class=%22MuiTouchRipple-root%22%3E%3Cspan%20class=%22MuiTouchRipple-ripple%20MuiTouchRipple-rippleVisible%22%20style=%22width:%20397.854px;%20height:%20397.854px;%20top:%20-165.927px;%20left:%20-31.9271px;%22%3E%3Cspan%20class=%22MuiTouchRipple-child%20MuiTouchRipple-childLeaving%22%3E%3C/span%3E%3C/span%3E%3C/span%3E
+[2020-03-26 12:22:53 -0500] [36020] [DEBUG] GET /pics/%3Cspan%20class=%22MuiButton-label%22%3Egradients_1.JPG%20%3C/span%3E%3Cspan%20class=%22MuiTouchRipple-root%22%3E%3Cspan%20class=%22MuiTouchRipple-ripple%20MuiTouchRipple-rippleVisible%22%20style=%22width:%20397.854px;%20height:%20397.854px;%20top:%20-165.927px;%20left:%20-31.9271px;%22%3E%3Cspan%20class=%22MuiTouchRipple-child%20MuiTouchRipple-childLeaving%22%3E%3C/span%3E%3C/span%3E%3C/span%3E
+[2020-03-26 12:22:54 -0500] [36023] [DEBUG] OPTIONS /pics/sanfran.JPG
+[2020-03-26 12:22:54 -0500] [36020] [DEBUG] GET /pics/sanfran.JPG
+[2020-03-26 12:24:15 -0500] [36020] [DEBUG] OPTIONS /pics/gradients_1.JPG
+[2020-03-26 12:24:15 -0500] [36020] [DEBUG] GET /pics/gradients_1.JPG
+[2020-03-26 13:25:18 -0400] [36016] [INFO] Handling signal: int
+[2020-03-26 12:25:18 -0500] [36022] [INFO] Worker exiting (pid: 36022)
+[2020-03-26 12:25:18 -0500] [36020] [INFO] Worker exiting (pid: 36020)
+[2020-03-26 12:25:18 -0500] [36023] [INFO] Worker exiting (pid: 36023)
+[2020-03-26 12:25:18 -0500] [36019] [INFO] Worker exiting (pid: 36019)
+[2020-03-26 13:25:18 -0400] [36016] [INFO] Shutting down: Master
+[2020-03-26 13:25:19 -0400] [36053] [INFO] Starting gunicorn 19.6.0
+[2020-03-26 13:25:19 -0400] [36053] [INFO] Listening at: http://127.0.0.1:8000 (36053)
+[2020-03-26 13:25:19 -0400] [36053] [INFO] Using worker: sync
+[2020-03-26 13:25:19 -0400] [36056] [INFO] Booting worker with pid: 36056
+[2020-03-26 13:25:19 -0400] [36058] [INFO] Booting worker with pid: 36058
+[2020-03-26 13:25:19 -0400] [36059] [INFO] Booting worker with pid: 36059
+[2020-03-26 13:25:19 -0400] [36060] [INFO] Booting worker with pid: 36060
+[2020-03-26 13:52:34 -0400] [36053] [INFO] Handling signal: int
+[2020-03-26 12:52:34 -0500] [36059] [INFO] Worker exiting (pid: 36059)
+[2020-03-26 12:52:34 -0500] [36058] [INFO] Worker exiting (pid: 36058)
+[2020-03-26 12:52:34 -0500] [36060] [INFO] Worker exiting (pid: 36060)
+[2020-03-26 12:52:34 -0500] [36056] [INFO] Worker exiting (pid: 36056)
+[2020-03-26 13:52:34 -0400] [36053] [INFO] Shutting down: Master
+[2020-03-27 11:47:52 -0400] [37458] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x110e668c8>
+  on_reload: <function OnReload.on_reload at 0x110e66a60>
+  when_ready: <function WhenReady.when_ready at 0x110e66bf8>
+  pre_fork: <function Prefork.pre_fork at 0x110e66d90>
+  post_fork: <function Postfork.post_fork at 0x110e66f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x110e6f158>
+  worker_int: <function WorkerInt.worker_int at 0x110e6f2f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x110e6f488>
+  pre_exec: <function PreExec.pre_exec at 0x110e6f620>
+  pre_request: <function PreRequest.pre_request at 0x110e6f7b8>
+  post_request: <function PostRequest.post_request at 0x110e6f8c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x110e6fa60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x110e6fbf8>
+  on_exit: <function OnExit.on_exit at 0x110e6fd90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-03-27 11:47:52 -0400] [37458] [INFO] Starting gunicorn 19.6.0
+[2020-03-27 11:47:52 -0400] [37458] [DEBUG] Arbiter booted
+[2020-03-27 11:47:52 -0400] [37458] [INFO] Listening at: http://127.0.0.1:8000 (37458)
+[2020-03-27 11:47:52 -0400] [37458] [INFO] Using worker: sync
+[2020-03-27 11:47:52 -0400] [37461] [INFO] Booting worker with pid: 37461
+[2020-03-27 11:47:52 -0400] [37463] [INFO] Booting worker with pid: 37463
+[2020-03-27 11:47:52 -0400] [37464] [INFO] Booting worker with pid: 37464
+[2020-03-27 11:47:53 -0400] [37465] [INFO] Booting worker with pid: 37465
+[2020-03-27 11:47:53 -0400] [37458] [DEBUG] 4 workers
+[2020-03-27 11:48:05 -0400] [37458] [INFO] Handling signal: int
+[2020-03-27 10:48:05 -0500] [37464] [INFO] Worker exiting (pid: 37464)
+[2020-03-27 10:48:05 -0500] [37463] [INFO] Worker exiting (pid: 37463)
+[2020-03-27 10:48:05 -0500] [37465] [INFO] Worker exiting (pid: 37465)
+[2020-03-27 10:48:05 -0500] [37461] [INFO] Worker exiting (pid: 37461)
+[2020-03-27 11:48:06 -0400] [37458] [INFO] Shutting down: Master
+[2020-04-04 17:08:04 -0400] [8850] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x107f048c8>
+  on_reload: <function OnReload.on_reload at 0x107f04a60>
+  when_ready: <function WhenReady.when_ready at 0x107f04bf8>
+  pre_fork: <function Prefork.pre_fork at 0x107f04d90>
+  post_fork: <function Postfork.post_fork at 0x107f04f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x107f0d158>
+  worker_int: <function WorkerInt.worker_int at 0x107f0d2f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x107f0d488>
+  pre_exec: <function PreExec.pre_exec at 0x107f0d620>
+  pre_request: <function PreRequest.pre_request at 0x107f0d7b8>
+  post_request: <function PostRequest.post_request at 0x107f0d8c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x107f0da60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x107f0dbf8>
+  on_exit: <function OnExit.on_exit at 0x107f0dd90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-04-04 17:08:04 -0400] [8850] [INFO] Starting gunicorn 19.6.0
+[2020-04-04 17:08:04 -0400] [8850] [DEBUG] Arbiter booted
+[2020-04-04 17:08:04 -0400] [8850] [INFO] Listening at: http://127.0.0.1:8000 (8850)
+[2020-04-04 17:08:04 -0400] [8850] [INFO] Using worker: sync
+[2020-04-04 17:08:04 -0400] [8853] [INFO] Booting worker with pid: 8853
+[2020-04-04 17:08:04 -0400] [8854] [INFO] Booting worker with pid: 8854
+[2020-04-04 17:08:04 -0400] [8856] [INFO] Booting worker with pid: 8856
+[2020-04-04 17:08:04 -0400] [8857] [INFO] Booting worker with pid: 8857
+[2020-04-04 17:08:04 -0400] [8850] [DEBUG] 4 workers
+[2020-04-04 16:08:14 -0500] [8853] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:08:14 -0500] [8857] [DEBUG] GET /apidb/comments
+[2020-04-04 16:12:40 -0500] [8857] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:12:40 -0500] [8856] [DEBUG] GET /apidb/comments
+[2020-04-04 16:22:57 -0500] [8857] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:22:57 -0500] [8856] [DEBUG] GET /apidb/comments
+[2020-04-04 16:27:00 -0500] [8857] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:27:00 -0500] [8856] [DEBUG] GET /apidb/comments
+[2020-04-04 16:27:05 -0500] [8854] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:27:05 -0500] [8857] [DEBUG] GET /apidb/comments
+[2020-04-04 17:27:11 -0400] [8850] [INFO] Handling signal: int
+[2020-04-04 16:27:11 -0500] [8857] [INFO] Worker exiting (pid: 8857)
+[2020-04-04 16:27:11 -0500] [8853] [INFO] Worker exiting (pid: 8853)
+[2020-04-04 16:27:11 -0500] [8856] [INFO] Worker exiting (pid: 8856)
+[2020-04-04 16:27:11 -0500] [8854] [INFO] Worker exiting (pid: 8854)
+[2020-04-04 17:27:11 -0400] [8850] [INFO] Shutting down: Master
+[2020-04-04 17:27:31 -0400] [8982] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 4
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x106ac68c8>
+  on_reload: <function OnReload.on_reload at 0x106ac6a60>
+  when_ready: <function WhenReady.when_ready at 0x106ac6bf8>
+  pre_fork: <function Prefork.pre_fork at 0x106ac6d90>
+  post_fork: <function Postfork.post_fork at 0x106ac6f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x106acf158>
+  worker_int: <function WorkerInt.worker_int at 0x106acf2f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x106acf488>
+  pre_exec: <function PreExec.pre_exec at 0x106acf620>
+  pre_request: <function PreRequest.pre_request at 0x106acf7b8>
+  post_request: <function PostRequest.post_request at 0x106acf8c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x106acfa60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x106acfbf8>
+  on_exit: <function OnExit.on_exit at 0x106acfd90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-04-04 17:27:31 -0400] [8982] [INFO] Starting gunicorn 19.6.0
+[2020-04-04 17:27:31 -0400] [8982] [DEBUG] Arbiter booted
+[2020-04-04 17:27:31 -0400] [8982] [INFO] Listening at: http://127.0.0.1:8000 (8982)
+[2020-04-04 17:27:31 -0400] [8982] [INFO] Using worker: sync
+[2020-04-04 17:27:31 -0400] [8985] [INFO] Booting worker with pid: 8985
+[2020-04-04 17:27:31 -0400] [8987] [INFO] Booting worker with pid: 8987
+[2020-04-04 17:27:31 -0400] [8988] [INFO] Booting worker with pid: 8988
+[2020-04-04 17:27:31 -0400] [8989] [INFO] Booting worker with pid: 8989
+[2020-04-04 17:27:31 -0400] [8982] [DEBUG] 4 workers
+[2020-04-04 17:43:19 -0400] [8982] [INFO] Handling signal: int
+[2020-04-04 16:43:19 -0500] [8989] [INFO] Worker exiting (pid: 8989)
+[2020-04-04 16:43:19 -0500] [8988] [INFO] Worker exiting (pid: 8988)
+[2020-04-04 16:43:19 -0500] [8987] [INFO] Worker exiting (pid: 8987)
+[2020-04-04 16:43:19 -0500] [8985] [INFO] Worker exiting (pid: 8985)
+[2020-04-04 17:43:19 -0400] [8982] [INFO] Shutting down: Master
+[2020-04-04 17:43:20 -0400] [9069] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 1
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x1035648c8>
+  on_reload: <function OnReload.on_reload at 0x103564a60>
+  when_ready: <function WhenReady.when_ready at 0x103564bf8>
+  pre_fork: <function Prefork.pre_fork at 0x103564d90>
+  post_fork: <function Postfork.post_fork at 0x103564f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x10356d158>
+  worker_int: <function WorkerInt.worker_int at 0x10356d2f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x10356d488>
+  pre_exec: <function PreExec.pre_exec at 0x10356d620>
+  pre_request: <function PreRequest.pre_request at 0x10356d7b8>
+  post_request: <function PostRequest.post_request at 0x10356d8c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x10356da60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x10356dbf8>
+  on_exit: <function OnExit.on_exit at 0x10356dd90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-04-04 17:43:20 -0400] [9069] [INFO] Starting gunicorn 19.6.0
+[2020-04-04 17:43:20 -0400] [9069] [DEBUG] Arbiter booted
+[2020-04-04 17:43:20 -0400] [9069] [INFO] Listening at: http://127.0.0.1:8000 (9069)
+[2020-04-04 17:43:20 -0400] [9069] [INFO] Using worker: sync
+[2020-04-04 17:43:20 -0400] [9072] [INFO] Booting worker with pid: 9072
+[2020-04-04 17:43:20 -0400] [9069] [DEBUG] 1 workers
+[2020-04-04 16:43:25 -0500] [9072] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:43:25 -0500] [9072] [DEBUG] GET /apidb/comments
+[2020-04-04 17:43:43 -0400] [9069] [INFO] Handling signal: int
+[2020-04-04 16:43:43 -0500] [9072] [INFO] Worker exiting (pid: 9072)
+[2020-04-04 17:43:43 -0400] [9069] [INFO] Shutting down: Master
+[2020-04-04 17:43:45 -0400] [9075] [DEBUG] Current configuration:
+  config: gunicorn.conf.py
+  bind: ['127.0.0.1:8000']
+  backlog: 1024
+  workers: 1
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  chdir: /Users/connorpro/Code/website_python
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 501
+  group: 20
+  umask: 0
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: /Users/connorpro/Code/website_python/logs/gunicorn-access.log
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /Users/connorpro/Code/website_python/logs/gunicorn-error.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  syslog_addr: unix:///var/run/syslog
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: website_py2.wsgi
+  django_settings: None
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x10bb398c8>
+  on_reload: <function OnReload.on_reload at 0x10bb39a60>
+  when_ready: <function WhenReady.when_ready at 0x10bb39bf8>
+  pre_fork: <function Prefork.pre_fork at 0x10bb39d90>
+  post_fork: <function Postfork.post_fork at 0x10bb39f28>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x10bb42158>
+  worker_int: <function WorkerInt.worker_int at 0x10bb422f0>
+  worker_abort: <function WorkerAbort.worker_abort at 0x10bb42488>
+  pre_exec: <function PreExec.pre_exec at 0x10bb42620>
+  pre_request: <function PreRequest.pre_request at 0x10bb427b8>
+  post_request: <function PostRequest.post_request at 0x10bb428c8>
+  worker_exit: <function WorkerExit.worker_exit at 0x10bb42a60>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x10bb42bf8>
+  on_exit: <function OnExit.on_exit at 0x10bb42d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: None
+  certfile: None
+  ssl_version: 3
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: TLSv1
+[2020-04-04 17:43:45 -0400] [9075] [INFO] Starting gunicorn 19.6.0
+[2020-04-04 17:43:45 -0400] [9075] [DEBUG] Arbiter booted
+[2020-04-04 17:43:45 -0400] [9075] [INFO] Listening at: http://127.0.0.1:8000 (9075)
+[2020-04-04 17:43:45 -0400] [9075] [INFO] Using worker: sync
+[2020-04-04 17:43:45 -0400] [9078] [INFO] Booting worker with pid: 9078
+[2020-04-04 17:43:45 -0400] [9075] [DEBUG] 1 workers
+[2020-04-04 16:43:54 -0500] [9078] [DEBUG] GET /apidb/ws/chat
+[2020-04-04 16:43:54 -0500] [9078] [DEBUG] GET /apidb/comments
+[2020-04-04 18:02:49 -0400] [9075] [INFO] Handling signal: int
+[2020-04-04 17:02:49 -0500] [9078] [INFO] Worker exiting (pid: 9078)
+[2020-04-04 18:02:49 -0400] [9075] [INFO] Shutting down: Master

@@ -32,7 +32,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 errorlog = BASE_DIR + '/logs/gunicorn-error.log'  # Make sure you have the log folder create
 accesslog = BASE_DIR + '/logs/gunicorn-access.log'
 loglevel = 'debug'
-workers = 4     # the number of recommended workers is '2 * number of CPUs + 1'
+workers = 1     # the number of recommended workers is '2 * number of CPUs + 1'
+worker_class = 'gevent'
 #   timeout - If a worker does not notify the master process in this
 #       number of seconds it is killed and a new worker is spawned
 #       to replace it.

@@ -162,3 +162,5 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'pics/')  # 'data' is my media folder
 MEDIA_URL = '/pics/'
+
+# print("base dir path", MEDIA_ROOT)

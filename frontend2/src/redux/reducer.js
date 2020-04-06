@@ -20,7 +20,7 @@ export function login(username, password) {
     // console.log("in the tick ");
     let res = await makeAPICall(
       "POST",
-      `${apiprefix}:8000/apidb/login`,
+      `http://localhost:80/apidb/login`,
       {'username':username, 'password':password}
     );
     let status = res.status
@@ -38,14 +38,6 @@ export function login(username, password) {
       dispatch(setLoginPending(false));
       dispatch(setLoginSuccess(true));
     }
-    // callLoginApi(email, password, error => {
-    //   dispatch(setLoginPending(false));
-    //   if (!error) {
-    //     dispatch(setLoginSuccess(true));
-    //   } else {
-    //     dispatch(setLoginError(error));
-    //   }
-    // });
   }
 }
 // bound action creators automatically dispatch
@@ -79,19 +71,11 @@ export function setUser(user) {
   }
 }
 
-function callLoginApi(email, password, callback) {
-  setTimeout(() => {
-    if (email === 'admin@example.com' && password === 'admin') {
-      return callback(null);
-    } else {
-      return callback(new Error('Invalid email and password'));
-    }
-  }, 1000);
-}
 
 // the reducer, fcn that makes the change to redux store
 // reducers specify how app state changes in response to actions sent to store
 // reducers take previous state and action as params and returns next state
+// using ES6 default args syntax if state is undefined it will be set to {}, if defined it keeps its values
 
 // object.assign copies state param modifies it and returns new state
 export default function reducer(state = {
@@ -122,4 +106,25 @@ export default function reducer(state = {
     default:
       return state;
   }
+}
+
+
+
+// --------- EXTRA GOOD CODE -------
+// callLoginApi(email, password, error => {
+//   dispatch(setLoginPending(false));
+//   if (!error) {
+//     dispatch(setLoginSuccess(true));
+//   } else {
+//     dispatch(setLoginError(error));
+//   }
+// });
+function callLoginApi(email, password, callback) {
+  setTimeout(() => {
+    if (email === 'admin@example.com' && password === 'admin') {
+      return callback(null);
+    } else {
+      return callback(new Error('Invalid email and password'));
+    }
+  }, 1000);
 }

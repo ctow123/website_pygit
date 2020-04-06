@@ -56,15 +56,12 @@ class LoginHandling(APIView):
                 user = LoginInfo.objects.get(username=request.data['username'])
                 retrievedpassword = user.password.encode('utf-8')
                 givenpassword = request.data['password'].encode('utf-8')
-                # print("this is the user ", type(givenpassword))
-                # print(user.password)
-                hashed = bcrypt.hashpw(givenpassword, bcrypt.gensalt(7))
-                if bcrypt.checkpw(retrievedpassword, hashed):
+                if bcrypt.checkpw(givenpassword, retrievedpassword):
                     encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
                     ) + timedelta(hours=24)}, key, algorithm='HS256')
                     if settings.DEBUG:
                         print("It Matches!")
-                    return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')})
+                    return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
             else:
                 if settings.DEBUG:
                     print("It Does not Match")
@@ -72,38 +69,48 @@ class LoginHandling(APIView):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
 
+# passwords shouldn't be stored in plain text
 class AccountCreation(APIView):
+    def get(self, request, format=None):
+        # print(dict(request.GET)['test'])
+        try:
+            if not checkUserExists(request.GET.get('username')):
+                return JsonResponse({'message': 'no user with this username', 'created': False}, status=200)
+            else:
+                return JsonResponse({'message': 'username already taken', 'created': True}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+        else:
+            return JsonResponse({'error': 'well something fucking broke'}, status=400)
+# using googleAPI sending email as username
     def post(self, request, format=None):
         if 'username' in request.data and 'password' in request.data:
             if request.data['username'] is not "" and request.data['password'] is not "":
                 try:
-                    user = LoginInfo.objects.get(username=request.data['username'])
-                    if user != None:
+                    if not checkUserExists(request.data['username']):
+                        hashedpass = bcrypt.hashpw(request.data['password'].encode('utf-8'), bcrypt.gensalt(7))
+                        account = LoginInfo(username=request.data['username'], password=hashedpass.decode('utf-8'), email=request.data['email'] if 'email' in request.data else "", fromgoogle=request.data['fromgoogle'] if 'fromgoogle' in request.data else False, pincode=1234)
+                        account.save()
+                        encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
+                        ) + timedelta(hours=24)}, key, algorithm='HS256')
+                        return JsonResponse({'message': 'account created','authtoken': encoded.decode('utf8')}, status=201)
+                    else:
                         return JsonResponse({'error': 'username already taken'}, status=400)
-                except LoginInfo.DoesNotExist:
-                    account = LoginInfo(username=request.data['username'], password=request.data['password'], email="", pincode=1234)
-                try:
-                    account.save()
-                    return JsonResponse({'message': 'account created'}, status=201)
                 except Exception as e:
                     return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({'error': 'invalid fields'}, status=400)
 
+def checkUserExists(username):
+    try:
+        user = LoginInfo.objects.get(username=username)
+        if user != None:
+            return True
+    except LoginInfo.DoesNotExist:
+        return False
+    except Exception as e:
+        return False
 
-class Auth(APIView):
-    def post(self, request, format=None):
-        print(request.headers)
-        # Authorization =  `Bearer ${token}`;
-        return JsonResponse({'message': 'account created'}, status=201)
-        # decoded = jwt.decode(encoded, key, algorithms='HS256')
-        # if 'username' in request.data and 'password' in request.data and 'email' in request.data:
-        #     try:
-        #         account.save()
-        #         return JsonResponse({'message': 'account created'},status=201)
-        #     except Exception as e:
-        #         return JsonResponse({'message': str(e)},status=400)
-        # else:
-        #     return JsonResponse({'message': 'no auth token found'},status=400)
+
 
 
 class Images(APIView):

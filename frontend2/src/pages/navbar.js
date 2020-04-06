@@ -20,6 +20,15 @@ const Navgo = ({...props}) => {
     e.preventDefault();
     localStorage.removeItem('token');
     history.push('/');
+    const script2 = document.createElement("script2");
+script2.src = "https://apis.google.com/js/client.js";
+          document.body.appendChild(script2);
+ // GoogleAuth.signOut()
+    var auth2 = window.gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+
     // force hard refresh
     window.location.href = `${process.env.PUBLIC_URL}/`;
   };

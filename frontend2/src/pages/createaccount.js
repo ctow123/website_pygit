@@ -9,7 +9,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom'
 import { Redirect } from 'react-router';
 import { makeAPICall } from "../api/api.js";
-import apiprefix from "../api/apiprefix.js";
+import {apiprefix } from "../api/apiprefix.js";
+import {createAccount} from "./fcns.js";
 
 const styles = theme => ({
   centered: {
@@ -49,22 +50,14 @@ const CreateAccount = ({ classes, ...props }) => {
 
   let handleCreate = async (e) => {
     e.preventDefault();
-    console.log(values);
     // check username/password restrictions on server side
-    let res = await makeAPICall(
-      "POST",
-      `${apiprefix}:8000/apidb/create`,
-      {'username':values.username, 'password':values.password}
-    );
-    let status = res.status
-    let body = await res.json();
-    if(status !== 200 && status !== 201){
-      updateMessage(body.error)
-    }
-    else{
-      updateCreate(true);
-      // history.push('/');
-    }
+    let message = createAccount(values.username, 'email', values.password, false);
+    message.then(values => {
+      console.log(values);
+      updateMessage(values.body.error)
+    }, error => console.log(error));
+    // ,
+
   };
   return (
     <div className={`login tab`} style={{ backgroundColor: "white" }}>

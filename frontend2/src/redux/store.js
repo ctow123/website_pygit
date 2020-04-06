@@ -11,7 +11,7 @@ import reducer from './reducer';
 import { parseJwt } from "../pages/fcns.js"
 
 let theuser;
-if (typeof localStorage.token !== 'undefined') {
+if (typeof localStorage.token !== 'undefined' && localStorage.token !== 'undefined') {
   let temp = parseJwt(localStorage.token);
   theuser = ({ ...temp, authenticated: true });
 

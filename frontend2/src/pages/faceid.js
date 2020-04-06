@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Card, CardActions, CardContent } from "@material-ui/core";
 import axios from 'axios';
+import { apiprefix } from '../api/apiprefix'
 
 const styles = theme => ({
   root: {
@@ -57,7 +58,7 @@ const Welcome = ({ classes, ...props }) => {
     // );
     let res = await makeAPICall(
       "GET",
-      "http://127.0.0.1:8000/pics/" + url
+      `${apiprefix}/pics` + url
     );
     console.log(res);
     console.log(res.headers);
@@ -78,7 +79,7 @@ const Welcome = ({ classes, ...props }) => {
    * and updates the list object with this info
    */
   const getImageList = async () => {
-    let res = await makeAPICall("GET", "http://127.0.0.1:8000/apidb/imagelist");
+    let res = await makeAPICall("GET", `${apiprefix}/apidb/imagelist`);
     let body = await res.json();
     console.log(res);
     //console.log(body);
