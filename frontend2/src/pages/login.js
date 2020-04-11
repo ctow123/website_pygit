@@ -9,10 +9,9 @@ import { Card, CardActions, CardContent } from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import MetaTags from "react-meta-tags";
-import { login, setLoginSuccess, setLoginError } from "../redux/reducer";
+import { login, setLoginError } from "../redux/reducer";
 import { withRouter, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {apiprefix} from "../api/apiprefix.js";
 import {createAccount,checkAccountCreated, parseJwt} from "./fcns.js";
 import {setUser} from '../redux/reducer.js'
 // to make eslint will treat gapi as a known global variable.
@@ -66,7 +65,6 @@ const Login = ({ classes, currentUser, ...props }) => {
         (typeof window.performance != "undefined" &&
           window.performance.navigation.type === 2);
       if (historyTraversal) {
-        // Handle page restore.
         window.location.reload();
       }
     });
@@ -140,19 +138,19 @@ function gapiinit() {
   // on submission, takes username and password and dispatches the login action
   let handleSubmit = e => {
     e.preventDefault();
-    // console.log(values);
     let returning = login(values.username, values.password);
     returning(dispatch);
   };
 
+  // <meta
+  //   name="google-signin-client_id"
+  //   content="578271878997-ird9d986ok3qnktl1iup4l28oq1fdg95.apps.googleusercontent.com"
+  // />
   return (
     <div className={`login tab`} style={{ backgroundColor: "white" }}>
       <MetaTags>
         <title>Algo X Login</title>
-        <meta
-          name="google-signin-client_id"
-          content="578271878997-ird9d986ok3qnktl1iup4l28oq1fdg95.apps.googleusercontent.com"
-        />
+
       </MetaTags>
 
       <Navgo {...props} />

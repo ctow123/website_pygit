@@ -24,7 +24,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux'
 import { makeAPICall } from "../api/api.js";
-import apiprefix from "../api/apiprefix.js";
+import {apiprefix} from "../api/apiprefix.js";
 
 let keyapi = 'AIzaSyA3qJk3H3SaQOLQOkxCNuycA8JmyP3ekqk'
 
@@ -111,6 +111,7 @@ let SimpleDialog = ({ classes, ...props }) => {
 
 SimpleDialog = withStyles(styles)(SimpleDialog);
 
+// ------------------- review dialog box ----------------- 
 const Yelp = ({ classes, ...props }) => {
   // console.log(props);
 
@@ -208,6 +209,15 @@ let  onClose = state => {
     }
   };
 
+// need to update google-maps-api to 2.0.3 for infowindow and add in under market
+  //   <InfoWindow
+  // visible={true}
+  // onClose={onClose}
+  // >
+  // <div>
+  // <h4>{'nam-o-state'}</h4>
+  // </div>
+  // </InfoWindow>
 
 let displayMarkers = (thestate) => {
  return thestate.stores.map((store, index) => {
@@ -215,7 +225,8 @@ let displayMarkers = (thestate) => {
     lat: store.coordinates.latitude,
     lng: store.coordinates.longitude
   }}
-  onClick={() => console.log("You clicked me!")} />
+  onClick={() => console.log("You clicked me!")} >
+   </Marker>
  })
 }
 
@@ -239,7 +250,7 @@ let handleListItemClick = (event, index, storeinfo) => {
 let callyelpapi = async (searchtype, searchparams) => {
   let res = await makeAPICall(
     "POST",
-    `${apiprefix}:8000/apidb/yelpappAPI`,
+    `${apiprefix}/apidb/yelpappAPI`,
     {'searchtype': searchtype, 'searchparams': searchparams}
   );
   let status = res.status
@@ -252,33 +263,6 @@ let callyelpapi = async (searchtype, searchparams) => {
     updateLocations({stores: body.res.businesses});
   }
 }
-
-//   <InfoWindow
-// marker={state.activeMarker}
-// visible={state.showingInfoWindow}
-// onClose={onClose}
-// >
-// <div>
-// <h4>{state.selectedPlace.name}</h4>
-// </div>
-// </InfoWindow>
-
-// lat: -1.2884,
-// lng: 36.8233
-//
-// <Map
-//        google={props.google}
-//        zoom={7}
-//        style={mapStyles}
-//        initialCenter={{ lat: 47.444, lng: -122.176}}
-//      >
-//      <Marker
-//        onClick={onMarkerClick}
-//        name={'Kenyatta International Convention Centre'}
-//      />
-// {displayMarkers(thestate)}
-//      </Map>
-
 
 const handleFoodSearch = async (event, type) => {
   switch (type) {
@@ -338,6 +322,15 @@ const handleClickOpen = () => {
            >
 
       {displayMarkers(locations)}
+      <Marker
+        position={{ lat:
+        parseFloat(position.lat), lng:
+        parseFloat(position.long) }}
+        icon={{
+          url: '/favicon.ico',
+           scaledSize: new props.google.maps.Size(32, 32)
+        }}
+      />
       </Map>
       <List component="nav" className={classes.list}>
 

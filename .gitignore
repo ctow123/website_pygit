@@ -8,8 +8,10 @@
 
 # production
 /build
+/*.json
 
 # misc
+twitter_script.py
 .DS_Store
 .env.local
 .env.development.local

@@ -11,7 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { makeAPICall } from "../api/api.js";
-import apiprefix from "../api/apiprefix.js";
+import { apiprefix, wsprefix } from "../api/apiprefix.js";
 
 const styles = theme => ({
   centered: {
@@ -34,18 +34,35 @@ const Comments = ({ classes, ...props }) => {
   let [commentfromDB, updateCommentfromDB] = useState([]);
   let [message, updateMessage] = useState(null);
   let [values, setValues] = useState({ comment: "" });
+
+// useref keeps same object between renders
   const socket = useRef(null);
+  const sectionRef = useRef(null);
 
   // comments should automatically load and update as new ones are added, need websockets
   useEffect(() => {
-    // console.log(user);
-    socket.current = new WebSocket(`ws://localhost:80/apidb/ws/chat`);
+    socket.current = new WebSocket(`${wsprefix}/apidb/ws/chat`);
     socket.current.onopen = () => {
       console.log("WebSocket open");
     };
+    // take new comments in redis cache and add to list
     socket.current.onmessage = e => {
-      fetchComments();
-      console.log(e.data);
+      let newcomment = JSON.parse(e.data);
+      let newelem = (
+        <Typography
+          key={generateKey(newcomment.username)}
+          color="textPrimary"
+          variant="body1"
+          ref={sectionRef}
+          id={newcomment.comment}
+        >
+          {" "}
+          {newcomment.username + " : " + newcomment.comment}{" "}
+        </Typography>
+      );
+      updateCommentfromDB(commentfromDB => [...commentfromDB, newelem]);
+      let test = document.getElementById(newcomment.comment);
+      test.scrollIntoView();
     };
     fetchComments();
   }, []); // the []) ensures hook only called on mount not every page refresh
@@ -53,6 +70,9 @@ const Comments = ({ classes, ...props }) => {
   let handleChange = event => {
     let { name, value } = event.target;
     setValues({ ...values, [name]: value });
+  };
+  const generateKey = pre => {
+    return `${pre}_${new Date().getTime()}`;
   };
 
   // user must be logged in to submit, submits comment to server, sends message to socket
@@ -67,7 +87,11 @@ const Comments = ({ classes, ...props }) => {
       } else {
         uploadComment(values.comment);
         socket.current.send(
-          JSON.stringify({ message: "comment submitted", update: true })
+          JSON.stringify({
+            username: user.username,
+            comment: values.comment,
+            update: true
+          })
         );
         // window.location.reload();
         setValues({ comment: "" });
@@ -77,40 +101,41 @@ const Comments = ({ classes, ...props }) => {
 
   // fetches all comments from database
   const fetchComments = async () => {
-    let res = await makeAPICall("GET", `http://localhost:80/apidb/comments`);
+    let res = await makeAPICall("GET", `${apiprefix}/apidb/comments`);
     let status = res.status;
-
     let body = await res.json();
     if (status !== 200 && status !== 201) {
       updateMessage(body.error);
     } else {
-      // Object.keys(body).forEach(key => arr.push({name: key, value: body[key]}))
-      // updateCommentfromDB([...commentfromDB,  ...body]);
-      console.log("vol");
       commentToHTML(body.data);
-      // history.push('/');
     }
   };
 
   // converts the comment from API call to data that can be displayed in JSX
   const commentToHTML = commentarray => {
     let temparray = [];
-    for (let i = 0; i < commentarray.length; i++) {
+    let i = 0;
+    for (i = 0; i < commentarray.length; i++) {
       // console.log(commentarray[i]);
       temparray.push(
-        <Typography key={i} color="textPrimary" variant="body1">
+        <Typography key={i} id={i} color="textPrimary" variant="body1">
           {" "}
           {commentarray[i].username + " : " + commentarray[i].comment}{" "}
         </Typography>
       );
     }
-    console.log(temparray);
-    updateCommentfromDB(temparray);
+    if (i === commentarray.length) {
+      // console.log(temparray);
+      updateCommentfromDB(temparray);
+      let test = document.getElementById(i-1);
+      test.scrollIntoView();
+    }
+
   };
 
   // uploads comment to database
   const uploadComment = async comment => {
-    let res = await makeAPICall("POST", `${apiprefix}:8000/apidb/comments`, {
+    let res = await makeAPICall("POST", `${apiprefix}/apidb/comments`, {
       username: user.username,
       comment: comment
     });

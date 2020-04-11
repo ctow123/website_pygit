@@ -8,8 +8,6 @@ import { Card, CardActions, CardContent } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom'
 import { Redirect } from 'react-router';
-import { makeAPICall } from "../api/api.js";
-import {apiprefix } from "../api/apiprefix.js";
 import {createAccount} from "./fcns.js";
 
 const styles = theme => ({
@@ -38,8 +36,7 @@ const CreateAccount = ({ classes, ...props }) => {
 
     }, []); // the []) ensures hook only called on mount not every page refresh
 
-    let [values, setValues] = useState({ username: "", password: "" });
-    let [created, updateCreate] = useState(false);
+    let [values, setValues] = useState({ username: "", password: "" , email: ""});
     let [message, updateMessage] = useState(null);
     let history = useHistory();
 
@@ -48,17 +45,27 @@ const CreateAccount = ({ classes, ...props }) => {
       setValues({ ...values, [name]: value });
     };
 
-  let handleCreate = async (e) => {
-    e.preventDefault();
-    // check username/password restrictions on server side
-    let message = createAccount(values.username, 'email', values.password, false);
-    message.then(values => {
-      console.log(values);
-      updateMessage(values.body.error)
-    }, error => console.log(error));
-    // ,
+let handleCreate = async e => {
+  e.preventDefault();
+  // check username/password restrictions on server side
+  let message = createAccount(
+    values.username,
+    values.email,
+    values.password,
+    false
+  );
+  message.then(
+    values => {
+      if (values.status === 200 || values.status === 201) {
+        updateMessage(values.body.message);
+      } else {
+        updateMessage(values.body.error);
+      }
+    },
+    error => console.log(error)
+  );
+};
 
-  };
   return (
     <div className={`login tab`} style={{ backgroundColor: "white" }}>
       <Navgo {...props} />
@@ -80,6 +87,15 @@ const CreateAccount = ({ classes, ...props }) => {
             />
             <TextField
               type="text"
+              name="email"
+              label="email"
+              value={values.email}
+              fullWidth
+              margin="normal"
+              onChange={event => handleChange(event)}
+            />
+            <TextField
+              type="password"
               name="password"
               label="password"
               fullWidth
@@ -97,7 +113,6 @@ const CreateAccount = ({ classes, ...props }) => {
       <Card className={classes.centered}>
         <CardContent>
           <Typography color="error" variant="body1">
-            { created && 'Success' }
             { message }
           </Typography>
         </CardContent>

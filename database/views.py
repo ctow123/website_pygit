@@ -100,6 +100,7 @@ class AccountCreation(APIView):
                     return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({'error': 'invalid fields'}, status=400)
 
+# returns true if user exists, false otherwise
 def checkUserExists(username):
     try:
         user = LoginInfo.objects.get(username=username)

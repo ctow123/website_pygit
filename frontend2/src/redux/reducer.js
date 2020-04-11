@@ -1,7 +1,7 @@
 // actions are plain javascript objects, must have a type that is a string const
 // describing the action being performed
 import { makeAPICall } from "../api/api.js";
-import apiprefix from "../api/apiprefix.js";
+import {apiprefix} from "../api/apiprefix.js";
 import { parseJwt } from "../pages/fcns.js"
 
 const SET_LOGIN_PENDING = 'SET_LOGIN_PENDING';
@@ -20,14 +20,11 @@ export function login(username, password) {
     // console.log("in the tick ");
     let res = await makeAPICall(
       "POST",
-      `http://localhost:80/apidb/login`,
+      `${apiprefix}/apidb/login`,
       {'username':username, 'password':password}
     );
     let status = res.status
     let body = await res.json();
-    console.log(status);
-    console.log(body.message);
-    console.log(status !== 200);
     if(status !== 200){
       dispatch(setLoginPending(false));
       dispatch(setLoginError(body.message));

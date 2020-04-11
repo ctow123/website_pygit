@@ -33,13 +33,12 @@ const styles = theme => ({
     'margin-left':'20%',
     'margin-right': '20%',
     'text-align': 'center',
-    display:'grid'
+    display:'grid',
+
   }
 });
 
 const Welcome = ({ classes, ...props }) => {
-  console.log(props);
-
   // variable objects to store data retrieved from server
   let [data, updateData] = useState([]);
   let [list, updateList] = useState([]);
@@ -50,27 +49,16 @@ const Welcome = ({ classes, ...props }) => {
    * @param url - really the event is passed in */
   const getImage = async url => {
     url.preventDefault();
-    console.log(url.target);
     url = typeof url === "undefined" ? "" : url.target.innerHTML;
-    // let res = await makeAPICall(
-    //   "GET",
-    //   "http://127.0.0.1:8000/pics/bankwrupt.jpg"
-    // );
     let res = await makeAPICall(
       "GET",
-      `${apiprefix}/pics` + url
+      `${apiprefix}/pics/` + url
     );
-    console.log(res);
-    console.log(res.headers);
     let body = await res.blob();
-    // console.log(res);
-    console.log(body);
-    // console.log(res.status);
     if (res.status === 200) {
-      // console.log(body);
       updateData(body.message);
       const objectURL = URL.createObjectURL(body);
-      console.log(objectURL);
+      // console.log(objectURL);
       updateData(objectURL);
     }
   };
@@ -81,9 +69,6 @@ const Welcome = ({ classes, ...props }) => {
   const getImageList = async () => {
     let res = await makeAPICall("GET", `${apiprefix}/apidb/imagelist`);
     let body = await res.json();
-    console.log(res);
-    //console.log(body);
-    console.log(res.status);
     if (res.status === 200) {
       updateList(body.list);
     }
@@ -127,7 +112,6 @@ const Welcome = ({ classes, ...props }) => {
   };
 
   useEffect(() => {
-    //getImage();
     getImageList();
   }, []); // the []) ensures hook only called on mount not every page refresh
 
@@ -150,7 +134,7 @@ const Welcome = ({ classes, ...props }) => {
                 text={val}
                 onClick={getImage}
               >
-                {val}{" "}
+                {val}
               </Button>
             }
           </li>
@@ -163,7 +147,7 @@ const Welcome = ({ classes, ...props }) => {
         </CardContent>
       </Card>
 
-      <Button variant="contained" component="label" onChange={console.log('hi')} style={{left: '100vw', position: 'sticky', marginTop: '20px'}}>
+      <Button variant="contained" component="label" style={{left: '100vw', position: 'sticky', marginTop: '20px'}}>
         Upload File
         <input type="file" style={{ display: "none" }} />
       </Button>

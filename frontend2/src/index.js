@@ -4,6 +4,14 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+// from now ui kit
+import "./assets/css/now-ui-kit.css";
+ import 'bootstrap/dist/css/bootstrap.min.css';
+
+// import "assets/css/now-ui-kit.min.css";
+// import "assets/css/now-ui-kit.css.map";
+// import "./assets/demo/demo.css";
+
 // custom imports
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import { Provider } from 'react-redux';

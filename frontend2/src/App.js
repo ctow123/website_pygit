@@ -5,18 +5,19 @@ import "./App.css";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import Welcome from "./pages/main.js";
 import Login from "./pages/login.js";
-import FaceID from "./pages/faceid.js";
+import FaceID from "./pages/designport.js";
 import Comments from "./pages/comments.js";
 import CreateAccount from "./pages/createaccount.js";
 import YelpAddon from "./pages/yelp.js";
-import Aboutme from "./pages/aboutme.js";
+import Notes from "./pages/notesapp.js";
+import Aboutmenew from "./pages/aboutmeNEW.js";
 import NotFound from "./pages/NotFound.js";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 
 let App = props => {
   let [isDark, switchThemeFunc] = useState(false);
-  console.log(props);
+  // console.log(props);
   // console.log(localStorage.token);
   // console.log(typeof localStorage.token);
   useEffect(() => {}, []);
@@ -71,13 +72,13 @@ let App = props => {
             exact
             path="/aboutme"
             label="aboutme"
-            render={props => <Aboutme {...props} isAuthed={false} />}
+            render={props => <Aboutmenew {...props} isAuthed={false} />}
           />
           <Route
             exact
-            path="/stocks"
-            label="stocks"
-            render={props => <NotFound {...props} isAuthed={false} />}
+            path="/notes"
+            label="notes"
+            render={props => <Notes {...props} isAuthed={false} />}
           />
            <Route component={NotFound} />
         </Switch>

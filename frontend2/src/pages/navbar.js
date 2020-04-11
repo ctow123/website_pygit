@@ -5,9 +5,8 @@ import {Navbar,Nav, NavDropdown }from 'react-bootstrap'
 import {Form }from 'react-bootstrap'
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom'
-import { parseJwt } from "./fcns.js"
 import { useSelector } from 'react-redux'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navgo = ({...props}) => {
   const user = useSelector(state => state.user);
@@ -50,9 +49,9 @@ script2.src = "https://apis.google.com/js/client.js";
           <Nav.Link href="/login">Login</Nav.Link>
           <Nav.Link href="/comments">Comments</Nav.Link>
           <NavDropdown title="Other" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/stocks">Investments</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Dreams</NavDropdown.Item>
-            <NavDropdown.Item href="/yelpaddon">Yelp Beta addon</NavDropdown.Item>
+            <NavDropdown.Item href="/notes">Notes Beta</NavDropdown.Item>
+            <NavDropdown.Item href="/yelpaddon">Yelp Beta</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.4">Dreams</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="#action/3.4">Beta</NavDropdown.Item>
           </NavDropdown>
