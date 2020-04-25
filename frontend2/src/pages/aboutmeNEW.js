@@ -86,6 +86,9 @@ const ProfilePage = ({ classes, ...props }) => {
               surfing and occasionally making a short film
               with some friends. Twitter DMs are always open.
             </h5>
+            <p>Tech, software engineering, angel investing, venture capital</p>
+            <p>surfing, reading, making short videos, hiking</p>
+            <p>soccer, tennis, and running</p>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>

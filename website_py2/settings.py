@@ -105,17 +105,20 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
+        # 'ENFORCE_SCHEMA': True,
         'NAME': 'app-db-1',
-        # 'HOST' : 'mongodb://<dbuser>:<dbpassword>@ds259144.mlab.com:59144/<db-name>',
-       'USER' : 'superuser',
-       'PASSWORD' : 'qwe-34-vo'
-
-
+        'USERNAME': 'superuser',
+        'PASSWORD': 'qwe-34-vo',
+        'HOST': 'mongodb://superuser:qwe-34-vo@127.0.0.1:27017/admin',
+        'PORT': 27017,
+        'AUTH_SOURCE': 'admin',
+        'AUTH_MECHANISM': 'SCRAM-SHA-256',
         # 'OPTIONS': {
         #     'read_default_file': '/usr/local/etc/my.cnf',
         # },
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

@@ -69,12 +69,13 @@ const Login = ({ classes, currentUser, ...props }) => {
       }
     });
 
-    window["init"] = gapiinit();
+    // window["init"] = gapiinit();
     const script = document.createElement("script");
     script.src = "https://apis.google.com/js/platform.js?onload=init";
-    script.async = true;
-    script.defer = true;
+    // script.async = true;
+    // script.defer = true;
     document.body.appendChild(script);
+    window.init = gapiinit();
   }, []); // the []) ensures hook only called on mount not every page refresh
 
   const dispatch = useDispatch();

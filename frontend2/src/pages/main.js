@@ -1,9 +1,10 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
-
-//import Navbar from 'react-bootstrap/Navbar'
-import FormControl from "@material-ui/core/FormControl";
+import { Button, UncontrolledTooltip } from "reactstrap";
+import {Heading, Paragraph, TextContent} from "../components/Body/textStyles.js";
+import Layout from "../components/Body/Layout";
+import ProjectRow from "../components/Body/ProjectRow";
+import {SkillTable, SkillContent, HeadingBox} from "../components/Body/styles.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navgo from "./navbar.js";
 import { withStyles } from "@material-ui/core/styles";
@@ -19,8 +20,14 @@ const styles = theme => ({
     backgroundRepeat: "no-repeat"
   },
   bcg_img3: {
-    [theme.breakpoints.down('sm')]: {
-      backgroundImage: `url(${process.env.PUBLIC_URL + "/media/yosemite-mobile.jpg"})`,
+    [theme.breakpoints.down("sm")]: {
+      backgroundImage: `url(${process.env.PUBLIC_URL +
+        "/media/yosemite-mobile.jpg"})`,
+      height: "100vh",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat"
     },
     backgroundImage: `url(${process.env.PUBLIC_URL + "/media/surf2.jpg"})`,
     minHeight: 500,
@@ -31,8 +38,14 @@ const styles = theme => ({
     backgroundRepeat: "no-repeat"
   },
   bcg_img1: {
-    [theme.breakpoints.down('sm')]: {
-      backgroundImage: `url(${process.env.PUBLIC_URL + "/media/model3_iphone.jpg"})`,
+    [theme.breakpoints.down("sm")]: {
+      backgroundImage: `url(${process.env.PUBLIC_URL +
+        "/media/model3_iphone.jpg"})`,
+      height: "100vh",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat"
     },
     backgroundImage: `url(${process.env.PUBLIC_URL +
       "/media/redmountain.jpg"})`,
@@ -51,6 +64,19 @@ const styles = theme => ({
   }
 });
 
+
+
+function handleScroll(e) {
+  e.preventDefault();
+  let test = document.getElementById("projects");
+  let test2 = document.getElementById("skills");
+  if (e.target.text === " projects ") {
+    test.scrollIntoView({ behavior: "smooth" });
+  } else {
+    test2.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
   // console.log(props);
   return [
@@ -58,57 +84,139 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
       <Navgo />
     </div>,
     <div className={classes.bcg_img1}>
-      <section>
-        <img
-          style={{ display: "flex", margin: "auto", paddingTop: "50px" }}
-          width="100px"
-          src={process.env.PUBLIC_URL + "/media/Abstergo.jpg"}
-        />
-        <Typography align="center" variant="h5" gutterBottom>
-          Scroll down
-        </Typography>
-      </section>
+      <i
+        style={{
+          color: "white",
+          display: "flex",
+          paddingTop: "90vh",
+          position: "absolute",
+          left: "50%"
+        }}
+        class="fas fa-arrow-down fa-align-center fa-3x"
+      ></i>
     </div>,
     <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
-      <Typography align="center" variant="h5" gutterBottom>
-        Welcome to my Webpage{" "}
-      </Typography>
-      <Typography component="p">
-        Keep scrolling to see the parallax effect. This page contains some info{" "}
-        <Link to={`/aboutme`}>{"about me"}</Link>, my{" "}
-        <Link to={`/faceid`}>{"design portfolio"}</Link>, a place to leave{" "}
-        <Link to={`/comments`}>{"comments"}</Link>, and various small web apps
-        i'm continously working on{" "}
-      </Typography>
+      <HeadingBox style={{ marginTop: "10px" }}>
+        <Button
+          className="btn-round btn-icon"
+          color="default"
+          id="tooltip515203352"
+          size="lg"
+          href="https://twitter.com/ctow123"
+        >
+          <i className="fab fa-twitter"></i>
+        </Button>
+        <UncontrolledTooltip delay={0} target="tooltip515203352">
+          Follow me on Twitter
+        </UncontrolledTooltip>
+        <Button
+          className="btn-round btn-icon"
+          color="default"
+          id="tooltip340339231"
+          size="lg"
+          href="mailto:connor.towler@gmail.com"
+        >
+          <i className="fab fa-github"></i>
+        </Button>
+        <UncontrolledTooltip delay={0} target="tooltip340339231">
+          See My Github
+        </UncontrolledTooltip>
+        <Button
+          className="btn-round btn-icon"
+          color="default"
+          size="lg"
+          href="mailto:connor.towler@gmail.com"
+        >
+          <i className="fas fa-envelope fab"></i>
+        </Button>
+      </HeadingBox>
+      <Layout style={{ minHeight: "100px", marginTop: "0" }}>
+        <TextContent>
+          <Heading>Hey, I'm Connor and welcome to my website</Heading>
+          <Paragraph>
+            Keep scrolling to see the parallax effect (desktop only). This page
+            contains some info <Link to={`/aboutme`}>{"about me"}</Link>, my{" "}
+            <Link to={`/faceid`}>{"design portfolio"}</Link>, a place to leave{" "}
+            <Link to={`/comments`}>{"comments"}</Link>, various
+            <Link to={`#projects`} onClick={handleScroll}>
+              {" projects "}
+            </Link>
+            i'm continously working on, and some of my{" "}
+            <Link to={`/`} onClick={handleScroll}>
+              {" skills "}
+            </Link>{" "}
+          </Paragraph>
+        </TextContent>
+      </Layout>
     </div>,
     <div className={classes.bcg_img2} />,
-    <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
-      <section className={classes.bcg_img3} id="about">
-        <body>
-          <section>
-            <h1>Projects</h1>
-            <p>Yelp</p>
-            <p>Notes App</p>
-          </section>
-        </body>
-      </section>
-      <section />
-
-      <body>
-        <section>
-          <h1>Stuff I like</h1>
-          <p>Tech, software engineering, angel investing, venture capital</p>
-          <p>surfing, reading, making short videos, hiking</p>
-          <p>soccer, tennis, and running</p>
-        </section>
-      </body>
+    <div style={{ backgroundColor: "white" }}>
+      <Layout style={{ minHeight: "100px", marginTop: "0" }}>
+        <TextContent>
+          <Heading id={"projects"}>Projects: Finished and ongoing </Heading>
+        </TextContent>
+        <ProjectRow />
+      </Layout>
+    </div>,
+    <div className={classes.bcg_img3} />,
+    <div style={{ backgroundColor: "white" }}>
+      <Layout style={{ minHeight: "100px", marginTop: "0" }}>
+        <SkillContent>
+          <TextContent>
+            <Heading id={'skills'} >My Skills</Heading>
+          </TextContent>
+          <SkillTable>
+            <row>
+              <Paragraph>
+                <b> FrontEnd</b>
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> Javascript ES6
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> HTML & CSS
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> React
+              </Paragraph>
+            </row>
+            <row>
+              <Paragraph>
+                <b> BackEnd</b>
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> Django
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> Node
+              </Paragraph>
+            </row>
+            <row>
+              <Paragraph>
+                <b> Database</b>
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> MongoDB
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> SQL
+              </Paragraph>
+            </row>
+            <row>
+              <Paragraph>
+                <b> Misc</b>
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> Git
+              </Paragraph>
+              <Paragraph>
+                <span>&#9675;</span> Airflow, AWS
+              </Paragraph>
+            </row>
+          </SkillTable>
+        </SkillContent>
+      </Layout>
     </div>
   ];
 };
 export default withStyles(styles)(Welcome);
-
-//Welcome = withStyles(styles)(Welcome); // apply HOC
-// <Form inline>
-//   <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-//   <Button variant="outline-success">Search</Button>
-// </Form>

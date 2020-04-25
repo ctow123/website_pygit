@@ -12,6 +12,7 @@ import YelpAddon from "./pages/yelp.js";
 import Notes from "./pages/notesapp.js";
 import Aboutmenew from "./pages/aboutmeNEW.js";
 import NotFound from "./pages/NotFound.js";
+
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 
@@ -80,6 +81,7 @@ let App = props => {
             label="notes"
             render={props => <Notes {...props} isAuthed={false} />}
           />
+
            <Route component={NotFound} />
         </Switch>
 
