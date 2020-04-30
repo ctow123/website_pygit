@@ -84,6 +84,8 @@ const Notes = ({ classes, ...props }) => {
     // props.onSetText(inputValue);
     console.log('outside');
     setIsInputActive(false);
+    let test2 = document.getElementById("newNote");
+    test2.setAttribute("style", "border: 0;");
   }
 });
 
@@ -108,10 +110,10 @@ const Notes = ({ classes, ...props }) => {
           <Card className={classes.root} variant="outlined">
             <CardContent>
               <CardMaterial variant="outlined">
-                <CardContent      ref={inputRef}>
+                <CardContent             ref={inputRef}   >
                   <Input
                     aria-describedby="emailHelp"
-    
+
                     id="newNote"
                     placeholder="Enter email"
                     type="text"
