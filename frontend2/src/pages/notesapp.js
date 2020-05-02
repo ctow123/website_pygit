@@ -61,6 +61,10 @@ const Notes = ({ classes, ...props }) => {
   const [isInputActive, setIsInputActive] = React.useState(false);
   // focus the cursor in the input field on edit start
   React.useEffect(() => {
+  window.scrollTo(0, 0);
+  }, []);
+
+  React.useEffect(() => {
     if (isInputActive) {
       inputRef.current.focus();
     }

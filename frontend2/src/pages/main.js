@@ -11,6 +11,15 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   bcg_img2: {
+    [theme.breakpoints.down("sm")]: {
+      backgroundImage: `url(${process.env.PUBLIC_URL +
+        "/media/surf3.jpg"})`,
+      height: "100vh",
+      backgroundPosition: "center",
+      backgroundAttachment: "scroll",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat"
+    },
     backgroundImage: `url(${process.env.PUBLIC_URL + "/media/surf3.jpg"})`,
     minHeight: 500,
     height: "100vh",
@@ -25,7 +34,7 @@ const styles = theme => ({
         "/media/yosemite-mobile.jpg"})`,
       height: "100vh",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
+      backgroundAttachment: "scroll",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat"
     },
@@ -43,7 +52,7 @@ const styles = theme => ({
         "/media/model3_iphone.jpg"})`,
       height: "100vh",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
+      backgroundAttachment: "scroll",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat"
     },
@@ -88,7 +97,7 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
         style={{
           color: "white",
           display: "flex",
-          paddingTop: "90vh",
+          paddingTop: "85vh",
           position: "absolute",
           left: "50%"
         }}
@@ -96,7 +105,7 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
       ></i>
     </div>,
     <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
-      <HeadingBox style={{ marginTop: "10px" }}>
+      <HeadingBox style={{ paddingTop: "10px" }}>
         <Button
           className="btn-round btn-icon"
           color="default"

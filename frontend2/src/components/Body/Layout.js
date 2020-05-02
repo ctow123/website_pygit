@@ -13,8 +13,8 @@ const FadeOut = keyframes`
 
 const Layout = styled.div`
   min-height: 100vh;
-  padding: 20px;
-  margin: 25px auto;
+  padding: 40px;
+  margin: auto;
   opacity: 0;
   animation: ${FadeOut} 0.6s 0.3s ease-in-out forwards;
 
