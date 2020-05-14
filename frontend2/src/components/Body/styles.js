@@ -151,3 +151,21 @@ export const SkillTable = styled.div`
 export const SkillContent = styled.div`
   width: 100%;
 `;
+
+export const TagContainer = styled.div`
+ padding: 5px 10px;
+ background: darkgray;
+ font-weight: bolder;
+ border-radius: 30px;
+ color: white;
+ display: flex;
+ width: fit-content;
+ margin: 5px;
+`;
+
+export const Tag = styled.a`
+ color: white;
+ display: flex;
+ width: fit-content;
+ padding-right: 5px;
+`;

@@ -20,19 +20,17 @@ const Layout = styled.div`
 
   a {
     text-decoration: none;
-    color: black;
+    color: blue;
   }
 
   @media (min-width: ${breakpoints.tabletMin}) {
     max-width: 940px;
-    padding: 20px;
-    margin: 75px auto;
+    padding: 75px auto;
   }
 
   @media (min-width: ${breakpoints.desktopMin}) {
     max-width: 1200px;
-    padding: 20px;
-    margin: 75px auto;
+    padding: 75px auto;
   }
 `;
 
