@@ -6,10 +6,12 @@ let apiprefix =  `http://localhost:80`;
 let wsprefix = "ws://localhost:80";
 let prodapiprefix = `http://thenubes.ddns.net${process.env.PUBLIC_URL}`;
 let prodwsprefix = 'ws://thenubes.ddns.net';
+let notesendpoint = 'http://localhost:8100';
 module.exports = {
     apiprefix: apiprefix,
     wsprefix: wsprefix,
     prodapiprefix: prodapiprefix,
-    prodwsprefix: prodwsprefix
+    prodwsprefix: prodwsprefix,
+    notesendpoint: notesendpoint
 }
 // export default `http://localhost:8000`

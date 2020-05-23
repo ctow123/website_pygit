@@ -25,6 +25,9 @@ import DefaultFooter from "../components/Footers/DefaultFooter.js";
 const ProfilePage = ({ classes, ...props }) => {
   const [pills, setPills] = React.useState("2");
   React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  React.useEffect(() => {
     document.body.classList.add("profile-page");
     // cleanup called on page close
     return function cleanup() {

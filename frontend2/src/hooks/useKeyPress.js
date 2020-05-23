@@ -27,8 +27,9 @@ export default function useKeyPress(targetKey) {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // If pressed key is our target key then set to true
-  function downHandler({ key }) {
-    if (key === targetKey) {
+  function downHandler(e) {
+    if (e.key === targetKey && e.target.id === 'newNoteTitle') {
+      e.preventDefault();
       setKeyPressed(true);
     }
   }
@@ -41,7 +42,7 @@ export default function useKeyPress(targetKey) {
   };
 
   // Add event listeners
-  useEffect(() => {
+  useEffect((e) => {
     window.addEventListener('keydown', downHandler);
     window.addEventListener('keyup', upHandler);
     // Remove event listeners on cleanup

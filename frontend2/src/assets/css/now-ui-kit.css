@@ -3395,7 +3395,7 @@ a {
 a:hover,
 a:focus {
   color: #f96332;
-  text-decoration: none
+  text-decoration: none;
 }
 br {
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
@@ -8009,11 +8009,16 @@ textarea.note:active {
 .form-control.note:focus,
 .form-control.note:active {
   border: 1px solid #e3e3e3;
-
 }
-
 
 .form-control.note::-webkit-input-placeholder {
   color: #888888;
-opacity: 1;
+  opacity: 1;
+}
+
+/* Any device with className .mobilesearch below 1024px will not be displayed */
+@media only screen and (min-width: 500px) {
+  .notemobile {
+    display: none;
+  }
 }

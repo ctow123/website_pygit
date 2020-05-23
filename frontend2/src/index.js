@@ -5,8 +5,9 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 // from now ui kit
-import "./assets/css/now-ui-kit.css";
  import 'bootstrap/dist/css/bootstrap.min.css';
+import "./assets/css/now-ui-kit.css";
+
 
 // import "assets/css/now-ui-kit.min.css";
 // import "assets/css/now-ui-kit.css.map";
