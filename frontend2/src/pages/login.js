@@ -95,6 +95,7 @@ function gapiinit() {
     // profile.getImageUrl(); , profile.getName();
     async function listener(param) {
       let profile = GoogleAuth.currentUser.get().getBasicProfile();
+      console.log(profile);
       let res = await checkAccountCreated(profile.getEmail());
       if (res.body.created) {
         let returning = login(profile.getEmail(),profile.getId());

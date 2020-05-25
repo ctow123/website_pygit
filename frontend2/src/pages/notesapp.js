@@ -184,8 +184,8 @@ const Notes = ({ classes, ...props }) => {
       e.target.querySelector("input").id === "searchinput" ||
       e.target.querySelector("input").id === "searchinputmobile"
     ) {
-      getNotes(e.target.querySelector("input").value);
-      // updateSearch(e.target.querySelector("input").value);
+      // getNotes(e.target.querySelector("input").value);
+      updateSearch(e.target.querySelector("input").value);
     }
   }
 

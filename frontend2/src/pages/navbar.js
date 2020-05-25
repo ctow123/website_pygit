@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 // import 'bootstrap/dist/css/bootstrap.min.css';
+/* global gapi */
 
 const Navgo = ({...props}) => {
   const user = useSelector(state => state.user);
@@ -15,18 +16,51 @@ const Navgo = ({...props}) => {
 
   }, []); // the []) ensures hook only called on mount not every page refresh
 
+  /* handles the initialization of gapi for user auth. gets user name / email from google account and auths user that way*/
+  function gapiinit() {
+    gapi.load("auth2", function() {
+      /* Ready. Make a call to gapi.auth2.init or some other API */
+      // true is passed in via param on successful login, need to make user a new account based off google in our DB,
+      // or authenticate them if account already made aka theyve logged in with google before
+      // profile.getImageUrl(); , profile.getName();
+
+
+      window.gapi.auth2
+        .init({
+          clientId: "578271878997-gm7h69gce1v581nh834ka57h5kv3g81d"
+        })
+        .then(() => {
+          let GoogleAuth = window.gapi.auth2.getAuthInstance();
+          let profile = GoogleAuth.currentUser.get().getBasicProfile();
+          console.log(profile);
+
+          if (GoogleAuth.isSignedIn.get()) {
+            GoogleAuth.signOut().then(function () {
+              console.log('User signed out.');
+            });
+          } else {
+
+          }
+        });
+    });
+  }
+
+
+
   let logout = (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
     history.push('/');
+
     const script2 = document.createElement("script2");
-script2.src = "https://apis.google.com/js/client.js";
+script2.src = "https://apis.google.com/js/platform.js?onload=init";
           document.body.appendChild(script2);
  // GoogleAuth.signOut()
-    var auth2 = window.gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
+ window.init = gapiinit();
+    // var auth2 = window.gapi.auth2.getAuthInstance();
+    // auth2.signOut().then(function () {
+    //   console.log('User signed out.');
+    // });
 
     // force hard refresh
     window.location.href = `${process.env.PUBLIC_URL}/`;
