@@ -150,7 +150,7 @@ const Comments = ({ classes, ...props }) => {
 
   // react cant render objects so if using {commentfromDB} can't store json in there
   return (
-    <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
+    <div className={classes.root} style={{ backgroundColor: "white" }}>
       <Navgo />
       <Typography
         style={{ marginTop: "60px" }}

@@ -11,6 +11,7 @@ import useOnClickOutside from "../hooks/useOnClickOutside";
 import { Tag, TagContainer } from "./Body/styles.js";
 import { makeAPICall } from "../api/api.js";
 import { apiprefix, notesendpoint } from "../api/apiprefix.js";
+import Typography from "@material-ui/core/Typography";
 
 // this class requires certain field in the props
 // {title, text, tags, id } must all be defined by the props passed into this object
@@ -22,6 +23,7 @@ const Note = ({ classes, ...props }) => {
   let [tags, updateTags] = React.useState(props.tags);
   let [title, updateTitle] = React.useState(props.title);
   let [text, updateText] = React.useState(props.text);
+    let [saveres, updateSaveres] = React.useState('');
   var typingTimer;
     var typingTimer2;
   var doneTypingInterval = 3000; //time in ms, 5 second for example
@@ -102,6 +104,7 @@ const Note = ({ classes, ...props }) => {
       props.onSave({ body: body, status: status });
     } else {
       props.onSave({ body: body, status: status, title: props.title });
+      updateSaveres('saving...')
     }
   }
   catch(err){
@@ -154,6 +157,9 @@ const Note = ({ classes, ...props }) => {
   return (
     <div style={{ paddingTop: "20px" }}>
       <CardMaterial variant="outlined">
+      <Typography align="center" variant="body1">
+        {saveres}
+      </Typography>
         <CardContent>
         <Button style={{marginLeft: '85%'}}>
         <i className="fa fa-trash" ></i>

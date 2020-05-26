@@ -9,27 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom'
 import { Redirect } from 'react-router';
 import {createAccount} from "./fcns.js";
-
-const styles = theme => ({
-  centered: {
-    margin: 'auto', // https://learnlayout.com/max-width.html
-    'margin-bottom': '20px',
-    maxWidth: '600px'
-  },
-  centerChildren: {
-    display: 'flex',
-    justifyContent: "center"
-  },
-  MuiPaper: {
-    display: 'flex',
-    justifyContent: "center"
-  },
-  root: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  }
-});
+import {styles} from './styling.js'
 
 const CreateAccount = ({ classes, ...props }) => {
     useEffect(() => {
@@ -67,9 +47,9 @@ let handleCreate = async e => {
 };
 
   return (
-    <div className={`login tab`} style={{ backgroundColor: "white" }}>
-      <Navgo {...props} />
-      <Typography style={{'marginTop':'60px'}} align="center" variant="h5" gutterBottom>
+    <div className={classes.root} style={{ backgroundColor: "white" , minHeight: '100vh'}}>
+      <Navgo />
+      <Typography align="center" variant="h5" gutterBottom>
         Create an Account{" "}
       </Typography>
 

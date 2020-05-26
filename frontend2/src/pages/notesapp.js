@@ -234,9 +234,9 @@ const Notes = ({ classes, ...props }) => {
 
   function savehandling(params) {
     if (params.status !== 200 && params.status !== 201) {
-      updateSaveres(params.body.error);
+      // updateSaveres(params.body.error);
     } else {
-      updateSaveres(params.title + " saved");
+      // updateSaveres(params.title + " saved");
     }
   }
 

@@ -9,34 +9,9 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Card, CardActions, CardContent } from "@material-ui/core";
 import axios from 'axios';
-import { apiprefix } from '../api/apiprefix'
+import { apiprefix } from '../api/apiprefix';
+import {styles} from './styling.js'
 
-const styles = theme => ({
-  root: {
-    root2: {
-      background: "red"
-    },
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(2)
-  },
-
-  MuiButton: {
-    padding: 0
-  },
-  listitem:{
-    height: '45px',
-    'border-bottom': '1px solid #ddd',
-    'border-bottom-width': '1px',
-    'border-bottom-style': 'solid',
-    'border-bottom-color': 'rgb(221, 221, 221)',
-    'margin-left':'20%',
-    'margin-right': '20%',
-    'text-align': 'center',
-    display:'grid',
-
-  }
-});
 
 const Welcome = ({ classes, ...props }) => {
   // variable objects to store data retrieved from server
@@ -115,15 +90,13 @@ const Welcome = ({ classes, ...props }) => {
     getImageList();
   }, []); // the []) ensures hook only called on mount not every page refresh
 
-  return [
-    <div>
-      <Navgo />;
-    </div>,
-    <div className={classes.root} style={{ backgroundColor: "white" }}>
+  return (
+    <div className={classes.root} style={{ backgroundColor: "white", minHeight: '100vh' }}>
+      <Navgo/>
       <Typography align="center" variant="body1" gutterBottom>
         My design portfolio. A bunch of random things, i find aesthetically pleasing. click a name to see the picture. upload button disabled for now.
       </Typography>
-      <ul id="otis" style={{ 'list-style': "none" , 'height': '30vh', 'overflow': 'auto', padding: '0'}}>
+      <ul id="otis" style={{ 'listStyle': "none" , 'height': '30vh', 'overflow': 'auto', padding: '0'}}>
       {list.map((val, index) => {
         return (
           <li key={index} className={classes.listitem}>
@@ -153,6 +126,6 @@ const Welcome = ({ classes, ...props }) => {
       </Button>
 
     </div>
-  ];
+  );
 };
 export default withStyles(styles)(Welcome);

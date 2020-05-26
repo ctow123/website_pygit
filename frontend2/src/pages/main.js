@@ -89,10 +89,10 @@ function handleScroll(e) {
 const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
   // console.log(props);
   return [
-    <div>
+    <div key={'nav'}>
       <Navgo />
     </div>,
-    <div className={classes.bcg_img1}>
+    <div key={'bcg1'} className={classes.bcg_img1}>
       <i
         style={{
           color: "white",
@@ -101,10 +101,10 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
           position: "absolute",
           left: "50%"
         }}
-        class="fas fa-arrow-down fa-align-center fa-3x"
+        className="fas fa-arrow-down fa-align-center fa-3x"
       ></i>
     </div>,
-    <div className={`welcome tab`} style={{ backgroundColor: "white" }}>
+    <div key={'welcome'} className={`welcome tab`} style={{ backgroundColor: "white" }}>
       <HeadingBox style={{ paddingTop: "10px" }}>
         <Button
           className="btn-round btn-icon"
@@ -158,8 +158,8 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
         </TextContent>
       </Layout>
     </div>,
-    <div className={classes.bcg_img2} />,
-    <div style={{ backgroundColor: "white" }}>
+    <div key={'bcg2'} className={classes.bcg_img2} />,
+    <div key={'projects'} style={{ backgroundColor: "white" }}>
       <Layout style={{ minHeight: "100px", marginTop: "0" }}>
         <TextContent>
           <Heading id={"projects"}>Projects: Finished and ongoing </Heading>
@@ -167,8 +167,8 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
         <ProjectRow />
       </Layout>
     </div>,
-    <div className={classes.bcg_img3} />,
-    <div style={{ backgroundColor: "white" }}>
+    <div key={'bcg3'} className={classes.bcg_img3} />,
+    <div key={'skills'} style={{ backgroundColor: "white" }}>
       <Layout style={{ minHeight: "100px", marginTop: "0" }}>
         <SkillContent>
           <TextContent>

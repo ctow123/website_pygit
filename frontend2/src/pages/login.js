@@ -14,43 +14,10 @@ import { withRouter, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {createAccount,checkAccountCreated, parseJwt} from "./fcns.js";
 import {setUser} from '../redux/reducer.js'
+import {styles} from './styling.js'
 // to make eslint will treat gapi as a known global variable.
 /* global gapi */
 
-const styles = theme => ({
-  centered: {
-    margin: "auto", // https://learnlayout.com/max-width.html
-    "margin-bottom": "20px",
-    maxWidth: "600px"
-  },
-  centerChildren: {
-    display: "flex",
-    justifyContent: "center"
-  },
-  MuiPaper: {
-    display: "flex",
-    justifyContent: "center"
-  },
-  root: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
-  },
-  Applogo: {
-    animation: "App-logo-spin infinite 20s linear",
-    height: "40vmin",
-    "pointer-events": "none"
-  },
-  Appheader: {
-    "background-color": "#282c34",
-    display: "flex",
-    "flex-direction": "column",
-    "align-items": "center",
-    "justify-content": "center",
-    "font-size": `calc(10px + 2vmin)`,
-    color: "white"
-  }
-});
 
 const Login = ({ classes, currentUser, ...props }) => {
   const user = useSelector(state => state.user);
@@ -149,15 +116,13 @@ function gapiinit() {
   //   content="578271878997-ird9d986ok3qnktl1iup4l28oq1fdg95.apps.googleusercontent.com"
   // />
   return (
-    <div className={`login tab`} style={{ backgroundColor: "white" }}>
+    <div className={classes.root} style={{ backgroundColor: "white", minHeight: '100vh' }}>
       <MetaTags>
         <title>Algo X Login</title>
 
       </MetaTags>
-
-      <Navgo {...props} />
+      <Navgo />
       <Typography
-        style={{ marginTop: "60px" }}
         align="center"
         variant="h5"
         gutterBottom
