@@ -9,7 +9,8 @@ const styles = theme => ({
     ...theme.mixins.gutters(),
     paddingTop: '70px',
     paddingBottom: theme.spacing(2),
-    minHeight: '100vh'
+    minHeight: '100vh',
+    backgroundColor: 'white'
   },
 
   MuiButton: {

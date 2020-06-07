@@ -23,7 +23,7 @@ import Navgo from "./navbar.js";
 import { withStyles } from "@material-ui/core/styles";
 import Note from "../components/note.js";
 import { makeAPICall } from "../api/api.js";
-import { apiprefix, notesendpoint } from "../api/apiprefix.js";
+import { notesendpoint } from "../api/apiprefix.js";
 import {styles} from './styling.js'
 const { v4: uuidv4 } = require('uuid');
 /* conditions for note to be saved\
@@ -156,7 +156,6 @@ React.useEffect(() => {
       e.target.querySelector("input").id === "searchinput" ||
       e.target.querySelector("input").id === "searchinputmobile"
     ) {
-      // getNotes(e.target.querySelector("input").value);
       updateSearch(e.target.querySelector("input").value);
     }
   }

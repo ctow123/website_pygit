@@ -132,7 +132,6 @@ const Comments = ({ classes, ...props }) => {
     <div className={classes.root} style={{ backgroundColor: "white" }}>
       <Navgo />
       <Typography
-        style={{ marginTop: "60px" }}
         align="center"
         variant="h5"
         gutterBottom

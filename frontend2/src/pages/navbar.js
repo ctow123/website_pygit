@@ -74,6 +74,7 @@ const Navgo = ({ ...props }) => {
                 Notes Explained
               </NavDropdown.Item>
               <NavDropdown.Item href="/notes">Notes Beta</NavDropdown.Item>
+              <NavDropdown.Item href="/vis">Notes Viz</NavDropdown.Item>
               <NavDropdown.Item href="/yelpaddon">Yelp Beta</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">Dreams</NavDropdown.Item>
