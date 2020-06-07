@@ -13,9 +13,9 @@ function DefaultFooter() {
         <Container>
 
           <div className="copyright" id="copyright">
-            {new Date().getFullYear()}, Designed by{" "}
+            {new Date().getFullYear()},{" "}
 
-            Originally Coded by{" "}
+            inspiration from {" "}
             <a
               href="https://www.creative-tim.com?ref=nukr-default-footer"
               target="_blank"

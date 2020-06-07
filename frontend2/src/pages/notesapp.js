@@ -18,41 +18,31 @@ import {
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import useKeypress from "../hooks/useKeyPress";
 import { Tag, TagContainer } from "../components/Body/styles.js";
-import Grid from "@material-ui/core/Grid";
-import { Card as CardMaterial, CardContent, Button } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import { Card as CardMaterial, CardContent, Button, Typography, Grid } from "@material-ui/core";
 import Navgo from "./navbar.js";
 import { withStyles } from "@material-ui/core/styles";
 import Note from "../components/note.js";
 import { makeAPICall } from "../api/api.js";
 import { apiprefix, notesendpoint } from "../api/apiprefix.js";
+import {styles} from './styling.js'
 const { v4: uuidv4 } = require('uuid');
+/* conditions for note to be saved\
+1) a set interval after you stop typing in the title or text area
+2) you add or remove a tag
+3) on page close
+***if the title or text are empty on a new note dont save
+*/
 
-// conditions for note to be saved, you change the title and press enter or select outside the title box
-// you stop typing in the textbox for 5 seconds or you add or remove a tag
-// dont save if title and text are empty
-const styles = theme => ({
-  root: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
-  },
-  child: {
-    ...theme.mixins.gutters()
-  }
-});
 
 const Notes = ({ classes, ...props }) => {
   // console.log(props);
-  const [count, setCount] = React.useState(0);
   const titleRef = React.useRef(null);
   const isMounted = React.useRef(true);
   const firstSave = React.useRef(true);
   const makenoteID = React.useRef();
   const [plainTabs, setPlainTabs] = React.useState("1");
   const [isTitleActive, setIsTitleActive] = React.useState(false);
-  let [tags, updateTags] = React.useState(["hey"]);
+  let [tags, updateTags] = React.useState(["default tag"]);
   let [searchabletags, updateSearchabletags] = React.useState([]);
   let [notes, updateNotes] = React.useState([]);
   let [saveres, updateSaveres] = React.useState();
@@ -62,47 +52,50 @@ const Notes = ({ classes, ...props }) => {
   var typingTimer2; //timer identifier
   var doneTypingInterval = 4000; //time in ms, 5 second for example
 
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-    // on keyup, start the countdown, saves after 5 seconds of no typing
-    document.getElementById("newNoteText").addEventListener("keyup", () => {
-      clearTimeout(typingTimer);
-      if (document.getElementById("newNoteText").value) {
-        // eslint-disable-next-line
-        typingTimer = setTimeout(saveNote, doneTypingInterval, "text");
-      }
-    });
-    document.getElementById("newNoteTitle").addEventListener("keyup", () => {
-      clearTimeout(typingTimer2);
-      if (document.getElementById("newNoteTitle").value) {
-        // eslint-disable-next-line
-        typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
-      }
-    });
-    // fetching notes based on default start up tag.
-    // updateNotes(notes => [
-    //   ...notes,
-    //   {
-    //     title: "netflix",
-    //     text: "this will not work",
-    //     tags: ["reed", "marc"],
-    //     id: 90
-    //   }
-    // ]);
-    // updateNotes(notes => [
-    //   ...notes,
-    //   {
-    //     title: "upstarts",
-    //     text: "ride the wave",
-    //     tags: ["travis", "grenalt"],
-    //     id: 10
-    //   }
-    // ]);
-    //get list of tags searchable in the database
-    getSearchableTags();
+// save condition 1
+React.useEffect(() => {
+  window.scrollTo(0, 0);
+  // on keyup, start the countdown, saves after doneTypingInterval seconds of no typing
+  document.getElementById("newNoteText").addEventListener("keyup", () => {
+    clearTimeout(typingTimer);
+    if (document.getElementById("newNoteText").value) {
+      // eslint-disable-next-line
+      typingTimer = setTimeout(saveNote, doneTypingInterval, "text");
+    }
+  });
+  document.getElementById("newNoteTitle").addEventListener("keyup", () => {
+    clearTimeout(typingTimer2);
+    if (document.getElementById("newNoteTitle").value) {
+      // eslint-disable-next-line
+      typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
+    }
+  });
+  getSearchableTags();
+}, []);
 
+// save condition 2, use mounted to avoid run on page load
+React.useEffect(() => {
+  if (isMounted.current) {
+    isMounted.current = false;
+    return;
+  } else {
+    saveNote("tags");
+  }
+  // eslint-disable-next-line
+}, [tags]);
 
-  }, []);
+// save condition 3
+React.useEffect(() => {
+  const onbeforeunloadFn = () => {
+    saveNote("close");
+  };
+  window.addEventListener("beforeunload", onbeforeunloadFn);
+  // Clean up function on page close
+  return () => {
+    window.removeEventListener("beforeunload", onbeforeunloadFn);
+  };
+  // eslint-disable-next-line
+});
 
   // watch the Enter key presses, if enter is pressed in title box, switch to textbox
   React.useEffect(() => {
@@ -116,34 +109,22 @@ const Notes = ({ classes, ...props }) => {
     // eslint-disable-next-line
   }, [enter]);
 
-  // save the note when tags change
-  React.useEffect(() => {
-    if (isMounted.current) {
-      isMounted.current = false;
-      return;
-    } else {
-      saveNote("tags");
-    }
-    // eslint-disable-next-line
-  }, [tags]);
-
+// get notes based on search tag, this will run on page load for default tag
   React.useEffect(() => {
     getNotes(search);
     // eslint-disable-next-line
   }, [search]);
 
-  // save the note when page closes
-  React.useEffect(() => {
-    const onbeforeunloadFn = () => {
-      saveNote("close");
-    };
-    window.addEventListener("beforeunload", onbeforeunloadFn);
-    // Clean up function on page close
-    return () => {
-      window.removeEventListener("beforeunload", onbeforeunloadFn);
-    };
-    // eslint-disable-next-line
-  });
+
+  /*
+  makes title field active when clicked on
+  */
+  function handleNewNoteClick(e) {
+    e.preventDefault();
+    if (e.target.id === "newNoteTitle") {
+      setIsTitleActive(true);
+    }
+  }
 
   // makes title field inactive when other object is clicked on
   useOnClickOutside(titleRef, () => {
@@ -162,15 +143,6 @@ const Notes = ({ classes, ...props }) => {
     // test.setAttribute("style", "top: auto;display: block;left: auto;");
   }
 
-  /*
-  makes title field active when clicked on
-  */
-  function handleNewNoteClick(e) {
-    e.preventDefault();
-    if (e.target.id === "newNoteTitle") {
-      setIsTitleActive(true);
-    }
-  }
 
   /* handle tag and search submissions
    */
@@ -298,17 +270,11 @@ const Notes = ({ classes, ...props }) => {
 
   return (
     <>
+     <div className={classes.root} style={{ backgroundColor: "gainsboro" }}>
       <Navgo />
-      <Typography
-        style={{ marginTop: "70px" }}
-        align="center"
-        variant="h5"
-        gutterBottom
-      ></Typography>
       <Grid
         container
         spacing={3}
-        style={{ minHeight: "95vh", backgroundColor: "gainsboro" }}
       >
         <Grid item xs={12} sm={8}>
           <form onSubmit={e => handleSubmit(e)}>
@@ -326,7 +292,7 @@ const Notes = ({ classes, ...props }) => {
               }}
             ></Input>
           </form>
-          <Card className={classes.root} variant="outlined">
+          <Card  variant="outlined">
             <Typography align="center" variant="body1">
               {saveres}
             </Typography>
@@ -391,6 +357,7 @@ const Notes = ({ classes, ...props }) => {
         <Grid item xs={12} sm={4}>
           <form onSubmit={e => handleSubmit(e)}>
             <Input
+            className='notedesktop'
               aria-describedby="searchinput"
               id="searchinput"
               placeholder="Search by Tag"
@@ -497,6 +464,7 @@ const Notes = ({ classes, ...props }) => {
           </Card>
         </Grid>
       </Grid>
+      </div>
     </>
   );
 };

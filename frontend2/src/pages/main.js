@@ -80,7 +80,7 @@ function handleScroll(e) {
   let test = document.getElementById("projects");
   let test2 = document.getElementById("skills");
   if (e.target.text === " projects ") {
-    test.scrollIntoView({ behavior: "smooth" });
+    test.scrollIntoView({ behavior: "smooth"});
   } else {
     test2.scrollIntoView({ behavior: "smooth" });
   }
@@ -123,7 +123,7 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
           color="default"
           id="tooltip340339231"
           size="lg"
-          href="mailto:connor.towler@gmail.com"
+          href="https://github.com/ctow123"
         >
           <i className="fab fa-github"></i>
         </Button>
@@ -133,11 +133,15 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
         <Button
           className="btn-round btn-icon"
           color="default"
+          id='emailbutton'
           size="lg"
           href="mailto:connor.towler@gmail.com"
         >
           <i className="fas fa-envelope fab"></i>
         </Button>
+        <UncontrolledTooltip delay={0} target="emailbutton">
+          Send me an email
+        </UncontrolledTooltip>
       </HeadingBox>
       <Layout style={{ minHeight: "100px", marginTop: "0" }}>
         <TextContent>

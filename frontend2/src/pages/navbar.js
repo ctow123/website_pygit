@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-// import 'bootstrap/dist/css/bootstrap.min.css';
 /* global gapi */
 
 const Navgo = ({ ...props }) => {
@@ -68,7 +65,7 @@ const Navgo = ({ ...props }) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="/aboutme">About Me</Nav.Link>
-            <Nav.Link href="/faceid">Design Portfolio</Nav.Link>
+            <Nav.Link href="/design">Design Portfolio</Nav.Link>
             <Nav.Link href="/notes">Notes</Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link href="/comments">Comments</Nav.Link>

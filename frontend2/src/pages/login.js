@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import "bootstrap/dist/css/bootstrap.min.css";
+import {Button, TextField} from "@material-ui/core";
 import Navgo from "./navbar.js";
-import TextField from "@material-ui/core/TextField";
 import { Card, CardActions, CardContent } from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
 import MetaTags from "react-meta-tags";
-import { login, setLoginError } from "../redux/reducer";
-import { withRouter, useHistory } from "react-router-dom";
+import { login, setLoginError, setUser } from "../redux/reducer";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {createAccount,checkAccountCreated, parseJwt} from "./fcns.js";
-import {setUser} from '../redux/reducer.js'
 import {styles} from './styling.js'
 // to make eslint will treat gapi as a known global variable.
 /* global gapi */
@@ -36,7 +32,6 @@ const Login = ({ classes, currentUser, ...props }) => {
       }
     });
 
-    // window["init"] = gapiinit();
     const script = document.createElement("script");
     script.src = "https://apis.google.com/js/platform.js?onload=init";
     // script.async = true;
@@ -111,10 +106,6 @@ function gapiinit() {
     returning(dispatch);
   };
 
-  // <meta
-  //   name="google-signin-client_id"
-  //   content="578271878997-ird9d986ok3qnktl1iup4l28oq1fdg95.apps.googleusercontent.com"
-  // />
   return (
     <div className={classes.root} style={{ backgroundColor: "white", minHeight: '100vh' }}>
       <MetaTags>

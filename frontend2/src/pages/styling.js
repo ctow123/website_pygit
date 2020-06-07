@@ -1,13 +1,15 @@
-
+// uses material-ui styles to create classes for styling certain html components
 
 const styles = theme => ({
+  // padding top will provide spacing for the navigation bar
   root: {
     root2: {
       background: "red"
     },
     ...theme.mixins.gutters(),
-    paddingTop: '65px',
-    paddingBottom: theme.spacing(2)
+    paddingTop: '70px',
+    paddingBottom: theme.spacing(2),
+    minHeight: '100vh'
   },
 
   MuiButton: {

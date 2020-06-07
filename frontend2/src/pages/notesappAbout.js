@@ -5,8 +5,7 @@ import React from "react";
 import Layout from "../components/Body/Layout";
 import styled from "styled-components";
 import { breakpoints } from "../components/Body/Media.js";
-
-// import '../index.css';
+import {Heading, Paragraph, TextContent, CenterText} from "../components/Body/textStyles.js";
 import decore1 from "../assets/img/bg4.jpg";
 import decore2 from "../assets/img/bg4.jpg";
 import decore3 from "../assets/img/bg4.jpg";
@@ -16,46 +15,8 @@ import ForecastLogic from "../assets/img/bg4.jpg";
 import ForecastComp from "../assets/img/bg4.jpg";
 import decoreStack from "../assets/img/bg4.jpg";
 // https://www.juliacodes.com/Decore
-const Paragraph = styled.p`
-  margin: 50px 0;
-  color: #696969;
-  width: 100%;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 184.69%;
-  letter-spacing: 0.03em;
 
-  a {
-    border-bottom: 2px solid transparent;
-    transition: 0.3s;
 
-    :hover {
-      border-bottom: 2px solid black;
-    }
-  }
-`;
-
-const Heading = styled.h1`
-  width: 100%;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 33px;
-  line-height: 129.69%;
-  letter-spacing: 0.03em;
-  transform: translateY(30px);
-  opacity: 0;
-  animation: ${Float} 1s 0.2s forwards;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    font-size: 40px;
-    transform: scale(1);
-  }
-
-  > span {
-    color: #b4e0e8;
-  }
-`;
 
 const Container = styled.div`
   margin: 50px 0;
@@ -72,22 +33,6 @@ const Container = styled.div`
   }
 `;
 
-const TextContent = styled.div`
-  max-width: 800px;
-  margin-top: 40px;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    margin-top: 100px;
-  }
-
-  :nth-child(1) > ${Heading} {
-    font-size: 40px;
-
-    @media (min-width: ${breakpoints.mobileMax}) {
-      font-size: 60px;
-    }
-  }
-`;
 
 const ProjectTable = styled.table`
   width: 100%;
@@ -216,63 +161,8 @@ const RightImage = styled.div`
   }
 `;
 
-const CenterText = styled.div`
-  width: 100%;
-  padding: 50px 0;
-  text-align: center;
 
-  ${Paragraph} {
-    max-width: 700px;
-    margin: 30px auto;
-  }
-`;
 
-const DuoLinks = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  margin: 0 auto;
-  margin-bottom: 150px;
-  flex-wrap: wrap;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    flex-wrap: nowrap;
-    width: 60%;
-  }
-`;
-
-const LinkLeft = styled.div`
-  width: 100%;
-  margin: 10px auto;
-  text-align: center;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    width: unset;
-    text-align: left;
-    margin: unset;
-  }
-`;
-const LinkRight = styled(LinkLeft)``;
-
-const ProjectLink = styled(Paragraph)`
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 163.19%;
-  display: inline;
-  color: black;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  border-bottom: 2px solid white;
-  transition: border-bottom 0.2s;
-
-  :hover {
-    border-bottom: 2px solid orange;
-  }
-
-  span {
-    font-size: 20px;
-  }
-`;
 // <Helmet
 //     title='Julia Johnson - Coffee By Benjamin'
 //     meta={[
@@ -297,7 +187,7 @@ function Decore() {
       <Layout>
         <Container>
           <TextContent>
-            <Heading>Decore</Heading>
+            <Heading>Networked Notes</Heading>
             <Paragraph>
               <a
                 style={{

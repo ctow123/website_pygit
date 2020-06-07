@@ -56,3 +56,14 @@ export const Paragraph = styled.p`
         }
     }
 `;
+
+export const CenterText = styled.div`
+  width: 100%;
+  padding: 50px 0;
+  text-align: center;
+
+  ${Paragraph} {
+    max-width: 700px;
+    margin: 30px auto;
+  }
+`;

@@ -5,13 +5,14 @@ import "./App.css";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import Welcome from "./pages/main.js";
 import Login from "./pages/login.js";
-import FaceID from "./pages/designport.js";
+import Design from "./pages/designport.js";
 import Comments from "./pages/comments.js";
 import CreateAccount from "./pages/createaccount.js";
 import YelpAddon from "./pages/yelp.js";
 import Notes from "./pages/notesapp.js";
 import Aboutmenew from "./pages/aboutmeNEW.js";
 import NotFound from "./pages/NotFound.js";
+import Vis from "./pages/visualization.js";
 import Decore from "./pages/notesappAbout.js";
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -48,9 +49,9 @@ let App = props => {
           />
           <Route
             exact
-            path="/faceid"
-            label="faceid"
-            render={props => <FaceID {...props} isAuthed={true} />}
+            path="/design"
+            label="design"
+            render={props => <Design {...props} isAuthed={true} />}
           />
           <Route
             exact
@@ -87,6 +88,12 @@ let App = props => {
             path="/notesexplained"
             label="notesexplained"
             render={props => <Decore {...props} isAuthed={false} />}
+          />
+          <Route
+            exact
+            path="/vis"
+            label="vis"
+            render={props => <Vis {...props} isAuthed={false} />}
           />
 
            <Route component={NotFound} />

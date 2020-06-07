@@ -8016,9 +8016,15 @@ textarea.note:active {
   opacity: 1;
 }
 
-/* Any device with className .mobilesearch below 1024px will not be displayed */
+/* Any device with className .notesmobile below 500px will not be displayed */
 @media only screen and (min-width: 500px) {
   .notemobile {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 499px) {
+  .notedesktop {
     display: none;
   }
 }

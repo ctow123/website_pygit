@@ -1,33 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
+import {Button, TextField }from "@material-ui/core/";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navgo from "./navbar.js";
-import TextField from "@material-ui/core/TextField";
 import { Card, CardActions, CardContent } from "@material-ui/core";
-import LinearProgress from "@material-ui/core/LinearProgress";
-
 import { withStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { makeAPICall } from "../api/api.js";
 import { apiprefix, wsprefix } from "../api/apiprefix.js";
-
-const styles = theme => ({
-  centered: {
-    margin: "auto", // https://learnlayout.com/max-width.html
-    "margin-bottom": "20px",
-    maxWidth: "600px"
-  },
-  centerChildren: {
-    justifyContent: "center"
-  },
-  root: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
-  }
-});
+import {styles} from './styling.js'
 
 const Comments = ({ classes, ...props }) => {
   const user = useSelector(state => state.user);
@@ -37,8 +18,6 @@ const Comments = ({ classes, ...props }) => {
 
 // useref keeps same object between renders
   const socket = useRef(null);
-  const sectionRef = useRef(null);
-
   // comments should automatically load and update as new ones are added, need websockets
   useEffect(() => {
     socket.current = new WebSocket(`${wsprefix}/apidb/ws/chat`);
@@ -53,7 +32,7 @@ const Comments = ({ classes, ...props }) => {
           key={generateKey(newcomment.username)}
           color="textPrimary"
           variant="body1"
-          ref={sectionRef}
+
           id={newcomment.comment}
         >
           {" "}
@@ -190,7 +169,6 @@ const Comments = ({ classes, ...props }) => {
       >
         <CardContent>{commentfromDB}</CardContent>
       </Card>
-      ;
     </div>
   );
 };

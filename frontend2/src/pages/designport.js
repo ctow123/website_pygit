@@ -13,7 +13,7 @@ import { apiprefix } from '../api/apiprefix';
 import {styles} from './styling.js'
 
 
-const Welcome = ({ classes, ...props }) => {
+const Design = ({ classes, ...props }) => {
   // variable objects to store data retrieved from server
   let [data, updateData] = useState([]);
   let [list, updateList] = useState([]);
@@ -128,4 +128,4 @@ const Welcome = ({ classes, ...props }) => {
     </div>
   );
 };
-export default withStyles(styles)(Welcome);
+export default withStyles(styles)(Design);

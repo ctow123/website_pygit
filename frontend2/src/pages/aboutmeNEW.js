@@ -59,7 +59,7 @@ const ProfilePage = ({ classes, ...props }) => {
                 color="default"
                 id="tooltip340339231"
                 size="lg"
-                href="mailto:connor.towler@gmail.com"
+                href="https://github.com/ctow123"
               >
                 <i className="fab fa-github"></i>
               </Button>
@@ -69,11 +69,15 @@ const ProfilePage = ({ classes, ...props }) => {
               <Button
                 className="btn-round btn-icon"
                 color="default"
+                id='emailbutton'
                 size="lg"
                 href="mailto:connor.towler@gmail.com"
               >
                 <i className="fas fa-envelope fab"></i>
               </Button>
+              <UncontrolledTooltip delay={0} target="emailbutton">
+                Send me an email
+              </UncontrolledTooltip>
             </div>
             <h3 className="title">About me</h3>
             <h5
@@ -83,15 +87,16 @@ const ProfilePage = ({ classes, ...props }) => {
               Hi there, I'm Connor and I created a website mostly
               for fun and so people could learn a little about me. I love things around data, engineering, products, and growth.
               Currently, I'm a CS student at Virginia Tech.
-              However, most of my efforts are devoted to learning full stack development & investing
-              as I love building and learning about systems. Outside of CS related things,
-              I love investing (the angel & VC style), reading, playing tennis, hiking,
-              surfing and occasionally making a short film
-              with some friends. Twitter DMs are always open.
+              Currently am learning about full stack development & neural networks (BERT)
+              <br />
+              Business interests: Tech, software engineering, angel investing, venture capital
+              <br />
+              Hobbies: surfing, reading, making short videos, hiking
+              <br />
+              Favorite sports: soccer, tennis, and running
+              <br />
+              Twitter DMs are always open, all opinions there are my own and do not reflect the beliefs of my friends of employers
             </h5>
-            <p>Tech, software engineering, angel investing, venture capital</p>
-            <p>surfing, reading, making short videos, hiking</p>
-            <p>soccer, tennis, and running</p>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
@@ -150,10 +155,10 @@ const ProfilePage = ({ classes, ...props }) => {
                     <Typography variant="h5">🛠Principles</Typography>
 
                     <Typography>
-                      <b>Bias for action</b>
+                      <b>The Man in the Arena</b>
                       <br />
                       {
-                        "at the end of the day, all that matters is raw execution"
+                        "It is not the critic who counts; The credit belongs to the man who is actually in the arena, so that his place shall never be with those cold and timid souls who neither know victory nor defeat."
                       }
                       <br />
                       <b>Go for the Gold, Settle for the silver</b>
@@ -165,7 +170,7 @@ const ProfilePage = ({ classes, ...props }) => {
                       <b>Ignore the noise</b>
                       <br />
                       {
-                        "insanity is common place in crowds, follow your thoughts"
+                        "insanity is the most infectious disease that spreads exponentially throughout a crowd, follow what you know to be true"
                       }
                       <br />
                     </Typography>
@@ -231,7 +236,7 @@ const ProfilePage = ({ classes, ...props }) => {
 
             <Row>
               <Col className="ml-auto mr-auto" md="6">
-                <h4 className="title text-center">My Portfolio</h4>
+                <h4 className="title text-center">Pictures I've Taken</h4>
                 <div className="nav-align-center">
                   <Nav
                     className="nav-pills-info nav-pills-just-icons"
