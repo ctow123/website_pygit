@@ -15,3 +15,9 @@ module.exports = {
     notesendpoint: notesendpoint
 }
 // export default `http://localhost:8000`
+// PROD
+// let apiprefix =  `http://thenubes.ddns.net`;
+// let wsprefix = "ws://thenubes.ddns.net";
+// let prodapiprefix = `http://thenubes.ddns.net${process.env.PUBLIC_URL}`;
+// let prodwsprefix = 'ws://thenubes.ddns.net';
+// let notesendpoint = 'http://thenubes.ddns.net';

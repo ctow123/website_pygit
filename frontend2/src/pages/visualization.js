@@ -5,77 +5,150 @@ import { withStyles } from "@material-ui/core/styles";
 import { makeAPICall } from "../api/api.js";
 import { apiprefix, notesendpoint } from "../api/apiprefix.js";
 import { styles } from "./styling.js";
+import Fab from '@material-ui/core/Fab';
+import Graph from "react-graph-vis";
+// import Graph from 'vis-react';
 const { v4: uuidv4 } = require("uuid");
+
 
 const Viz = ({ classes, ...props }) => {
   // console.log(props);
   let [searchabletags, updateSearchabletags] = React.useState([]);
-  let [isDragging, updateDragging] = React.useState(false);
-  let [x, updateX] = React.useState(0);
-  let [xstart, updateXStart] = React.useState(0);
-  let [xmod, updateXMod] = React.useState(0);
-  let [y, updateY] = React.useState(0);
-  let [ystart, updateYStart] = React.useState(0);
-  let [ymod, updateYMod] = React.useState(0);
+  let [searchabletagsNum, updateSearchabletagsNum] = React.useState({});
+  let [pathWeight, updatePathWeight] = React.useState([]);
+ let [zoom, updateZoom] = React.useState(100);
+let [gstate, updateG] = React.useState({
+  graph : {
+    nodes : [
+      { id: 1, value: 2, label: "Algie" , color : 'rbga(120,32,14,1)'},
+      { id: 2, value: 31, label: "Alston" },
+      { id: 3, value: 12, label: "Barney" },
+      { id: 4, value: 16, label: "Coley" },
+      { id: 5, value: 17, label: "Grant" },
+      { id: 6, value: 15, label: "Langdon" },
+      { id: 7, value: 6, label: "Lee" },
+      { id: 8, value: 5, label: "Merlin" },
+      { id: 9, value: 30, label: "Mick" },
+      { id: 10, value: 18, label: "Tod" }
+    ],
+
+    // create connections between people
+    // value corresponds with the amount of contact between two people
+    edges : [
+      { from: 2, to: 8, value: 3 },
+      { from: 2, to: 9, value: 5 },
+      { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
+      { from: 4, to: 6, value: 100 },
+      { from: 5, to: 7, value: 2 },
+      { from: 4, to: 5, value: 1 },
+      { from: 9, to: 10, value: 2 },
+      { from: 2, to: 3, value: 6 },
+      { from: 3, to: 9, value: 4 },
+      { from: 5, to: 3, value: 1 },
+      { from: 2, to: 7, value: 4 }
+    ]
+
+  },
+
+  options : {
+     layout: {
+     randomSeed: 2
+   },
+     nodes: {
+       shape: 'dot',
+       scaling: {
+           customScalingFunction: function(min, max, total, value) {
+             return value / total;
+           },
+           min: 5,
+           max: 100
+         },
+     },
+     edges: {
+       color: {
+      color: "#D3D3D3",
+      highlight: "#797979",
+      hover: "#797979",
+      opacity: 1.0
+    },
+       arrows: {
+           to: { enabled: false, scaleFactor: 0, type: "arrow" },
+           middle: { enabled: false, scaleFactor: 0, type: "arrow" },
+           from: { enabled: false, scaleFactor: 0, type: "arrow" }
+         }
+     },
+
+     height: (window.innerHeight / 1.1).toString(),
+     interaction: {
+    hover: true,
+    hoverConnectedEdges: true,
+    // hoverEdges: true,
+    selectable: true,
+    selectConnectedEdges: false,
+    // BIG OPTIONS
+    zoomView: true,
+    dragView: true
+  },
+
+
+
+},
+
+    events : {
+     select: function(event) {
+       var { nodes, edges } = event;
+     },
+     hoverNode: function(event) {
+       console.log('evenontsnonotnsot');
+        // this.neighbourhoodHighlight(event, this.props.searchData);
+      },
+      click: function(event) {
+      // this.redirectToLearn(event, this.props.searchData);
+      console.log(event);
+    }
+  },
+  network: null
+})
+
   React.useEffect(() => {
-    // var c = document.getElementById("myCanvas");
-    // var ctx = c.getContext("2d");
-    // var coords = [[150, 50], [20, 85], [160, 95], [-10, 0]];
-    //
-    // ctx.beginPath();
-    // for (var i = 0; i < coords.length; i++) {
-    //   ctx.moveTo(coords[i][0], coords[i][1]);
-    //   ctx.arc(coords[i][0], coords[i][1], 20, 0, Math.PI * 2, true);
-    //   ctx.lineWidth = 4;
-    //   ctx.stroke();
-    // }
-  }, []);
+    var nodearray = []
+    searchabletags.forEach((tag, index)=> {nodearray.push({id: index, value: searchabletagsNum[tag], label: tag})})
+    updateG(gstate => ({
+      graph: {
+        nodes: nodearray,
+        edges: [...gstate.graph.edges]
+      },
+      options:{ ...gstate.options},
+      events: {...gstate.events},
+      network: gstate.network
+    }));
+
+  }, [searchabletags,searchabletagsNum]);
+
+
+  React.useEffect(() => {
+    var patharray = []
+    pathWeight.forEach((path, index)=> {
+
+      if(path.value > 0){
+      patharray.push({from: searchabletags.indexOf(path.key.split('][')[0]), to: searchabletags.indexOf(path.key.split('][')[1]), value: path.value})
+}
+    })
+    updateG(gstate => ({
+      graph: {
+        nodes:[...gstate.graph.nodes] ,
+        edges: patharray
+      },
+      options:{ ...gstate.options},
+      events: {...gstate.events},
+      network: gstate.network
+    }));
+  }, [pathWeight]);
 
   React.useEffect(() => {
     getSearchableTags();
+    getPathWeights();
   }, []);
-
-  React.useEffect(() => {
-    let svgbox = document.getElementById("testsvg");
-    svgbox.addEventListener("mousedown", handleMouseDown);
-    svgbox.addEventListener("mousemove", handleMouseMove);
-    svgbox.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      svgbox.removeEventListener("mousedown", handleMouseDown);
-      svgbox.removeEventListener("mousemove", handleMouseMove);
-      svgbox.removeEventListener("mouseup", handleMouseUp);
-    };
-  });
-
-  function handleMouseDown(e) {
-
-    // set the drag flag
-    updateXStart(e.pageX);
-    updateXMod(x);
-    updateYStart(e.pageY);
-    updateYMod(y);
-    updateDragging(true);
-  }
-
-  function handleMouseUp(e) {
-    // canMouseX=parseInt(e.clientX-offsetX);
-    // canMouseY=parseInt(e.clientY-offsetY);
-    // clear the drag flag
-    updateDragging(false);
-  }
-
-  function handleMouseMove(e) {
-    // if the drag flag is set, clear the canvas and draw the image
-    if (isDragging) {
-      // console.log(e.pageY);
-      // console.log(ystart);
-      // console.log(-1*(ystart-e.pageY));
-      updateX(xmod + (xstart - e.pageX) / 4);
-      updateY(ymod + (ystart - e.pageY) / 4);
-
-      // console.log('dragging');
-    }
-  }
 
   async function getSearchableTags() {
     let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList`);
@@ -84,65 +157,199 @@ const Viz = ({ classes, ...props }) => {
     // error
     if (status === 200) {
       updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
+      updateSearchabletagsNum(body.tagsCount);
     }
   }
 
-  // <div style={{ overflow: "hidden" }}>
-  //   <canvas
-  //     width="500"
-  //     height="500"
-  //     id="myCanvas"
-  //     style={{ width: "50vw", height: "50vh", border: "1px solid #000000" }}
-  //   ></canvas>
-  // </div>
-  return (
-    <div className={classes.root}>
-      <Navgo />
-      <svg id="testsvg" viewBox={`${x} ${y} 200 200`}>
-        <g fill="white" stroke="green" stroke-width="5">
-          <circle cx="40" cy="40" r="25" fill="yellow" />
-          <circle cx="60" cy="60" r="25" />
-        </g>
-        <g
-          fill="white"
-          stroke="Red"
-          stroke-width="5"
-          transform={`translate(0 45.5)`}
-        >
-          <circle cx="14" cy="60" r="25" />
-          <text  dx= '14' dy='60' fill='black' text-anchor="middle" stroke="#51c5cf" stroke-width="0px" style={{fontSize: '8px',fontFamily:'Helvetica Neue'}}> test</text>
-        </g>
-        {searchabletags.length
-          ? searchabletags.map((text, index) => (
-            <g
-              fill="white"
-              stroke="Red"
-              stroke-width="5"
-              key={index}
-            >
-              <circle cx={index*20+100} cy={30} r="10" />
-              <text  dx={index*20+100} dy={30} fill='black' text-anchor="middle" stroke="#51c5cf" stroke-width="0px" style={{fontSize: '8px',fontFamily:'Helvetica Neue'}}> {text}</text>
-            </g>
-            ))
-          : null}
-      </svg>
-      <div style={{ display: "flex" }}>
-        {searchabletags.length
-          ? searchabletags.map((text, index) => (
-            <g
-              fill="white"
-              stroke="Red"
-              stroke-width="5"
-              transform={`translate(0 45.5)`}
-              key={index}
-            >
-              <circle cx={index*5+20} cy={index*5+10} r="25" />
-              <text  dx= '14' dy='60' fill='black' text-anchor="middle" stroke="#51c5cf" stroke-width="0px" style={{fontSize: '8px',fontFamily:'Helvetica Neue'}}> test</text>
-            </g>
-            ))
-          : null}
-      </div>
-    </div>
-  );
+  async function getPathWeights() {
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights`);
+    let status = res.status;
+    let body = await res.json();
+    // error
+    if (status === 200) {
+      console.log(body.weights);
+      console.log(body.weights[0]['key'].split(']['));
+      updatePathWeight(body.weights);
+
+    }
+  }
+
+const handleClickOpen = (e, zm) => {
+  e.preventDefault();
+  if (zm === "plus") {
+    updateZoom(zoom - 10);
+    updateG(gstate => ({
+      graph: {
+        nodes: [...gstate.graph.nodes],
+        edges: [
+          { from: 2, to: 8, value: 3 },
+          { from: 2, to: 9, value: 5 },
+          { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
+          { from: 4, to: 6, value: 100 },
+          { from: 5, to: 7, value: 2 },
+          { from: 4, to: 5, value: 1 }
+        ]
+      },
+      options:{ ...gstate.options},
+      events: {...gstate.events},
+      network: gstate.network
+    }));
+  } else if (zm === "minus") {
+    updateZoom(zoom + 10);
+    console.log(searchabletags);
+    console.log(searchabletagsNum);
+    console.log(pathWeight);
+    console.log(gstate);
+  }
+};
+
+
+
+// const graph = {
+//   nodes : [
+//     { id: 1, value: 2, label: "Algie" , color : 'rbga(120,32,14,1)'},
+//     { id: 2, value: 31, label: "Alston" },
+//     { id: 3, value: 12, label: "Barney" },
+//     { id: 4, value: 16, label: "Coley" },
+//     { id: 5, value: 17, label: "Grant" },
+//     { id: 6, value: 15, label: "Langdon" },
+//     { id: 7, value: 6, label: "Lee" },
+//     { id: 8, value: 5, label: "Merlin" },
+//     { id: 9, value: 30, label: "Mick" },
+//     { id: 10, value: 18, label: "Tod" }
+//   ],
+//
+//   // create connections between people
+//   // value corresponds with the amount of contact between two people
+//   edges : [
+//     { from: 2, to: 8, value: 3 },
+//     { from: 2, to: 9, value: 5 },
+//     { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
+//     { from: 4, to: 6, value: 100 },
+//     { from: 5, to: 7, value: 2 },
+//     { from: 4, to: 5, value: 1 },
+//     { from: 9, to: 10, value: 2 },
+//     { from: 2, to: 3, value: 6 },
+//     { from: 3, to: 9, value: 4 },
+//     { from: 5, to: 3, value: 1 },
+//     { from: 2, to: 7, value: 4 }
+//   ]
+//
+//  };
+//
+//  const options = {
+//    layout: {
+//    randomSeed: 2
+//  },
+//    nodes: {
+//      shape: 'dot',
+//      scaling: {
+//          customScalingFunction: function(min, max, total, value) {
+//            return value / total;
+//          },
+//          min: 5,
+//          max: 100
+//        },
+//    },
+//    edges: {
+//      color: {
+//     color: "#D3D3D3",
+//     highlight: "#797979",
+//     hover: "#797979",
+//     opacity: 1.0
+//   },
+//      arrows: {
+//          to: { enabled: false, scaleFactor: 0, type: "arrow" },
+//          middle: { enabled: false, scaleFactor: 0, type: "arrow" },
+//          from: { enabled: false, scaleFactor: 0, type: "arrow" }
+//        }
+//    },
+//
+//    height: (window.innerHeight / 1.1).toString(),
+//    interaction: {
+//   hover: true,
+//   hoverConnectedEdges: true,
+//   // hoverEdges: true,
+//   selectable: true,
+//   selectConnectedEdges: false,
+//   // BIG OPTIONS
+//   zoomView: true,
+//   dragView: true
+// },
+//
+//
+//
+//  };
+//
+//  const events = {
+//    select: function(event) {
+//      var { nodes, edges } = event;
+//    },
+//    hoverNode: function(event) {
+//      console.log('evenontsnonotnsot');
+//       // this.neighbourhoodHighlight(event, this.props.searchData);
+//     },
+//     click: function(event) {
+//     // this.redirectToLearn(event, this.props.searchData);
+//     console.log(event);
+//   }
+//  };
+ // network.on( 'click', function(params) {
+ //     idnode = params.nodes;
+ //     idedge = params.edges;
+ // });
+ //
+ // function red() {
+ //     idnode2 = idnode;
+ //     nodes.update({id: idnode2, color: "red"});
+ // }
+ // console.log(getNetwork());
+ // style={style}
+ //        getNetwork={this.getNetwork}
+ //        getEdges={this.getEdges}
+ //        getNodes={this.getNodes}
+ //        vis={vis => (this.vis = vis)}
+return (
+  <div className={classes.root} >
+    <Navgo />
+    <Graph
+            graph={gstate.graph}
+            options={gstate.options}
+            events={gstate.events}
+            getNetwork={network => {
+        //  if you want access to vis.js network api you can set the state in a parent component using this property
+        updateG(gstate => ({
+          graph: {
+            nodes: [...gstate.graph.nodes],
+            edges: [...gstate.graph.edges]
+          },
+          options:{ ...gstate.options},
+          events: {...gstate.events},
+          network: network
+        }));
+      }}
+        />
+    <Fab
+      variant="extended"
+      size="small"
+      color="primary"
+      className={classes.fab}
+      onClick={event => handleClickOpen(event, 'plus')}
+
+    >
+      <i className="fa fa-plus" aria-hidden="true"></i>
+    </Fab>
+    <Fab
+      variant="extended"
+      size="small"
+      color="primary"
+      className={classes.fab2}
+      onClick={event => handleClickOpen(event, 'minus')}
+    >
+      <i className="fa fa-minus" aria-hidden="true"></i>
+    </Fab>
+  </div>
+);
+
 };
 export default withStyles(styles)(Viz);

@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 // this class requires certain field in the props
 // {title, text, tags, id } must all be defined by the props passed into this object
 const Note = ({ classes, ...props }) => {
-  console.log(props);
+  // console.log(props);
   const isMounted = React.useRef(true);
   const titleRef = React.useRef(null);
   const [isTitleActive, setIsTitleActive] = React.useState(false);
@@ -85,11 +85,17 @@ const Note = ({ classes, ...props }) => {
 
   // send note to server to save or update save with timestamp
   async function saveNote(type) {
+    let taglist = [];
+    let tago = document.getElementById("newNoteTagsList" + props.id).children;
+    for (var i = 0; i < tago.length; i++) {
+      taglist.push(tago[i].getElementsByTagName("a")[0].innerHTML);
+    }
+
     let notedata = {
       type: type,
       note: {      text: document.getElementById(`${"newNoteText" + props.id}`).value,
             title: document.getElementById(`${"newNoteTitle" + props.id}`).value,
-            tags: tags, dateupdated: Date.now()}
+            tags: taglist, dateupdated: Date.now()}
     };
     console.log(type, notedata);
     try{
@@ -194,7 +200,7 @@ const Note = ({ classes, ...props }) => {
               autoComplete="off"
             ></Input>
           </form>
-          <div id={"newNoteTagsList" + props.id} style={{ display: "flex" }}>
+          <div id={"newNoteTagsList" + props.id} style={{ display: "flex" , flexWrap: 'wrap'}}>
             {tags.length
               ? tags.map((text, index) => <TheTag key={index} text={text} />)
               : null}

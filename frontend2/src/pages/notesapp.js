@@ -18,6 +18,7 @@ import {
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import useKeypress from "../hooks/useKeyPress";
 import { Tag, TagContainer } from "../components/Body/styles.js";
+import Fab from '@material-ui/core/Fab';
 import { Card as CardMaterial, CardContent, Button, Typography, Grid } from "@material-ui/core";
 import Navgo from "./navbar.js";
 import { withStyles } from "@material-ui/core/styles";
@@ -25,6 +26,7 @@ import Note from "../components/note.js";
 import { makeAPICall } from "../api/api.js";
 import { notesendpoint } from "../api/apiprefix.js";
 import {styles} from './styling.js'
+import {getQueryStringParams} from "./fcns.js";
 const { v4: uuidv4 } = require('uuid');
 /* conditions for note to be saved\
 1) a set interval after you stop typing in the title or text area
@@ -36,6 +38,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const Notes = ({ classes, ...props }) => {
   // console.log(props);
+  // console.log(getQueryStringParams(props.location.search));
   const titleRef = React.useRef(null);
   const isMounted = React.useRef(true);
   const firstSave = React.useRef(true);
@@ -53,6 +56,7 @@ const Notes = ({ classes, ...props }) => {
   var doneTypingInterval = 4000; //time in ms, 5 second for example
 
 // save condition 1
+// problem is adding event listener on load and not putting [tags] so its not updating params w/ new info
 React.useEffect(() => {
   window.scrollTo(0, 0);
   // on keyup, start the countdown, saves after doneTypingInterval seconds of no typing
@@ -70,6 +74,10 @@ React.useEffect(() => {
       typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
     }
   });
+  // search query
+  if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
+    updateSearch(getQueryStringParams(props.location.search).tag)
+  }
   getSearchableTags();
 }, []);
 
@@ -160,48 +168,56 @@ React.useEffect(() => {
     }
   }
 
-  // send note to server to save or update
-  async function saveNote(type) {
-    let text = document.getElementById("newNoteText").value;
-    let title = document.getElementById("newNoteTitle").value;
-    let notedata = {
-      type: type,
-      note: { text: text, title: title, tags: tags, dateupdated: Date.now() }
-    };
-    console.log(type, notedata);
-    if (firstSave.current && ( text !== '' || title !== '')) {
-      firstSave.current = false;
-      let res = await makeAPICall(
-        "POST",
-        `${notesendpoint}/notesapp/makenote`,
-        notedata
-      );
-      let status = res.status;
-      let body = await res.json();
-      // error
-      if (status !== 200 && status !== 201) {
-        updateSaveres(body.error);
-      }
-      // success
-      else {
-        makenoteID.current = body.noteid;
-        return { noteid: body.noteid, message: body.message, status: status };
-      }
+// send note to server to save or update
+async function saveNote(type) {
+  console.log(tags);
+  let text = document.getElementById("newNoteText").value;
+  let title = document.getElementById("newNoteTitle").value;
+  let taglist = [];
+  let tago = document.getElementById("newNoteTagsList").children;
+  for (var i = 0; i < tago.length; i++) {
+    taglist.push(tago[i].getElementsByTagName("a")[0].innerHTML);
+  }
+
+  let notedata = {
+    type: type,
+    note: { text: text, title: title, tags: taglist, dateupdated: Date.now() }
+  };
+  console.log(type, notedata);
+  if (firstSave.current && (text !== "" || title !== "")) {
+    firstSave.current = false;
+    let res = await makeAPICall(
+      "POST",
+      `${notesendpoint}/notesapp/makenote`,
+      notedata
+    );
+    let status = res.status;
+    let body = await res.json();
+    // error
+    if (status !== 200 && status !== 201) {
+      updateSaveres(body.error);
+    }
+    // success
+    else {
+      makenoteID.current = body.noteid;
+      return { noteid: body.noteid, message: body.message, status: status };
+    }
+  } else {
+    let res = await makeAPICall(
+      "PUT",
+      `${notesendpoint}/notesapp/editnote/${makenoteID.current}`,
+      notedata
+    );
+    let status = res.status;
+    let body = await res.json();
+    if (status !== 200 && status !== 201) {
+      return { body: body, status: status };
     } else {
-      let res = await makeAPICall(
-        "PUT",
-        `${notesendpoint}/notesapp/editnote/${makenoteID.current}`,
-        notedata
-      );
-      let status = res.status;
-      let body = await res.json();
-      if (status !== 200 && status !== 201) {
-        return { body: body, status: status };
-      } else {
-        return { body: body, status: status };
-      }
+      return { body: body, status: status };
     }
   }
+}
+
 
   function savehandling(params) {
     if (params.status !== 200 && params.status !== 201) {
@@ -220,6 +236,16 @@ React.useEffect(() => {
       updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
     }
   }
+
+  // async function getTitlenDate() {
+  //   let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTitlesList`);
+  //   let status = res.status;
+  //   let body = await res.json();
+  //   // error
+  //   if (status === 200) {
+  //     updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
+  //   }
+  // }
 
   async function getNotes(searchterm) {
     let res = await makeAPICall("GET", `${notesendpoint}/notesapp/searchnotes?lookupBy=tag&lookupField=${searchterm}`);
@@ -262,6 +288,18 @@ React.useEffect(() => {
           >
             <i id={props.text} className="far fa-times-circle"></i>
           </Button>
+        </TagContainer>
+      </>
+    );
+  }
+
+  // realated tags
+  function RelatedTag(props) {
+
+    return (
+      <>
+        <TagContainer>
+          <Tag href={'/notes?tag=' + props.text}>{props.text}</Tag>
         </TagContainer>
       </>
     );
@@ -324,7 +362,7 @@ React.useEffect(() => {
                       autoComplete="off"
                     ></Input>
                   </form>
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: "flex", flexWrap: 'wrap' }} id='newNoteTagsList'>
                     {tags.length
                       ? tags.map((text, index) => (
                           <TheTag key={index} text={text} />
@@ -430,13 +468,13 @@ React.useEffect(() => {
               >
                 <TabPane tabId="plainTabs1">
                   <p>here are a list of tags you can search for</p>
-                  {searchabletags.length
-                    ? searchabletags.map((tag, index) => (
-                        <p key={tag+index}>{tag}
-                        </p>
-                      ))
-                    : null}
-
+                  <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                    {searchabletags.length
+                      ? searchabletags.map((tag, index) => (
+                          <RelatedTag key={tag+index} text={tag} />
+                        ))
+                      : null}
+                      </div>
                 </TabPane>
                 <TabPane tabId="plainTabs2">
                         <p>#valuations</p>
@@ -463,6 +501,17 @@ React.useEffect(() => {
           </Card>
         </Grid>
       </Grid>
+      <Fab
+        variant="extended"
+        size="small"
+        color="primary"
+        className={classes.fab}
+        onClick={event => {console.log(event)}}
+href={'/vis'}
+      >
+
+        <i className="fa fa-arrow-right" aria-hidden="true"> Visualize Thoughts</i>
+      </Fab>
       </div>
     </>
   );

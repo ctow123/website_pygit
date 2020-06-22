@@ -12,7 +12,16 @@ const styles = theme => ({
     minHeight: '100vh',
     backgroundColor: 'white'
   },
-
+  fab: {
+   position: 'fixed',
+   bottom: theme.spacing(2),
+   right: theme.spacing(2),
+ },
+ fab2: {
+  position: 'fixed',
+  bottom: theme.spacing(2),
+  right: theme.spacing(7),
+},
   MuiButton: {
     padding: 0
   },
