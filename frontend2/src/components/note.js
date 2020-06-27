@@ -127,6 +127,27 @@ const Note = ({ classes, ...props }) => {
     }
   }
 
+// need to pass id via on save to parent to remove it from view
+async function deleteNote(e) {
+  try {
+    let res = await makeAPICall(
+      "DELETE",
+      `${notesendpoint}/notesapp/deletenote/${props.id}`
+    );
+    let status = res.status;
+    let body = await res.json();
+    if (status !== 200) {
+      props.onSave({ body: body, status: status });
+    } else {
+      props.onSave({ body: body, status: status, title: props.title });
+      updateSaveres("deleting...");
+    }
+  } catch (err) {
+    props.onSave({ body: err.toString(), status: 400 });
+  }
+}
+
+
   // component for the Tag
   function TheTag(props) {
 
@@ -167,7 +188,8 @@ const Note = ({ classes, ...props }) => {
         {saveres}
       </Typography>
         <CardContent>
-        <Button style={{marginLeft: '85%'}}>
+        <Button style={{marginLeft: '85%'}}
+        onClick={e => deleteNote(e)}>
         <i className="fa fa-trash" ></i>
         </Button>
           <Input

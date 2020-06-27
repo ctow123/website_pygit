@@ -52,27 +52,32 @@ const Login = ({ classes, currentUser, ...props }) => {
 function gapiinit() {
   gapi.load("auth2", function() {
     /* Ready. Make a call to gapi.auth2.init or some other API */
-    // true is passed in via param on successful login, need to make user a new account based off google in our DB,
-    // or authenticate them if account already made aka theyve logged in with google before
-    // profile.getImageUrl(); , profile.getName();
+    // true is passed in via param on successful login
     async function listener(param) {
-      let profile = GoogleAuth.currentUser.get().getBasicProfile();
-      console.log(profile);
-      let res = await checkAccountCreated(profile.getEmail());
-      if (res.body.created) {
-        let returning = login(profile.getEmail(),profile.getId());
-        returning(dispatch);
+      if (param) {
+        let profile = GoogleAuth.currentUser.get().getBasicProfile();
+        let idtoken = window.gapi.auth2
+          .getAuthInstance()
+          .currentUser.get()
+          .getAuthResponse().id_token;
+        // console.log(window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token);
+        let res = await checkAccountCreated(profile.getEmail());
+        if (res.body.created) {
+          let returning = login(idtoken, "", true);
+          returning(dispatch);
+        } else {
+          let message = createAccount(idtoken, "", "", true);
+          message.then(
+            values => {
+              localStorage.token = values.body.authtoken;
+              dispatch(setUser(parseJwt(localStorage.token)));
+              dispatch(setLoginError("success"));
+            },
+            error => console.log(error)
+          );
+        }
       } else {
-        let message = createAccount(
-          profile.getEmail(),
-          profile.getEmail(),
-          profile.getId(),
-          true
-        );
-        message.then(values => {
-          localStorage.token = values.body.authtoken;
-          dispatch(setUser(parseJwt(localStorage.token)));
-        }, error => console.log(error));
+        dispatch(setLoginError("google api error"));
       }
     }
     let GoogleAuth;
@@ -82,14 +87,11 @@ function gapiinit() {
       })
       .then(() => {
         GoogleAuth = window.gapi.auth2.getAuthInstance();
-        if (GoogleAuth.isSignedIn.get()) {
-          dispatch(setLoginError("user already logged in"));
-        } else {
-          GoogleAuth.isSignedIn.listen(listener);
-        }
+        GoogleAuth.isSignedIn.listen(listener);
       });
   });
 }
+
 
 
   let handleChange = event => {
@@ -102,7 +104,7 @@ function gapiinit() {
   // on submission, takes username and password and dispatches the login action
   let handleSubmit = e => {
     e.preventDefault();
-    let returning = login(values.username, values.password);
+    let returning = login(values.username, values.password,false);
     returning(dispatch);
   };
 

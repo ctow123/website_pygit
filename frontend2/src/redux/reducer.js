@@ -12,7 +12,7 @@ const SET_USER = 'SET_USER';
 // action to send login request and dispatch our actions
 // action sets login states and then simulates API call
 // to initiate a dispatch pass it an action creator
-export function login(username, password) {
+export function login(username, password, fromgoogle) {
   return async dispatch => {
     dispatch(setLoginPending(true));
     dispatch(setLoginSuccess(false));
@@ -21,7 +21,7 @@ export function login(username, password) {
     let res = await makeAPICall(
       "POST",
       `${apiprefix}/apidb/login`,
-      {'username':username, 'password':password}
+      {'username':username, 'password':password, 'fromgoogle': fromgoogle}
     );
     let status = res.status
     let body = await res.json();

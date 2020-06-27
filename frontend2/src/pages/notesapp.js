@@ -87,7 +87,7 @@ React.useEffect(() => {
     isMounted.current = false;
     return;
   } else {
-    saveNote("tags");
+    saveNote("tag");
   }
   // eslint-disable-next-line
 }, [tags]);

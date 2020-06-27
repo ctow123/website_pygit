@@ -22,6 +22,11 @@ const styles = theme => ({
   bottom: theme.spacing(2),
   right: theme.spacing(7),
 },
+topRight: {
+ position: 'fixed',
+ top: theme.spacing(9),
+ right: theme.spacing(2),
+},
   MuiButton: {
     padding: 0
   },
