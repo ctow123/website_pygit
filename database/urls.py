@@ -11,7 +11,7 @@ def response_error_handler(request, title, year, exception=None):
 
 urlpatterns = [
     # ex: /polls/
-    path(r'login', LoginHandling.as_view(), name='login'),
+    path('login', LoginHandling.as_view(), name='login'),
     path(r'create', AccountCreation.as_view(), name='createaccount'),
     path('comments', Commentview.as_view(), name='comment'),
     path('yelpappAPI', YelpView.as_view(), name='yelpaddon'),

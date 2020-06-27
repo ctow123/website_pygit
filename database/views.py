@@ -22,22 +22,20 @@ import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
 from .forms import CommentForm
+from google.oauth2 import id_token
+from google.auth.transport import requests as grequests
 
 key = 'super secert key'
 logger = logging.getLogger(__name__)
 
-
+# handles identity managment and info, assumes request data has username, password, and fromgoogle (for google sign ins token in username field)
 class LoginHandling(APIView):
 
     def get(self, request, format=None):
         # queryset is select statement in SQL, objects access modelsmanager which returns the queryset
-        test = LoginInfo.objects.all()
-        # test = LoginInfo.objects.all().filter(username=?)
-        # test = LoginInfo.objects.get(username="admin")
-        data = test.values()[0]
-        print(test.values()[0])
-        print(data['id'])
-        print(type(data))
+        test2 = LoginInfo.objects.all()
+        test = LoginInfo.objects.all().filter(username="test")
+        # test = LoginInfo.objects.get(username="test")
         # cereal = LoginSerializer.transform(data3)
         data = {
             'name': 'Vitor',
@@ -46,59 +44,66 @@ class LoginHandling(APIView):
             'count': 28
         }
         # safe removes restriction that json must be in dictionary form
-        return JsonResponse([1, 2, 3, 4], safe=False)
+        return JsonResponse([1, 2, 3, 4], safe=False, status=200)
 
 # take in username, plain text password, salt, hash and store in DB
     def post(self, request, format=None):
-        # process_request(request)
+        # if settings.DEBUG:
+        #     process_request(request)
         try:
-            if 'username' in request.data and 'password' in request.data:
-                user = LoginInfo.objects.get(username=request.data['username'])
-                retrievedpassword = user.password.encode('utf-8')
-                givenpassword = request.data['password'].encode('utf-8')
-                if bcrypt.checkpw(givenpassword, retrievedpassword):
-                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
-                    ) + timedelta(hours=24)}, key, algorithm='HS256')
-                    if settings.DEBUG:
-                        print("It Matches!")
-                    return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
+            if request.data['fromgoogle']:
+                idinfo = id_token.verify_oauth2_token(request.data['username'], grequests.Request(), "578271878997-gm7h69gce1v581nh834ka57h5kv3g81d.apps.googleusercontent.com")
+                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                    return JsonResponse({'message': 'wrong issuer'},status=400)
+                encoded = jwt.encode({'username': idinfo['email'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
+                return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
             else:
-                if settings.DEBUG:
-                    print("It Does not Match")
-                return JsonResponse({'message': 'invalid login credentials'},status=400)
+                if checkUserANDPassword(request.data['username'],request.data['password'],request.data['fromgoogle']):
+                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
+                    ) + timedelta(hours=48)}, key, algorithm='HS256')
+                    return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
+                else:
+                    return JsonResponse({'message': 'invalid login credentials'},status=400)
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
 
-# passwords shouldn't be stored in plain text
+# passwords shouldn't be stored in plain text, assumes request data has username, password, and fromgoogle
 class AccountCreation(APIView):
     def get(self, request, format=None):
-        # print(dict(request.GET)['test'])
+        # print(request.GET.get('username'))
         try:
             if not checkUserExists(request.GET.get('username')):
                 return JsonResponse({'message': 'no user with this username', 'created': False}, status=200)
             else:
                 return JsonResponse({'message': 'username already taken', 'created': True}, status=200)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-        else:
-            return JsonResponse({'error': 'well something fucking broke'}, status=400)
+            return JsonResponse({'message': str(e)}, status=400)
+
 # using googleAPI sending email as username
     def post(self, request, format=None):
-        if 'username' in request.data and 'password' in request.data:
-            if request.data['username'] is not "" and request.data['password'] is not "":
-                try:
+        try:
+            if request.data['fromgoogle']:
+                idinfo = id_token.verify_oauth2_token(request.data['username'], grequests.Request(), "578271878997-gm7h69gce1v581nh834ka57h5kv3g81d.apps.googleusercontent.com")
+                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                    return JsonResponse({'message': 'wrong issuer'},status=400)
+                account = LoginInfo(username=idinfo['email'], note=Note(0,0), email=idinfo['email'], fromgoogle=True, googleid=idinfo['sub'])
+                account.save()
+                encoded = jwt.encode({'username': idinfo['email'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
+                return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
+            else:
+                if request.data['username'] is not "" and request.data['password'] is not "":
                     if not checkUserExists(request.data['username']):
                         hashedpass = bcrypt.hashpw(request.data['password'].encode('utf-8'), bcrypt.gensalt(7))
-                        account = LoginInfo(username=request.data['username'], password=hashedpass.decode('utf-8'), email=request.data['email'] if 'email' in request.data else "", fromgoogle=request.data['fromgoogle'] if 'fromgoogle' in request.data else False, pincode=1234)
+                        account = LoginInfo(username=request.data['username'], password=hashedpass.decode('utf-8'), note=Note(0,0), email=request.data['email'] if 'email' in request.data else "", fromgoogle=False, pincode=1234)
                         account.save()
                         encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
-                        ) + timedelta(hours=24)}, key, algorithm='HS256')
+                        ) + timedelta(hours=48)}, key, algorithm='HS256')
                         return JsonResponse({'message': 'account created','authtoken': encoded.decode('utf8')}, status=201)
                     else:
                         return JsonResponse({'error': 'username already taken'}, status=400)
-                except Exception as e:
-                    return JsonResponse({'error': str(e)}, status=400)
-        return JsonResponse({'error': 'invalid fields'}, status=400)
+            return JsonResponse({'error': 'invalid fields'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 # returns true if user exists, false otherwise
 def checkUserExists(username):
@@ -109,8 +114,14 @@ def checkUserExists(username):
     except LoginInfo.DoesNotExist:
         return False
     except Exception as e:
+        print(str(e))
         return False
 
+def checkUserANDPassword(usernamep, password, fromgoogle):
+        user = LoginInfo.objects.get(username=usernamep)
+        retrievedpassword = user.password.encode('utf-8')
+        givenpassword = password.encode('utf-8')
+        return bcrypt.checkpw(givenpassword, retrievedpassword) and not user.fromgoogle
 
 
 
