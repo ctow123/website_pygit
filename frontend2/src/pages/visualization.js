@@ -7,17 +7,20 @@ import { apiprefix, notesendpoint } from "../api/apiprefix.js";
 import { styles } from "./styling.js";
 import Fab from '@material-ui/core/Fab';
 import Graph from "react-graph-vis";
+import { useSelector } from "react-redux";
 // import Graph from 'vis-react';
 import {Button, Menu, MenuItem,ListItemText, Switch} from '@material-ui/core';
+var array = require('lodash/array');
 const { v4: uuidv4 } = require("uuid");
-
 
 const Viz = ({ classes, ...props }) => {
   // console.log(props);
-  let [searchabletags, updateSearchabletags] = React.useState([]);
-  let [searchabletagsNum, updateSearchabletagsNum] = React.useState({});
-  let [pathWeight, updatePathWeight] = React.useState([]);
- let [zoom, updateZoom] = React.useState(100);
+const user = useSelector(state => state.user.username);
+// {tag: {user: value}, tag: {user:value}}
+let [searchabletags, updateSearchabletags] = React.useState({});
+let [users, updateUsers] = React.useState([])
+// {path: {user: value}, path: {user:value}}
+let [pathWeight, updatePathWeight] = React.useState({});
 let [gstate, updateG] = React.useState({
   graph : {
     nodes : [
@@ -95,12 +98,13 @@ let [gstate, updateG] = React.useState({
 
 },
 
-    events : {
+  events : {
      select: function(event) {
        var { nodes, edges } = event;
      },
      hoverNode: function(event) {
        console.log('evenontsnonotnsot');
+       console.log(event.target);
         // this.neighbourhoodHighlight(event, this.props.searchData);
       },
       click: function(event) {
@@ -110,67 +114,134 @@ let [gstate, updateG] = React.useState({
   },
   network: null
 })
+let [state, setState] = React.useState({});
+const colors = ['#f54275','#42f56c','#f5c242']
 
-  React.useEffect(() => {
-    var nodearray = []
-    searchabletags.forEach((tag, index)=> {nodearray.push({id: index, value: searchabletagsNum[tag], label: tag})})
-    updateG(gstate => ({
-      graph: {
-        nodes: nodearray,
-        edges: [...gstate.graph.edges]
-      },
-      options:{ ...gstate.options},
-      events: {...gstate.events},
-      network: gstate.network
-    }));
+React.useEffect(() => {
+  var nodearray = [];
+  console.log(searchabletags);
+  for (var key in searchabletags) {
+    let value = 0
+    let color = Object.keys(searchabletags[key]).length === 1 ? users.indexOf(Object.keys(searchabletags[key])[0]) : 2
+    for (var tuser in searchabletags[key]) {
+      if(tuser === user){
+        value += (searchabletags[key])[tuser]
+      }
+      if(tuser !== user && state[tuser] === true){
+        value += (searchabletags[key])[tuser]
+      }
+    }
+    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: colors[color]} );
+  }
+  updateG(gstate => ({
+    graph: {
+      nodes: nodearray,
+      edges: [...gstate.graph.edges]
+    },
+    options: { ...gstate.options },
+    events: { ...gstate.events },
+    network: gstate.network
+  }));
+}, [searchabletags,state]);
 
-  }, [searchabletags,searchabletagsNum]);
 
 
-  React.useEffect(() => {
-    var patharray = []
-    pathWeight.forEach((path, index)=> {
+React.useEffect(() => {
+  var patharray = [];
+  for (var key in pathWeight) {
+    let value = 0
+      for (var tuser in pathWeight[key]) {
+        if(tuser === user){
+          value += (pathWeight[key])[tuser]
+        }
+        if(tuser !== user && state[tuser] === true){
+          value += (pathWeight[key])[tuser]
+        }
+      }
 
-      if(path.value > 0){
-      patharray.push({from: searchabletags.indexOf(path.key.split('][')[0]), to: searchabletags.indexOf(path.key.split('][')[1]), value: path.value})
-}
-    })
-    updateG(gstate => ({
-      graph: {
-        nodes:[...gstate.graph.nodes] ,
-        edges: patharray
-      },
-      options:{ ...gstate.options},
-      events: {...gstate.events},
-      network: gstate.network
-    }));
-  }, [pathWeight]);
+    patharray.push({from: key.split("][")[0], to: key.split("][")[1], value: value});
+  }
+  updateG(gstate => ({
+    graph: {
+      nodes: [...gstate.graph.nodes],
+      edges: patharray
+    },
+    options: { ...gstate.options },
+    events: { ...gstate.events },
+    network: gstate.network
+  }));
+}, [pathWeight,state]);
+
 
   React.useEffect(() => {
     getSearchableTags();
     getPathWeights();
+    getUsers();
   }, []);
 
-  async function getSearchableTags() {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList`);
+  async function getSearchableTags(username) {
+    let res;
+    if (typeof username !== 'undefined'){
+      res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList?username=${username}`);
+    }
+    else{
+      res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList`);
+    }
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
-      updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
-      updateSearchabletagsNum(body.tagsCount);
+      let tagsdict = {};
+      let localuser = typeof username !== 'undefined' ? username : user;
+      (body.tags).forEach((tag, i) => {
+        if (typeof searchabletags[tag] !== 'undefined'){
+          tagsdict[tag] = {...searchabletags[tag], [localuser]: body.tagsCount[tag]}
+        }else{
+          tagsdict[tag] = {[localuser]: body.tagsCount[tag]}
+        }
+      });
+      updateSearchabletags(searchabletags => ({...searchabletags, ...tagsdict}));
     }
   }
 
-  async function getPathWeights() {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights`);
+  async function getPathWeights(username) {
+    let res
+    if (typeof username !== 'undefined'){
+      res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights?username=${username}`);
+    }
+    else{
+      res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights`);
+    }
+
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
-      console.log(body.weights);
-      console.log(body.weights[0]['key'].split(']['));
-      updatePathWeight(body.weights);
+      let pathsdict = {};
+      let localuser = typeof username !== 'undefined' ? username : user;
+      for (var key in body.weights[0]){
+        if (typeof pathWeight[key] !== 'undefined'){
+          pathsdict[key] = {...pathWeight[key], [localuser]: (body.weights[0])[key]}
+        }else{
+          pathsdict[key] = {[localuser]: (body.weights[0])[key] }
+        }
+      }
+      updatePathWeight(pathWeight => ({...pathWeight, ...pathsdict}));
+
+    }
+  }
+  async function getUsers() {
+    let res = await makeAPICall("GET", `${apiprefix}/apidb/login`);
+    let status = res.status;
+    let body = await res.json();
+    // error
+    if (status === 200) {
+      body.forEach((loopuser, i) => {
+          setState(state => ( {[user]: false, ...state }))
+      });
+      array.remove(body,function(n) {return n === user;})
+      // body = body.slice(0,5)
+      updateUsers(body);
 
     }
   }
@@ -178,27 +249,25 @@ let [gstate, updateG] = React.useState({
 const handleClickOpen = (e, zm) => {
   e.preventDefault();
   if (zm === "plus") {
-    updateZoom(zoom - 10);
-    updateG(gstate => ({
-      graph: {
-        nodes: [...gstate.graph.nodes],
-        edges: [
-          { from: 2, to: 8, value: 3 },
-          { from: 2, to: 9, value: 5 },
-          { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
-          { from: 4, to: 6, value: 100 },
-          { from: 5, to: 7, value: 2 },
-          { from: 4, to: 5, value: 1 }
-        ]
-      },
-      options:{ ...gstate.options},
-      events: {...gstate.events},
-      network: gstate.network
-    }));
+    // cleaning all users from searchabletags and pathWeight that are not main user
+    // updateG(gstate => ({
+    //   graph: {
+    //     nodes: [...gstate.graph.nodes],
+    //     edges: [
+    //       { from: 2, to: 8, value: 3 },
+    //       { from: 2, to: 9, value: 5 },
+    //       { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
+    //       { from: 4, to: 6, value: 100 },
+    //       { from: 5, to: 7, value: 2 },
+    //       { from: 4, to: 5, value: 1 }
+    //     ]
+    //   },
+    //   options:{ ...gstate.options},
+    //   events: {...gstate.events},
+    //   network: gstate.network
+    // }));
   } else if (zm === "minus") {
-    updateZoom(zoom + 10);
     console.log(searchabletags);
-    console.log(searchabletagsNum);
     console.log(pathWeight);
     console.log(gstate);
   }
@@ -206,23 +275,6 @@ const handleClickOpen = (e, zm) => {
 
 
 
-// const graph = {
-//   nodes : [
-//     { id: 1, value: 2, label: "Algie" , color : 'rbga(120,32,14,1)'},
-//     { id: 2, value: 31, label: "Alston" },
-//     { id: 3, value: 12, label: "Barney" },
-//   ],
-//
-//   // create connections between people
-//   // value corresponds with the amount of contact between two people
-//   edges : [
-//     { from: 2, to: 8, value: 3 },
-//     { from: 2, to: 9, value: 5 },
-//     { from: 2, to: 10, value: 10 , chosen: true, color: '#797979'},
-//     { from: 4, to: 6, value: 100 },
-//   ]
-//
-//  };
 
 //  };
 //
@@ -241,6 +293,7 @@ const handleClickOpen = (e, zm) => {
  //        getEdges={this.getEdges}
  //        getNodes={this.getNodes}
  //        vis={vis => (this.vis = vis)}
+
   const [anchorEl, setAnchorEl] = React.useState(null);
  const handleClick = (event) => {
   setAnchorEl(event.currentTarget);
@@ -272,25 +325,22 @@ const StyledMenu = withStyles({
 const StyledMenuItem = withStyles((theme) => ({
   root: {
     // '&:focus': {
-    //   backgroundColor: theme.palette.primary.main,
-    //   '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+      // backgroundColor: theme.palette.primary.main,
         color: theme.palette.common.gray,
-    //   },
+
     // },
   },
 }))(MenuItem);
-const [state, setState] = React.useState({
-  checkedA: false,
-});
+
 
 const handleChange = (event) => {
-  if(state.checkedA){
-    console.log('true'
-    );
-  }
-  console.log(state.checkedA, 'before');
   setState({ ...state, [event.target.name]: event.target.checked });
-console.log(state.checkedA, 'after');
+  // if true update notes, if false remove
+  if(event.target.checked){
+    getSearchableTags(event.target.name)
+    getPathWeights(event.target.name)
+
+  }
 };
 
 return (
@@ -313,24 +363,24 @@ return (
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-
+        users={users}
       >
 
-      <StyledMenuItem>
+{users.map((user, index) => (
+  <StyledMenuItem       key={user+index}>
+    <ListItemText primary={user} />
+    <Switch
+      checked={state[user]}
+      onChange={handleChange}
+      color="primary"
+      name={user}
+      id="hey"
 
-<ListItemText primary="Sent mail" />
-<Switch
-       checked={state.checkedA}
-       onChange={handleChange}
-       color="primary"
-       name="checkedA"
+    />
+  </StyledMenuItem>
+)) }
 
-     />
-          </StyledMenuItem>
-          <StyledMenuItem>
 
-    <ListItemText primary="Sent mail" />
-              </StyledMenuItem>
       </StyledMenu>
     <Graph
             graph={gstate.graph}

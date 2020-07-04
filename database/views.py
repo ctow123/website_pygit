@@ -24,27 +24,78 @@ from django.conf import settings
 from .forms import CommentForm
 from google.oauth2 import id_token
 from google.auth.transport import requests as grequests
+from threading import Thread
+from datetime import datetime
+import time
+
+import concurrent.futures
+import urllib.request
+
+# URLS = ['http://www.foxnews.com/',
+#         'http://www.cnn.com/',
+#         'http://europe.wsj.com/',
+#         'http://www.bbc.co.uk/',
+#         'http://some-made-up-domain.com/']
+#
+# # Retrieve a single page and report the URL and contents
+# def load_url(url, timeout):
+#     with urllib.request.urlopen(url, timeout=timeout) as conn:
+#         return conn.read()
+#
+# # We can use a with statement to ensure threads are cleaned up promptly
+# with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+#     # Start the load operations and mark each future with its URL
+#     future_to_url = {executor.submit(load_url, url, 60): url for url in URLS}
+#     for future in concurrent.futures.as_completed(future_to_url):
+#         url = future_to_url[future]
+#         try:
+#             data = future.result()
+#         except Exception as exc:
+#             print('%r generated an exception: %s' % (url, exc))
+#         else:
+#             print('%r page is %d bytes' % (url, len(data)))
+
+class ProcessThread(Thread):
+    # passing in param inits a new thread, this method overrides Thread default init method
+    def __init__(self, name, token):
+        Thread.__init__(self)
+        self.name = name
+        self.token = token
+        self.started = datetime.now()
+
+    def run(self):
+        # time.sleep(3)
+        headers={'authorization': 'Bearer ' + str(self.token,'utf-8')}
+        titles = requests.get('http://thenubes.ddns.net/notesapp/getTitlesList', headers=headers)
+        tags = requests.get('http://thenubes.ddns.net/notesapp/getTagsList', headers=headers)
+
+        # update database
+        LoginInfo.objects.filter(username=self.name).update(note={'notecount': len(titles.json()['titles']), 'tagcount':len(tags.json()['tags'])})
+        finished = datetime.now()
+        duration = (self.started - finished).seconds
+        print("%s thread started at %s and finished at %s in %s seconds" % (self.name, self.started, finished, duration))
 
 key = 'super secert key'
 logger = logging.getLogger(__name__)
+
 
 # handles identity managment and info, assumes request data has username, password, and fromgoogle (for google sign ins token in username field)
 class LoginHandling(APIView):
 
     def get(self, request, format=None):
         # queryset is select statement in SQL, objects access modelsmanager which returns the queryset
-        test2 = LoginInfo.objects.all()
-        test = LoginInfo.objects.all().filter(username="test")
-        # test = LoginInfo.objects.get(username="test")
-        # cereal = LoginSerializer.transform(data3)
-        data = {
-            'name': 'Vitor',
-            'location': 'Finland',
-            'is_active': True,
-            'count': 28
-        }
-        # safe removes restriction that json must be in dictionary form
-        return JsonResponse([1, 2, 3, 4], safe=False, status=200)
+        try:
+            users =[]
+            note2 = Note(5,5)
+            note3 = Note(5,5)
+            test2 = LoginInfo.objects.filter(note__gte={'notecount': 5,'tagcount': 0}).filter(note__gte={'tagcount': 5,'notecount':0})
+            print(test2)
+            for userquery in test2:
+                users.append(userquery.username)
+            # safe removes restriction that json must be in dictionary form
+            return JsonResponse(users, safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=400)
 
 # take in username, plain text password, salt, hash and store in DB
     def post(self, request, format=None):
@@ -59,8 +110,9 @@ class LoginHandling(APIView):
                 return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
             else:
                 if checkUserANDPassword(request.data['username'],request.data['password'],request.data['fromgoogle']):
-                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now(
-                    ) + timedelta(hours=48)}, key, algorithm='HS256')
+                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
+                    my_thread = ProcessThread(request.data['username'], encoded)
+                    my_thread.start()
                     return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
                 else:
                     return JsonResponse({'message': 'invalid login credentials'},status=400)
