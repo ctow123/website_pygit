@@ -27,6 +27,11 @@ topRight: {
  top: theme.spacing(9),
  right: theme.spacing(2),
 },
+topLeft: {
+ position: 'fixed',
+ top: theme.spacing(9),
+ left: theme.spacing(2),
+},
   MuiButton: {
     padding: 0
   },

@@ -10,6 +10,10 @@ import Graph from "react-graph-vis";
 import { useSelector } from "react-redux";
 // import Graph from 'vis-react';
 import {Button, Menu, MenuItem,ListItemText, Switch} from '@material-ui/core';
+import {List,ListItem} from '@material-ui/core';
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 var array = require('lodash/array');
 const { v4: uuidv4 } = require("uuid");
 
@@ -115,23 +119,38 @@ let [gstate, updateG] = React.useState({
   network: null
 })
 let [state, setState] = React.useState({});
-const colors = ['#f54275','#42f56c','#f5c242']
+let [colors,updateColors] = React.useState([]);
+// const colors = ['#f54275','#42f56c','#f5c242']
+const multicolors = ['#417380']
+const defaultcolor = ['#add8e6']
 
 React.useEffect(() => {
-  var nodearray = [];
-  console.log(searchabletags);
+  let nodearray = [];
   for (var key in searchabletags) {
     let value = 0
-    let color = Object.keys(searchabletags[key]).length === 1 ? users.indexOf(Object.keys(searchabletags[key])[0]) : 2
+    let colornum = 0
+    let theuser;
     for (var tuser in searchabletags[key]) {
+      // logged in
       if(tuser === user){
         value += (searchabletags[key])[tuser]
+        colornum += 1
+        theuser = user
       }
       if(tuser !== user && state[tuser] === true){
         value += (searchabletags[key])[tuser]
+        colornum += 1
+        theuser = tuser
+      }
+      //not logged in
+      if(tuser === 'undefined'){
+        value += (searchabletags[key])[tuser]
+        colornum += 1
+        theuser = tuser
       }
     }
-    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: colors[color]} );
+    let color = colornum === 1 ? (users.indexOf(theuser) === -1 ?  defaultcolor[0] : colors[users.indexOf(theuser)] ): multicolors[0]
+    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: color} );
   }
   updateG(gstate => ({
     graph: {
@@ -173,6 +192,15 @@ React.useEffect(() => {
 }, [pathWeight,state]);
 
 
+React.useEffect(() => {
+  let colorarray = []
+  users.forEach((user, index) => {
+    colorarray.push('#' + Math.floor(Math.random()*16777215).toString(16))
+  });
+  updateColors(colorarray)
+
+}, [users]);
+
   React.useEffect(() => {
     getSearchableTags();
     getPathWeights();
@@ -191,6 +219,7 @@ React.useEffect(() => {
     let body = await res.json();
     // error
     if (status === 200) {
+      console.log(body);
       let tagsdict = {};
       let localuser = typeof username !== 'undefined' ? username : user;
       (body.tags).forEach((tag, i) => {
@@ -217,6 +246,7 @@ React.useEffect(() => {
     let body = await res.json();
     // error
     if (status === 200) {
+      console.log(body.weights);
       let pathsdict = {};
       let localuser = typeof username !== 'undefined' ? username : user;
       for (var key in body.weights[0]){
@@ -239,7 +269,7 @@ React.useEffect(() => {
       body.forEach((loopuser, i) => {
           setState(state => ( {[user]: false, ...state }))
       });
-      array.remove(body,function(n) {return n === user;})
+      // array.remove(body,function(n) {return n === user;})
       // body = body.slice(0,5)
       updateUsers(body);
 
@@ -366,22 +396,32 @@ return (
         users={users}
       >
 
-{users.map((user, index) => (
-  <StyledMenuItem       key={user+index}>
-    <ListItemText primary={user} />
-    <Switch
-      checked={state[user]}
-      onChange={handleChange}
-      color="primary"
-      name={user}
-      id="hey"
+{users.map((puser, index) => (puser !== user ?
+    <StyledMenuItem       key={puser+index}>
+      <ListItemText primary={puser} />
+      <Switch
+        checked={state[puser]}
+        onChange={handleChange}
+        color="primary"
+        name={puser}
+        id="hey"
 
-    />
-  </StyledMenuItem>
+      />
+    </StyledMenuItem> : null
 )) }
 
 
       </StyledMenu>
+    <div className={classes.topLeft} style={{backgroundColor: 'lightgrey', padding: '20px', borderRadius: '15px'}}>
+    {users.map((puser, index) => (
+
+        <p>{puser + ' '}
+<span style={{backgroundColor: colors[index], borderRadius: '50%', display: 'inline-block', height: '15px',width: '15px'}} />
+        </p>
+
+
+    )) }
+    </div>
     <Graph
             graph={gstate.graph}
             options={gstate.options}
