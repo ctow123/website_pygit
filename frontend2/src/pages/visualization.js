@@ -176,9 +176,13 @@ React.useEffect(() => {
         if(tuser !== user && state[tuser] === true){
           value += (pathWeight[key])[tuser]
         }
+        //not logged in
+        if(tuser === 'undefined'){
+          value += (pathWeight[key])[tuser]
+        }
       }
 
-    patharray.push({from: key.split("][")[0], to: key.split("][")[1], value: value});
+    if (value > 0) patharray.push({from: key.split("][")[0], to: key.split("][")[1], value: value})
   }
   updateG(gstate => ({
     graph: {
@@ -414,8 +418,7 @@ return (
       </StyledMenu>
     <div className={classes.topLeft} style={{backgroundColor: 'lightgrey', padding: '20px', borderRadius: '15px'}}>
     {users.map((puser, index) => (
-
-        <p>{puser + ' '}
+        <p key={puser} >{puser + ' '}
 <span style={{backgroundColor: colors[index], borderRadius: '50%', display: 'inline-block', height: '15px',width: '15px'}} />
         </p>
 
