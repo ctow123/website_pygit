@@ -1,21 +1,23 @@
 import React from "react";
 // for SEO
-// import { Helmet } from 'react-helmet';
-
+import { Helmet } from 'react-helmet';
 import Layout from "../components/Body/Layout";
 import styled from "styled-components";
 import { breakpoints } from "../components/Body/Media.js";
-import {Heading, Paragraph, TextContent, CenterText} from "../components/Body/textStyles.js";
-import decore1 from "../assets/img/bg4.jpg";
-import decore2 from "../assets/img/bg4.jpg";
-import decore3 from "../assets/img/bg4.jpg";
-import { Float } from "../components/Body/styles.js";
-import Navgo from "./navbar.js";
-import ForecastLogic from "../assets/img/bg4.jpg";
-import ForecastComp from "../assets/img/bg4.jpg";
-import decoreStack from "../assets/img/bg4.jpg";
-// https://www.juliacodes.com/Decore
+import {
+  Heading,
+  Paragraph,
+  TextContent,
+  CenterText
+} from "../components/Body/textStyles.js";
+import { withStyles } from "@material-ui/core/styles";
+import {styles} from './styling.js';
+import decore1 from "../assets/img/fields_graphchart.jpeg";
+import decore2 from "../assets/img/project.jpeg";
+import decore3 from "../assets/img/jarvis2.png";
+import decoreStack from "../assets/img/webstacksm.png";
 
+import Navgo from "./navbar.js";
 
 
 const Container = styled.div`
@@ -32,7 +34,6 @@ const Container = styled.div`
     margin: 100px 0;
   }
 `;
-
 
 const ProjectTable = styled.table`
   width: 100%;
@@ -99,9 +100,10 @@ const WebStack = styled.div`
 `;
 const LeftContent = styled.div`
   width: 100%;
-  height: 300px;
+  height: 400px;
   background-image: url(${decoreStack});
   background-repeat: no-repeat;
+  background-size: contain;
   background-position: center;
 
   @media (min-width: ${breakpoints.mobileMax}) {
@@ -116,74 +118,22 @@ const RightContent = styled.div`
   }
 `;
 
-const DuoImages = styled.div`
-  display: flex;
-  flex-wrap: wrap;
 
-  @media (min-width: ${breakpoints.mobileMax}) {
-    flex-wrap: nowrap;
-    align-items: center;
-    margin: 100px 0;
-  }
-`;
+const Decore = ({ classes, ...props }) => {
 
-const LeftImage = styled.div`
-  width: 100%;
-  height: 350px;
-  margin-right: 0;
-  margin-bottom: 50px;
-  background-image: url(${ForecastLogic});
-  background-size: contain;
-  background-position-x: center;
-  background-repeat: no-repeat;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    width: 45%;
-    margin-bottom: 0px;
-    margin-right: 10%;
-    background-position-x: left;
-
-    height: 350px;
-  }
-`;
-const RightImage = styled.div`
-  width: 100%;
-  height: 350px;
-  margin-bottom: 0px;
-  background-image: url(${ForecastComp});
-  background-size: contain;
-  background-position-x: center;
-  background-repeat: no-repeat;
-
-  @media (min-width: ${breakpoints.mobileMax}) {
-    width: 45%;
-    background-position-x: right;
-  }
-`;
-
-
-
-// <Helmet
-//     title='Julia Johnson - Coffee By Benjamin'
-//     meta={[
-//         {
-//             name: 'Julia Johnson',
-//             content: 'Portfolio - Julia Codes'
-//         },
-//         {
-//             name: 'Julia Johnson',
-//             content:
-//                 'Julia Johnson - JuliaCodes - Front End Developer'
-//         }
-//     ]}
-// >
-//     {' '}
-//     <html lang='en' />
-// </Helmet>
-function Decore() {
   return (
     <>
-    <Navgo/>
+<Helmet>
+  <title>Connor Towler - Networked Notes</title>
+  <meta name="Connor Towler" content="portfolio" />
+  <meta name="description" content="web app" />
+  <meta name="keywords" content="Notes, Javascript, portfolio" />
+  <meta name="author" content="Connor Towler" />
+  <html lang="en" />
+</Helmet>
+
+     <div className={classes.root} style={{ backgroundColor: "white" }}>
+      <Navgo />
       <Layout>
         <Container>
           <TextContent>
@@ -194,7 +144,7 @@ function Decore() {
                   color: "#DD7834",
                   fontWeight: "900"
                 }}
-                href="https://github.com/"
+                href="/aboutme"
               >
                 Connor
               </a>{" "}
@@ -215,27 +165,31 @@ function Decore() {
                   <th>Live</th>
                 </tr>
                 <tr>
-                  <td>Team Project</td>
-                  <td>React</td>
+                  <td>Personal Project</td>
+                  <td>React & MaterialUI</td>
 
                   <Bold>
-                    <a href="https://github.com/">
-                      Repository
-                    </a>
+                    <a href="https://github.com/ctow123">Repository</a>
                   </Bold>
                   <Bold>
-                    <a href="/notes">View Site</a>
+                    <a href="/notes">View Web app</a>
                   </Bold>
                 </tr>
                 <tr>
                   <td></td>
-                  <td>Styled-Components</td>
+                  <td>Django & Node.js, Redis, Express</td>
                   <td></td>
                   <td></td>
                 </tr>
                 <tr>
                   <td></td>
-                  <td>Netlify</td>
+                  <td>Neo4J & MongoDB</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>Nginx, Docker, Supervisor, NPM</td>
                   <td></td>
                   <td></td>
                 </tr>
@@ -254,22 +208,27 @@ function Decore() {
               project, and our goal was to have the application fully
               functioning by the end of that timeframe.
             </Paragraph>
+            <Heading>Soon...</Heading>
+            <Paragraph>
+              We built this project because we know how tedious and repetitive
+              starting a new project from scratch can be, and we wanted to build
+              something that we would also use ourselves.
+            </Paragraph>
           </TextContent>
           <WebStack>
             <LeftContent></LeftContent>
             <RightContent>
               <Heading>Web Stack and Explanation</Heading>
               <Paragraph>
-                React was the clear choice for this project, because of its ease
-                of state management and the amount of packages available. We
-                also utilized Netlify as a server to host Decore, because it
-                allows live updates alongside github.
+                React was an easy choice, because of its ease
+                of state management (Redux, useEffect, useState), the amount of packages available, popularity in the community (support). I utilized a mix
+                of backend servers because of database needs. Neo4J worked really well with Node.js where not with Django. However, the website pre web app
+                was written in Django (some technical debt to work through)
               </Paragraph>
               <Paragraph>
-                In the future, we hope to add Redux to this project to clean up
-                the states a bit, and we also are looking into a backend that
-                can allow writing to files so users can download the code right
-                to their computer.
+                DevOps was another process. I used Nginx, Docker, & Supervisor on a GCP instance to auto-restart failed processes,
+                handle loading balancing, and my microservice architecture. My lack of planning and hosting the website and web app logic on seperate
+                Node and Django servers actually helped reduce coupling
               </Paragraph>
             </RightContent>
           </WebStack>
@@ -290,8 +249,9 @@ function Decore() {
           <Image
             src={decore3}
             alt="Forecast image with differing weather information"
+            style={{maxHeight: '400px', maxWidth: '800px', display: 'block', margin: 'auto'}}
           />
-          <TextContent>
+          <CenterText>
             <Heading>Lessons Learned</Heading>
             <Paragraph>
               This project helped to solidify a lot my React knowledge, such as
@@ -301,11 +261,12 @@ function Decore() {
               some more great experience with version control and reviewing each
               others code.
             </Paragraph>
-          </TextContent>
+          </CenterText>
         </Container>
       </Layout>
+      </div>
     </>
   );
 }
 
-export default Decore;
+export default withStyles(styles)(Decore);

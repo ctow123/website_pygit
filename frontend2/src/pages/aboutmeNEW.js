@@ -69,7 +69,7 @@ const ProfilePage = ({ classes, ...props }) => {
               <Button
                 className="btn-round btn-icon"
                 color="default"
-                id='emailbutton'
+                id="emailbutton"
                 size="lg"
                 href="mailto:connor.towler@gmail.com"
               >
@@ -80,26 +80,31 @@ const ProfilePage = ({ classes, ...props }) => {
               </UncontrolledTooltip>
             </div>
             <h3 className="title">About me</h3>
-            <h5
-              style={{ color: "rgb(44,44,44)", fontWeight: 400 }}
-              className="description"
-            >
-              Hi there, I'm Connor and I created a website mostly
-              for fun and so people could learn a little about me. I love things around data, engineering, products, and growth.
-              Currently, I'm a CS student at Virginia Tech.
-              Currently am learning about full stack development & neural networks (BERT)
-              <br />
-              Business interests: Tech, software engineering, angel investing, venture capital
-              <br />
-              Hobbies: surfing, reading, making short videos, hiking
-              <br />
-              Favorite sports: soccer, tennis, and running
-              <br />
-              Twitter DMs are always open, all opinions there are my own and do not reflect the beliefs of my friends of employers
+            <h5 style={{ color: "rgb(44,44,44)", fontWeight: 400 }}>
+              Hi there, I'm Connor and I created a website for fun and so people
+              could learn a little about me. I love things around data,
+              engineering, products, and growth. I'm a recent CS grad. Currently
+              am learning about full stack development & neural networks (BERT,
+              GPT2). Wouldn't it be cool to have your own JARVIS?! I'll
+              occassionally post a blog style post but mostly post randoms ideas
+              I get on twitter (stream of conciousness almost). Trying to make
+              the world a better place, expand human conciousness & knowledge, and discover secerts hidden in plain site
+              <br /> <br />
+              Business interests: Tech, software engineering, angel investing,
+              venture capital
+              <br /> <br />
+              Hobbies: surfing, reading, making short videos, hiking, running
+              <br /> <br />
+              Favorite sports: soccer & tennis (DM lets play a tennis match)
+              <br /> <br />
+              Twitter DMs are always open, all opinions there are my own and do
+              not reflect the beliefs of my friends or employers
             </h5>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
                     <Typography variant="h5">👍🏼 Strengths</Typography>
                     <Typography>
@@ -124,9 +129,11 @@ const ProfilePage = ({ classes, ...props }) => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
-                    <Typography variant="h5">👎🏼Weakness</Typography>
+                    <Typography variant="h5">👎🏼 Weakness</Typography>
 
                     <Typography>
                       <b>Run Through a Wall</b>
@@ -150,9 +157,11 @@ const ProfilePage = ({ classes, ...props }) => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
-                    <Typography variant="h5">🛠Principles</Typography>
+                    <Typography variant="h5">🛠 Principles</Typography>
 
                     <Typography>
                       <b>The Man in the Arena</b>
@@ -178,9 +187,11 @@ const ProfilePage = ({ classes, ...props }) => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
-                    <Typography variant="h5">📚Top Books</Typography>
+                    <Typography variant="h5">📚 Top Books</Typography>
                     <Typography>
                       <b>Zero to One</b>
                       <br />
@@ -198,12 +209,23 @@ const ProfilePage = ({ classes, ...props }) => {
                       <br />
                       {"by Phil Knight"}
                       <br />
+                      <Typography variant="h6">🧐 Lesser Known</Typography>
+                      <b>The Art of Doing Science and Engineering</b>
+                      <br />
+                      {"by Richard Hamming"}
+                      <br />
+                      <b>Homo Deus</b>
+                      <br />
+                      {"by Yuval Noah Harari"}
+                      <br />
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
                     <Typography variant="h5">🙏🏼 Favorite Quote</Typography>
                     <Typography>
@@ -216,9 +238,11 @@ const ProfilePage = ({ classes, ...props }) => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Card style={{'box-shadow': '0px 5px 25px 0px rgba(0, 0, 0, 0.2'}}>
+                <Card
+                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                >
                   <CardContent>
-                    <Typography variant="h5">📲Points of Contact</Typography>
+                    <Typography variant="h5">📲 Points of Contact</Typography>
                     <Typography>
                       <b>Email</b>
                       <br />
@@ -381,6 +405,6 @@ const ProfilePage = ({ classes, ...props }) => {
       </div>
     </>
   );
-}
+};
 
 export default ProfilePage;
