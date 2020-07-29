@@ -8,12 +8,15 @@ import { styles } from "./styling.js";
 import Fab from '@material-ui/core/Fab';
 import Graph from "react-graph-vis";
 import { useSelector } from "react-redux";
+// https://visjs.github.io/vis-data/data/dataset.html
+import { DataSet } from 'vis-data';
 // import Graph from 'vis-react';
 import {Button, Menu, MenuItem,ListItemText, Switch} from '@material-ui/core';
 import {List,ListItem} from '@material-ui/core';
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { useHistory } from "react-router-dom";
 var array = require('lodash/array');
 const { v4: uuidv4 } = require("uuid");
 
@@ -22,6 +25,7 @@ const Viz = ({ classes, ...props }) => {
 const user = useSelector(state => state.user.username);
 // {tag: {user: value}, tag: {user:value}}
 let [searchabletags, updateSearchabletags] = React.useState({});
+let history = useHistory();
 let [users, updateUsers] = React.useState([])
 // {path: {user: value}, path: {user:value}}
 let [pathWeight, updatePathWeight] = React.useState({});
@@ -60,8 +64,23 @@ let [gstate, updateG] = React.useState({
 
   options : {
      layout: {
-     randomSeed: 2
+     randomSeed: undefined,
+     improvedLayout: true,
+      clusterThreshold: 50,
+
    },
+   physics: {
+    enabled: true,
+    solver: "barnesHut",
+    barnesHut: {
+         gravitationalConstant: -12000,
+         centralGravity: 0.9,
+         springLength: 95,
+         springConstant: 0.04,
+         damping: 0.09,
+         avoidOverlap: 0
+       },
+},
      nodes: {
        shape: 'dot',
        scaling: {
@@ -69,7 +88,7 @@ let [gstate, updateG] = React.useState({
              return value / total;
            },
            min: 5,
-           max: 100
+           max: 300
          },
      },
      edges: {
@@ -105,15 +124,19 @@ let [gstate, updateG] = React.useState({
   events : {
      select: function(event) {
        var { nodes, edges } = event;
+
      },
      hoverNode: function(event) {
-       console.log('evenontsnonotnsot');
-       console.log(event.target);
-        // this.neighbourhoodHighlight(event, this.props.searchData);
+       // console.log('evenontsnonotnsot');
+       // console.log(event);
       },
       click: function(event) {
-      // this.redirectToLearn(event, this.props.searchData);
-      console.log(event);
+      // console.log(event);
+      if (typeof event.nodes[0] !== 'undefined'){
+        history.push(`/notes?tag=${event.nodes[0]}`)
+      }
+      // console.log(event.nodes[0]);
+
     }
   },
   network: null
@@ -150,7 +173,10 @@ React.useEffect(() => {
       }
     }
     let color = colornum === 1 ? (users.indexOf(theuser) === -1 ?  defaultcolor[0] : colors[users.indexOf(theuser)] ): multicolors[0]
-    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: color} );
+    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: color,     font : {
+            size : 18,
+
+        }});
   }
   updateG(gstate => ({
     graph: {
@@ -263,6 +289,9 @@ React.useEffect(() => {
       updatePathWeight(pathWeight => ({...pathWeight, ...pathsdict}));
 
     }
+    else {
+      console.log(body);
+    }
   }
   async function getUsers() {
     let res = await makeAPICall("GET", `${apiprefix}/apidb/login`);
@@ -283,6 +312,29 @@ React.useEffect(() => {
 const handleClickOpen = (e, zm) => {
   e.preventDefault();
   if (zm === "plus") {
+    console.log(gstate.network.getConnectedNodes('elon'));
+    console.log(gstate.network.getConnectedEdges('elon'));
+  gstate.graph.nodes[0].font =  {size: 30}
+    gstate.network.setSelection({nodes:gstate.network.getConnectedNodes('elon') ,edges:gstate.network.getConnectedEdges('elon')})
+  gstate.graph.nodes[0].color = '#FF3105'
+
+    var options = {id: 1};
+    var data = new DataSet(options);
+    console.log(data);
+    // get a specific item
+var item1 = data.get(1);
+console.log('item1', item1);
+    // update an existing item
+// data.updateOnly({id: 2, group: 1});
+
+
+//     data.add([
+//   {id: 1, text: 'item 1', date: new Date(2013, 6, 20), group: 1, first: true},
+//   {id: 2, text: 'item 2', date: '2013-06-23', group: 2},
+//   {id: 3, text: 'item 3', date: '2013-06-25', group: 2},
+//   {id: 4, text: 'item 4'}
+// ]);
+    // gstate.network.unselectAll()
     // cleaning all users from searchabletags and pathWeight that are not main user
     // updateG(gstate => ({
     //   graph: {
@@ -301,8 +353,9 @@ const handleClickOpen = (e, zm) => {
     //   network: gstate.network
     // }));
   } else if (zm === "minus") {
-    console.log(searchabletags);
-    console.log(pathWeight);
+        gstate.network.redraw()
+    // console.log(searchabletags);
+    // console.log(pathWeight);
     console.log(gstate);
   }
 };

@@ -13,7 +13,8 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  UncontrolledDropdown
+  UncontrolledDropdown,
+ Container
 } from "reactstrap";
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import useKeypress from "../hooks/useKeyPress";
@@ -27,6 +28,7 @@ import { makeAPICall } from "../api/api.js";
 import { notesendpoint } from "../api/apiprefix.js";
 import {styles} from './styling.js'
 import {getQueryStringParams} from "./fcns.js";
+import { ReactTinyLink } from 'react-tiny-link'
 const { v4: uuidv4 } = require('uuid');
 /* conditions for note to be saved\
 1) a set interval after you stop typing in the title or text area
@@ -47,13 +49,19 @@ const Notes = ({ classes, ...props }) => {
   const [isTitleActive, setIsTitleActive] = React.useState(false);
   let [tags, updateTags] = React.useState(["default tag"]);
   let [searchabletags, updateSearchabletags] = React.useState([]);
+    let [relatedTags, updateRelatedTags] = React.useState([]);
   let [notes, updateNotes] = React.useState([]);
   let [saveres, updateSaveres] = React.useState();
   let [search, updateSearch] = React.useState("startup");
+  let [tweets, updateTweets] = React.useState([]);
+    let [blogs, updateBlogs] = React.useState([]);
+      let [searchuser, updateSearchUser] = React.useState([]);
   const enter = useKeypress("Enter");
   var typingTimer; //timer identifier
   var typingTimer2; //timer identifier
   var doneTypingInterval = 4000; //time in ms, 5 second for example
+  let [loadingInterval, updateLoading] = React.useState(10);
+  let [tweetLimit, updateTweetLimit] = React.useState(1);
 
 // save condition 1
 // problem is adding event listener on load and not putting [tags] so its not updating params w/ new info
@@ -74,12 +82,59 @@ React.useEffect(() => {
       typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
     }
   });
+
   // search query
   if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
     updateSearch(getQueryStringParams(props.location.search).tag)
   }
+  // user query
+  if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
+    console.log(getQueryStringParams(props.location.search));
+    updateSearchUser(getQueryStringParams(props.location.search).user)
+  }
   getSearchableTags();
+  getTweets();
+  getBlogs();
 }, []);
+
+function trackScrolling() {
+  const wrappedElement = document.getElementById('notesList');
+  if (isBottom(wrappedElement)) {
+    console.log('header bottom reached');
+        document.removeEventListener('scroll', trackScrolling)
+    updateLoading(loadingInterval + 1)
+
+    console.log(loadingInterval);
+    // document.removeEventListener('scroll', trackScrolling);
+  }
+};
+
+function trackScrolling2() {
+  const wrappedElement = document.getElementById('tweetsList');
+  if (isBottom(wrappedElement)) {
+    console.log('header bottom reached');
+        document.removeEventListener('scroll', trackScrolling2)
+    updateLoading(tweetLimit + 10)
+
+  }
+};
+function isBottom(el) {
+  return el.getBoundingClientRect().bottom <= window.innerHeight;
+}
+
+React.useEffect(() => {
+  document.addEventListener('scroll', trackScrolling);
+  // Clean up function on page close
+  return () => {
+    window.removeEventListener("scroll", trackScrolling);
+  };
+  // eslint-disable-next-line
+}, [loadingInterval]);
+
+React.useEffect(() => {
+  // document.addEventListener('scroll', trackScrolling2);
+    // eslint-disable-next-line
+}, [tweetLimit]);
 
 // save condition 2, use mounted to avoid run on page load
 React.useEffect(() => {
@@ -120,6 +175,7 @@ React.useEffect(() => {
 // get notes based on search tag, this will run on page load for default tag
   React.useEffect(() => {
     getNotes(search);
+    getRelatedTags(search)
     // eslint-disable-next-line
   }, [search]);
 
@@ -165,6 +221,11 @@ React.useEffect(() => {
       e.target.querySelector("input").id === "searchinputmobile"
     ) {
       updateSearch(e.target.querySelector("input").value);
+    }
+    else if ( e.target.querySelector("input").id === "bloginput" ) {
+      let test2 = document.getElementById("bloginput");
+      // send api call , update blogs list
+      test2.value = "";
     }
   }
 
@@ -237,6 +298,26 @@ async function saveNote(type) {
     }
   }
 
+  async function getBlogs() {
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getBlogs`);
+    let status = res.status;
+    let body = await res.json();
+    // error
+    if (status === 200) {
+      updateBlogs(blogs => [...blogs, ...body.blogs]);
+    }
+  }
+
+  async function getRelatedTags(tag) {
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getRelated?tag=${tag}`);
+    let status = res.status;
+    let body = await res.json();
+    // error
+    if (status === 200) {
+     updateRelatedTags(relatedTags => [...relatedTags, ...body.tags]);
+    }
+  }
+
   // async function getTitlenDate() {
   //   let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTitlesList`);
   //   let status = res.status;
@@ -251,13 +332,24 @@ async function saveNote(type) {
     let res = await makeAPICall("GET", `${notesendpoint}/notesapp/searchnotes?lookupBy=tag&lookupField=${searchterm}`);
     let status = res.status;
     let body = await res.json();
-    console.log(body);
+
     if (status === 200 && body.notes.length !== 0) {
       updateNotes(notes => [...body.notes]);
     }
     else{
       updateNotes([]);
     }
+  }
+
+  async function getTweets() {
+    let res = await makeAPICall("GET", `${notesendpoint}/tweet/getTweets`);
+    let status = res.status;
+    let body = await res.json();
+    console.log(body);
+    if (status === 200) {
+      updateTweets(tweets => [...body.tweets]);
+    }
+
   }
   // component for the Tag
   function TheTag(props) {
@@ -305,30 +397,68 @@ async function saveNote(type) {
     );
   }
 
+function test(e, props){
+  console.log(props);
+  // console.log(e);
+  updateNotes([{id: props.id,title: props.title, text: props.text, tags: props.tags}])
+}
+//  tweet
+function Tweet(props) {
+
+  return (
+    <>
+      <div
+        style={{
+          backgroundColor: "ghostwhite",
+          borderRadius: "20px",
+          padding: "10px",
+          marginBottom: "20px"
+        }}
+        onClick={ (e) => test(e, props)}
+      >
+        {props.title + " "}
+        {props.text}
+        <br />
+        {props.tags}
+      </div>
+    </>
+  );
+}
+
+
   return (
     <>
      <div className={classes.root} style={{ backgroundColor: "gainsboro" }}>
       <Navgo />
+
+          <div style={{ maxHeight: "100px", maxWidth: "100vw", display: 'flex', justifyContent: 'center', marginBottom: '10px'}} >
+            <img style={{ maxHeight: "100px", maxWidth: "100px" , borderRadius: '50%'}} alt="..." src={require("../assets/img/macmillan.png")}></img>
+            <section style={{backgroundColor: "gainsboro", marginLeft: '20px'}} >
+            <h3 className="title" style={{margin: '0', padding: '0' }}>Connor Towler</h3>
+            <p className="category" style={{margin: '0', padding: '0' }}>
+              <a href="http://thenubes.ddns.net"> Website</a>
+            </p>
+            <form onSubmit={e => handleSubmit(e)}>
+              <Input
+
+                aria-describedby="searchinput"
+                id="searchinput"
+                placeholder="Search by Tag"
+                type="text"
+                onChange={e => handleChange(e)}
+              ></Input>
+            </form>
+            </section>
+
+          </div>
+
+
       <Grid
         container
         spacing={3}
       >
         <Grid item xs={12} sm={8}>
-          <form onSubmit={e => handleSubmit(e)}>
-            <Input
-              className="notemobile"
-              id="searchinputmobile"
-              placeholder="Search by Tag"
-              type="text"
-              onChange={e => handleChange(e)}
-              style={{
-                marginBottom: "10px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                width: "80%"
-              }}
-            ></Input>
-          </form>
+
           <Card  variant="outlined">
             <Typography align="center" variant="body1">
               {saveres}
@@ -371,17 +501,22 @@ async function saveNote(type) {
                   </div>
                 </CardContent>
               </CardMaterial>
-              <Typography align="center" variant="h5">
+              </CardContent>
+                  </Card>
+              <Typography align="center" variant="h5" style={{backgroundColor: 'white', margin: 'auto', borderRadius: '50px', width: '30%', marginBottom: '20px'}}>
                 {search}
               </Typography>
-              <div>
+                  <Card>
+              <CardContent>
+              <div id="notesList">
                 {notes.length
-                  ? notes.map((note, index) => (
+                  ? notes.slice(0,loadingInterval).map((note, index) => (
                       <Note
                         key={uuidv4()}
                         title={note.title}
                         text={note.text}
                         tags={note.tags}
+                        link={note.link}
                         id={note.id}
                         onSave={savehandling}
                       />
@@ -392,16 +527,6 @@ async function saveNote(type) {
           </Card>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <form onSubmit={e => handleSubmit(e)}>
-            <Input
-            className='notedesktop'
-              aria-describedby="searchinput"
-              id="searchinput"
-              placeholder="Search by Tag"
-              type="text"
-              onChange={e => handleChange(e)}
-            ></Input>
-          </form>
           <DropdownMenu
             id={"dropdownmenu"}
             aria-labelledby="dropdownMenuButton"
@@ -416,7 +541,7 @@ async function saveNote(type) {
               Something else here
             </DropdownItem>
           </DropdownMenu>
-          <Card className="card-nav-tabs card-plain">
+          <Card className="card-nav-tabs card-plain" style={{maxHeight: '90vh', overflow: 'auto'}}>
             <CardHeader className="card-header-danger">
               <div className="nav-tabs-navigation">
                 <div className="nav-tabs-wrapper">
@@ -439,10 +564,12 @@ async function saveNote(type) {
                         href="#pablo"
                         onClick={e => {
                           e.preventDefault();
+                          document.removeEventListener('scroll', trackScrolling)
+                          updateLoading(10);
                           setPlainTabs("2");
                         }}
                       >
-                        Date
+                        Twitter
                       </NavLink>
                     </NavItem>
                     <NavItem>
@@ -454,7 +581,29 @@ async function saveNote(type) {
                           setPlainTabs("3");
                         }}
                       >
-                        Traditional
+                        Notes
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={plainTabs === "4" ? "active" : ""}
+                        onClick={e => {
+                          e.preventDefault();
+                          setPlainTabs("4");
+                        }}
+                      >
+                        Blogs
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={plainTabs === "5" ? "active" : ""}
+                        onClick={e => {
+                          e.preventDefault();
+                          setPlainTabs("5");
+                        }}
+                      >
+                        Videos
                       </NavLink>
                     </NavItem>
                   </Nav>
@@ -467,35 +616,74 @@ async function saveNote(type) {
                 activeTab={"plainTabs" + plainTabs}
               >
                 <TabPane tabId="plainTabs1">
-                  <p>here are a list of tags you can search for</p>
+
                   <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                    {searchabletags.length
-                      ? searchabletags.map((tag, index) => (
+                    {relatedTags.length
+                      ? relatedTags.map((tag, index) => (
                           <RelatedTag key={tag+index} text={tag} />
                         ))
                       : null}
                       </div>
                 </TabPane>
                 <TabPane tabId="plainTabs2">
-                        <p>#valuations</p>
-                  <p>
-                    are a function of sales. how fast can you grow. paying 5
-                    dollars for 1 dollor of sales for the fact that the customer
-                    will bring much more LTV and you can grow the base fast
-                  </p>
+                  <div id="tweetsList">
+                    {tweets.length
+                      ? tweets.slice(0,100).map((tweet, index) => (
+                          <Tweet key={tweet.id} id={tweet.id} title={tweet.title} text={tweet.text} tags={tweet.tags} />
+                        ))
+                      : null}
+                  </div>
 
                 </TabPane>
                 <TabPane tabId="plainTabs3">
-                  <p>
-                    I think that’s a responsibility that I have, to push
-                    possibilities, to show people, this is the level that things
-                    could be at. I will be the leader of a company that ends up
-                    being worth billions of dollars, because I got the answers.
-                    I understand culture. I am the nucleus. I think that’s a
-                    responsibility that I have, to push possibilities, to show
-                    people, this is the level that things could be at.
-                  </p>
+                <p style={{borderTop: 'grey', borderTopStyle: 'solid'}}>here are a list of tags you can search for</p>
+                <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                  {searchabletags.length
+                    ? searchabletags.map((tag, index) => (
+                        <RelatedTag key={tag+index} text={tag} />
+                      ))
+                    : null}
+                    </div>
                 </TabPane>
+                <TabPane tabId="plainTabs4">
+                <form onSubmit={e => handleSubmit(e)}>
+                  <Input
+                  className='addblog'
+
+                    id="bloginput"
+                    placeholder="Add Blog"
+                    type="text"
+                    onChange={e => handleChange(e)}
+                  ></Input>
+                </form>
+                <p style={{borderBottom: 'grey', borderBottomStyle: 'solid', marginTop: '10px'}}></p>
+
+                <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                  {blogs.length
+                    ? blogs.map((blog, index) => (
+                      <ReactTinyLink
+                      onClick={e => updateNotes([blog])}
+                      key={blog.id+index}
+                        cardSize="small"
+                        showGraphic={true}
+                        maxLine={2}
+                        minLine={1}
+                        url={blog.link}
+                      />
+                      ))
+                    : null}
+                    </div>
+                    <ReactTinyLink
+
+
+                      cardSize="large"
+                      showGraphic={true}
+                      maxLine={2}
+                      minLine={1}
+                      url={"https://www.youtube.com/watch?v=lJTsfcmesR4"}
+                    />
+                </TabPane>
+
               </TabContent>
             </CardBody>
           </Card>

@@ -14,6 +14,8 @@ import Aboutmenew from "./pages/aboutmeNEW.js";
 import NotFound from "./pages/NotFound.js";
 import Vis from "./pages/visualization.js";
 import Decore from "./pages/notesappAbout.js";
+import Profile from "./pages/profile.js";
+import Directory from "./pages/directory.js";
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
@@ -91,9 +93,21 @@ let App = props => {
           />
           <Route
             exact
+            path="/profile"
+            label="profile"
+            render={props => <Profile {...props} isAuthed={false} />}
+          />
+          <Route
+            exact
             path="/vis"
             label="vis"
             render={props => <Vis {...props} isAuthed={false} />}
+          />
+          <Route
+            exact
+            path="/directory"
+            label="directory"
+            render={props => <Directory {...props} isAuthed={false} />}
           />
 
            <Route component={NotFound} />

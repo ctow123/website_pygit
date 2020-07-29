@@ -90,6 +90,9 @@ const ProfilePage = ({ classes, ...props }) => {
               I get on twitter (stream of conciousness almost). Trying to make
               the world a better place, expand human conciousness & knowledge, and discover secerts hidden in plain site
               <br /> <br />
+              Areas i think will have a big impact on the future. 3D printing houses, self driving money, biotech (curing disease) & synethic bio (biological circuits), AI (personal assisstants), Space,
+              auturky, new education system, getting universities back to research, empowering heretics / reducing groupthink
+              <br /> <br />
               Business interests: Tech, software engineering, angel investing,
               venture capital
               <br /> <br />
@@ -103,7 +106,7 @@ const ProfilePage = ({ classes, ...props }) => {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">👍🏼 Strengths</Typography>
@@ -130,7 +133,7 @@ const ProfilePage = ({ classes, ...props }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">👎🏼 Weakness</Typography>
@@ -158,7 +161,7 @@ const ProfilePage = ({ classes, ...props }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">🛠 Principles</Typography>
@@ -188,7 +191,7 @@ const ProfilePage = ({ classes, ...props }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">📚 Top Books</Typography>
@@ -209,7 +212,8 @@ const ProfilePage = ({ classes, ...props }) => {
                       <br />
                       {"by Phil Knight"}
                       <br />
-                      <Typography variant="h6">🧐 Lesser Known</Typography>
+                     <span role='img'>🧐</span>   <ins>Lesser Known</ins>
+                      <br />
                       <b>The Art of Doing Science and Engineering</b>
                       <br />
                       {"by Richard Hamming"}
@@ -224,7 +228,7 @@ const ProfilePage = ({ classes, ...props }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">🙏🏼 Favorite Quote</Typography>
@@ -239,7 +243,7 @@ const ProfilePage = ({ classes, ...props }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Card
-                  style={{ "box-shadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
+                  style={{ "boxShadow": "0px 5px 25px 0px rgba(0, 0, 0, 0.2" }}
                 >
                   <CardContent>
                     <Typography variant="h5">📲 Points of Contact</Typography>

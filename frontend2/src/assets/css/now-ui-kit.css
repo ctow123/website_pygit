@@ -8011,20 +8011,32 @@ textarea.note:active {
   border: 1px solid #e3e3e3;
 }
 
+.link::after {
+  content: "";
+  width: 100%;
+  display: block;
+  margin: auto;
+  border-bottom: 1px solid #ddd;
+
+}
+
+
 .form-control.note::-webkit-input-placeholder {
   color: #888888;
   opacity: 1;
 }
 
+.react_tinylink_card {
+  margin-bottom: 20px
+}
+
 /* Any device with className .notesmobile below 500px will not be displayed */
 @media only screen and (min-width: 500px) {
-  .notemobile {
-    display: none;
-  }
+
 }
 
 @media only screen and (max-width: 499px) {
-  .notedesktop {
-    display: none;
+  .notemobile {
+    min-width: 100%;
   }
 }

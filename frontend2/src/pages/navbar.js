@@ -57,7 +57,7 @@ const Navgo = ({ ...props }) => {
         <Navbar.Brand href="/">Algo</Navbar.Brand>
         <Navbar.Text>
           User:{" "}
-          <a href="">
+          <a href="/profile">
             {user == null ? "no user logged in" : `${user.username}`}
           </a>
         </Navbar.Text>
@@ -65,16 +65,16 @@ const Navgo = ({ ...props }) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="/aboutme">About Me</Nav.Link>
-            <Nav.Link href="/design">Design Portfolio</Nav.Link>
+            <Nav.Link href="/directory">People</Nav.Link>
             <Nav.Link href="/notes">Notes</Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link href="/comments">Comments</Nav.Link>
             <NavDropdown title="Other" id="basic-nav-dropdown">
               <NavDropdown.Item href="/notesexplained">
                 Notes Explained
               </NavDropdown.Item>
-              <NavDropdown.Item href="/notes">Notes Beta</NavDropdown.Item>
               <NavDropdown.Item href="/vis">Notes Viz</NavDropdown.Item>
+              <NavDropdown.Item href="/design">Design Portfolio</NavDropdown.Item>
+              <NavDropdown.Item href="/comments">Comments</NavDropdown.Item>
               <NavDropdown.Item href="/yelpaddon">Yelp Beta</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">Dreams</NavDropdown.Item>

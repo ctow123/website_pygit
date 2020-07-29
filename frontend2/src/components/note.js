@@ -23,6 +23,7 @@ const Note = ({ classes, ...props }) => {
   let [tags, updateTags] = React.useState(props.tags);
   let [title, updateTitle] = React.useState(props.title);
   let [text, updateText] = React.useState(props.text);
+    let [link, updateLink] = React.useState(props.link === null ? '' : props.link);
     let [saveres, updateSaveres] = React.useState('');
   var typingTimer;
     var typingTimer2;
@@ -48,6 +49,15 @@ const Note = ({ classes, ...props }) => {
             typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
           }
         });
+        document
+          .getElementById(`${"link" + props.id}`)
+          .addEventListener("keyup", () => {
+            clearTimeout(typingTimer2);
+            if (document.getElementById(`${"link" + props.id}`).value) {
+              // eslint-disable-next-line
+              typingTimer2 = setTimeout(saveNote, doneTypingInterval, "link");
+            }
+          });
   }, []);
 
   React.useEffect(() => {
@@ -60,6 +70,7 @@ const Note = ({ classes, ...props }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tags]);
+
 
   // handle which of the new note fields to highlight (title, text, tags)
   function handleNewNoteClick(e) {
@@ -95,6 +106,7 @@ const Note = ({ classes, ...props }) => {
       type: type,
       note: {      text: document.getElementById(`${"newNoteText" + props.id}`).value,
             title: document.getElementById(`${"newNoteTitle" + props.id}`).value,
+            link: document.getElementById(`${"link" + props.id}`).value,
             tags: taglist, dateupdated: Date.now()}
     };
     console.log(type, notedata);
@@ -124,6 +136,9 @@ const Note = ({ classes, ...props }) => {
       updateText(e.target.value);
     } else if (e.target.id === `${"newNoteTitle" + props.id}`) {
       updateTitle(e.target.value);
+    }
+    else if (e.target.id === `${"link" + props.id}`) {
+      updateLink(e.target.value);
     }
   }
 
@@ -163,7 +178,7 @@ async function deleteNote(e) {
     return (
       <>
         <TagContainer>
-          <Tag href="https://www.w3schools.com">{props.text}</Tag>
+          <Tag href={'/notes?tag=' + props.text}>{props.text}</Tag>
 
           <Button
             color="primary"
@@ -212,6 +227,18 @@ async function deleteNote(e) {
             placeholder="enter note text"
             rows="5"
           />
+          <section className='link'>
+          <textarea
+            className='note'
+            name="text"
+            value={link}
+            id={"link" + props.id}
+            onChange={e => handleChange(e)}
+            placeholder="Add link"
+            rows="1"
+          />
+          </section>
+
           <form onSubmit={e => handleSubmit(e)}>
             <Input
               className="note"
