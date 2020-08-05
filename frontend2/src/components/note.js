@@ -10,25 +10,28 @@ import {
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import { Tag, TagContainer } from "./Body/styles.js";
 import { makeAPICall } from "../api/api.js";
+import { useSelector } from "react-redux";
 import { apiprefix, notesendpoint } from "../api/apiprefix.js";
+import {getQueryStringParams} from "../pages/fcns.js";
 import Typography from "@material-ui/core/Typography";
 
 // this class requires certain field in the props
 // {title, text, tags, id } must all be defined by the props passed into this object
 const Note = ({ classes, ...props }) => {
-  // console.log(props);
-  const isMounted = React.useRef(true);
-  const titleRef = React.useRef(null);
-  const [isTitleActive, setIsTitleActive] = React.useState(false);
-  let [tags, updateTags] = React.useState(props.tags);
-  let [title, updateTitle] = React.useState(props.title);
-  let [text, updateText] = React.useState(props.text);
-    let [link, updateLink] = React.useState(props.link === null ? '' : props.link);
-    let [saveres, updateSaveres] = React.useState('');
-  var typingTimer;
-    var typingTimer2;
-  var doneTypingInterval = 3000; //time in ms, 5 second for example
 
+const isMounted = React.useRef(true);
+const titleRef = React.useRef(null);
+const [isTitleActive, setIsTitleActive] = React.useState(false);
+let [tags, updateTags] = React.useState(props.tags);
+let [title, updateTitle] = React.useState(props.title);
+let [text, updateText] = React.useState(props.text);
+let [link, updateLink] = React.useState(props.link === null ? "" : props.link);
+let [saveres, updateSaveres] = React.useState("");
+var typingTimer;
+var typingTimer2;
+
+  var doneTypingInterval = 3000; //time in ms, 5 second for example
+  const user = useSelector(state => state.user);
   React.useEffect(() => {
     // on keyup, start the countdown, saves after doneTypingInterval seconds of no typing
     document
@@ -71,6 +74,18 @@ const Note = ({ classes, ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tags]);
 
+  // save condition 3
+  React.useEffect(() => {
+    const onbeforeunloadFn = () => {
+      saveNote("close");
+    };
+    window.addEventListener("beforeunload", onbeforeunloadFn);
+    // Clean up function on page close
+    return () => {
+      window.removeEventListener("beforeunload", onbeforeunloadFn);
+    };
+    // eslint-disable-next-line
+  });
 
   // handle which of the new note fields to highlight (title, text, tags)
   function handleNewNoteClick(e) {
@@ -107,7 +122,8 @@ const Note = ({ classes, ...props }) => {
       note: {      text: document.getElementById(`${"newNoteText" + props.id}`).value,
             title: document.getElementById(`${"newNoteTitle" + props.id}`).value,
             link: document.getElementById(`${"link" + props.id}`).value,
-            tags: taglist, dateupdated: Date.now()}
+            tags: taglist, dateupdated: Date.now()},
+        user: getQueryStringParams(props.location.search).user
     };
     console.log(type, notedata);
     try{
@@ -120,6 +136,7 @@ const Note = ({ classes, ...props }) => {
     let body = await res.json();
     if (status !== 200 && status !== 201) {
       props.onSave({ body: body, status: status });
+      console.log(body);
     } else {
       props.onSave({ body: body, status: status, title: props.title });
       updateSaveres('saving...')
@@ -145,9 +162,13 @@ const Note = ({ classes, ...props }) => {
 // need to pass id via on save to parent to remove it from view
 async function deleteNote(e) {
   try {
+    let notedata ={
+      user: getQueryStringParams(props.location.search).user
+    }
     let res = await makeAPICall(
       "DELETE",
-      `${notesendpoint}/notesapp/deletenote/${props.id}`
+      `${notesendpoint}/notesapp/deletenote/${props.id}`,
+      notedata
     );
     let status = res.status;
     let body = await res.json();
@@ -163,6 +184,8 @@ async function deleteNote(e) {
 }
 
 
+// console.log(window.location.pathname);
+// console.log(window.location.search);
   // component for the Tag
   function TheTag(props) {
 
@@ -178,8 +201,7 @@ async function deleteNote(e) {
     return (
       <>
         <TagContainer>
-          <Tag href={'/notes?tag=' + props.text}>{props.text}</Tag>
-
+          <Tag href={'/notes?user=' + ((typeof user.username !== 'undefined') ? user.username : 'con') + '&tag=' + props.text}>{props.text}</Tag>
           <Button
             color="primary"
             onClick={e => removeTag(e)}

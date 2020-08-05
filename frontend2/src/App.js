@@ -16,6 +16,7 @@ import Vis from "./pages/visualization.js";
 import Decore from "./pages/notesappAbout.js";
 import Profile from "./pages/profile.js";
 import Directory from "./pages/directory.js";
+import { makeAPICall } from "./api/api.js";
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
@@ -27,6 +28,16 @@ let App = props => {
   // console.log(typeof localStorage.token);
   useEffect(() => {}, []);
 
+  async function test() {
+    let res = await makeAPICall("GET", `http://localhost:8000/apidb/authorize`);
+    let status = res.status;
+    let body = await res.json();
+
+    if (status === 200) {
+      console.log("hi");
+    }
+
+  }
   //-------------------------------------------------------------------------------
 
 // using update user triggers re-render

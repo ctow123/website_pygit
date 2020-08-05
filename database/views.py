@@ -27,33 +27,8 @@ from google.auth.transport import requests as grequests
 from threading import Thread
 from datetime import datetime
 import time
+import subprocess
 
-import concurrent.futures
-import urllib.request
-
-# URLS = ['http://www.foxnews.com/',
-#         'http://www.cnn.com/',
-#         'http://europe.wsj.com/',
-#         'http://www.bbc.co.uk/',
-#         'http://some-made-up-domain.com/']
-#
-# # Retrieve a single page and report the URL and contents
-# def load_url(url, timeout):
-#     with urllib.request.urlopen(url, timeout=timeout) as conn:
-#         return conn.read()
-#
-# # We can use a with statement to ensure threads are cleaned up promptly
-# with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-#     # Start the load operations and mark each future with its URL
-#     future_to_url = {executor.submit(load_url, url, 60): url for url in URLS}
-#     for future in concurrent.futures.as_completed(future_to_url):
-#         url = future_to_url[future]
-#         try:
-#             data = future.result()
-#         except Exception as exc:
-#             print('%r generated an exception: %s' % (url, exc))
-#         else:
-#             print('%r page is %d bytes' % (url, len(data)))
 
 class ProcessThread(Thread):
     # passing in param inits a new thread, this method overrides Thread default init method
@@ -75,20 +50,37 @@ class ProcessThread(Thread):
         duration = (self.started - finished).seconds
         print("%s thread started at %s and finished at %s in %s seconds" % (self.name, self.started, finished, duration))
 
+
+class TweetThread(Thread):
+    # passing in param inits a new thread, this method overrides Thread default init method
+    def __init__(self, name):
+        Thread.__init__(self)
+        self.name = name
+        self.started = datetime.now()
+
+    def run(self):
+        subprocess.run(['python3','twitter_script.py',self.name], capture_output=True)
+        finished = datetime.now()
+        duration = (self.started - finished).seconds
+        print("%s thread started at %s and finished at %s in %s seconds" % (self.name, self.started, finished, duration))
+
+
 key = 'super secert key'
 logger = logging.getLogger(__name__)
 
 
 # handles identity managment and info, assumes request data has username, password, and fromgoogle (for google sign ins token in username field)
 class LoginHandling(APIView):
-
+    # returns all users in database
     def get(self, request, format=None):
         # queryset is select statement in SQL, objects access modelsmanager which returns the queryset
         try:
             users =[]
             note2 = Note(5,5)
             note3 = Note(5,5)
-            test2 = LoginInfo.objects.filter(note__gte={'notecount': 5,'tagcount': 0}).filter(note__gte={'tagcount': 5,'notecount':0})
+            # only checks against first param
+            # test2 = LoginInfo.objects.filter(note__gte={'notecount': 5,'tagcount': 0}).filter(note__gte={'tagcount': 5,'notecount':0})
+            test2 = LoginInfo.objects.all()
             print(test2)
             for userquery in test2:
                 users.append(userquery.username)
@@ -106,13 +98,13 @@ class LoginHandling(APIView):
                 idinfo = id_token.verify_oauth2_token(request.data['username'], grequests.Request(), "578271878997-gm7h69gce1v581nh834ka57h5kv3g81d.apps.googleusercontent.com")
                 if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
                     return JsonResponse({'message': 'wrong issuer'},status=400)
-                encoded = jwt.encode({'username': idinfo['email'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
+                encoded = jwt.encode({'username': idinfo['email'],'authorized': True, 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
                 return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
             else:
                 if checkUserANDPassword(request.data['username'],request.data['password'],request.data['fromgoogle']):
-                    encoded = jwt.encode({'username': request.data['username'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
-                    my_thread = ProcessThread(request.data['username'], encoded)
-                    my_thread.start()
+                    encoded = jwt.encode({'username': request.data['username'], 'authorized': True, 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
+                    # my_thread = ProcessThread(request.data['username'], encoded)
+                    # my_thread.start()
                     return JsonResponse({'message': 'success', 'authtoken': encoded.decode('utf8')},status=200)
                 else:
                     return JsonResponse({'message': 'invalid login credentials'},status=400)
@@ -138,6 +130,7 @@ class AccountCreation(APIView):
                 idinfo = id_token.verify_oauth2_token(request.data['username'], grequests.Request(), "578271878997-gm7h69gce1v581nh834ka57h5kv3g81d.apps.googleusercontent.com")
                 if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
                     return JsonResponse({'message': 'wrong issuer'},status=400)
+                # sub is unique id of users google account
                 account = LoginInfo(username=idinfo['email'], note=Note(0,0), email=idinfo['email'], fromgoogle=True, googleid=idinfo['sub'])
                 account.save()
                 encoded = jwt.encode({'username': idinfo['email'], 'authenticated': True, 'exp': datetime.now() + timedelta(hours=48)}, key, algorithm='HS256')
@@ -168,6 +161,17 @@ def checkUserExists(username):
     except Exception as e:
         print(str(e))
         return False
+# check if user in database endpoint
+def checkUser(request):
+    # authtoken = jwt.decode(request.headers['Authorization'].split(' ')[1],key,algorithm='HS256' )
+    authtoken = jwt.decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpemVkIjp0cnVlLCJhdXRoZW50aWNhdGVkIjpmYWxzZSwiZXhwIjoxNzExMjY0MzQ2fQ.2Frw89KWy8YJglqTk6uQ4e_W6WXWZv-d79unHi3vCGA',key,algorithm='HS256' )
+    try:
+        if request.method == "GET" and authtoken['authorized']:
+            if checkUserExists(request.GET['user']):
+                return JsonResponse({'message': 'exists'}, status=200)
+        return JsonResponse({'error': 'invalid'}, status=400)
+    except Exception as e:
+        print(e)
 
 def checkUserANDPassword(usernamep, password, fromgoogle):
         user = LoginInfo.objects.get(username=usernamep)
@@ -175,7 +179,52 @@ def checkUserANDPassword(usernamep, password, fromgoogle):
         givenpassword = password.encode('utf-8')
         return bcrypt.checkpw(givenpassword, retrievedpassword) and not user.fromgoogle
 
+# change users links in the database
+def changeLinks(request):
+    try:
+        reqbody = json.loads(request.body)
+        authtoken = jwt.decode(request.headers['Authorization'].split(' ')[1],key,algorithm='HS256' )
+        print(authtoken)
+        if request.method == "PUT" and authtoken['authenticated']:
+            user = LoginInfo.objects.filter(username=authtoken['username'])
+            if len(user) > 1:
+                raise ValueError('user not unique')
+            if 'twitter' in reqbody:
+                print(reqbody['twitter'])
+                # start script
+                # my_thread = TweetThread(reqbody['twitter'])
+                # my_thread.start()
+                subprocess.call(['python3',os.getcwd() +'/database/twitter_script.py',reqbody['twitter']])
+                user[0].twitterUsername = reqbody['twitter']
+            if 'website' in reqbody:
+                user[0].website = reqbody['website']
+            if 'youtubePlaylist' in reqbody:
+                user[0].youtubePlaylist = reqbody['youtubePlaylist']
+            # for favorites
+            # user[0].favorites = [Favorite(otheruser='two')]
+            user[0].save()
+            return JsonResponse({'message': 'completed'}, status=200)
+        else:
+            return JsonResponse({'error': 'invalid'}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)}, status=400)
 
+def getUserInfo(request):
+        try:
+            authtoken = jwt.decode(request.headers['Authorization'].split(' ')[1],key,algorithm='HS256' )
+            if request.method == "GET" and authtoken['authenticated']:
+                user = LoginInfo.objects.filter(username=authtoken['username'])
+                if len(user) > 1:
+                    raise ValueError('user not unique')
+                print(type(user[0].twitterUsername))
+                userinfo = {'twitter': user[0].twitterUsername}         
+                return JsonResponse(userinfo, safe=False, status=200)
+            else:
+                return JsonResponse({'error': 'invalid'}, status=400)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=400)
 
 class Images(APIView):
 
@@ -210,6 +259,16 @@ class Images(APIView):
         except Exception as e:
             print(e)
 
+def authorizationToken(request):
+    try:
+        # print(request.META['HTTP_USER_AGENT'].split('/')[0])
+        if (request.META['HTTP_USER_AGENT'].split('/')[0] == 'Mozilla'):
+            encoded = jwt.encode({'authorized': True, 'exp': datetime.now(
+            ) + timedelta(hours=2)}, key, algorithm='HS256')
+            return JsonResponse({'authorizeToken': encoded.decode('utf8')}, status=200)
+        return JsonResponse({'error': "not a browser"}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def imagelist(request):
     try:
@@ -220,24 +279,6 @@ def imagelist(request):
         # return HttpResponse(encoded_string, content_type="text")
     except Exception as e:
         print(e)
-
-def yelptracking(request):
-    requestdata = json.loads(request.body.decode('utf-8'))
-    try:
-        if requestdata['datatype'] == 'click':
-            loginfo = Yelpdata(
-                username=requestdata['username'], clickdata=requestdata['action'],
-                clicktime=requestdata['clicktime'], lat=requestdata['latitude'], long=requestdata['longitude'])
-            loginfo.save()
-        elif requestdata['datatype'] == 'review':
-            loginfo = YelpUserReviews(
-                username=requestdata['username'], comment=requestdata['comment'], ipaddy="192.168.1.230")
-            loginfo.save()
-        return JsonResponse({'message': 'success'})
-        # return HttpResponse(encoded_string, content_type="text")
-    except Exception as e:
-        print(e)
-        return JsonResponse({'error': str(e)}, status=400)
 
 
 class Commentview(APIView):
@@ -352,18 +393,3 @@ def businesspath(request):
 #     return ip
 
 # In a view or a middleware where the `request` object is available
-
-# pip install django-ipware
-# from ipware import get_client_ip
-# ip, is_routable = get_client_ip(request)
-# if ip is None:
-#     # Unable to get the client's IP address
-# else:
-#     # We got the client's IP address
-#     if is_routable:
-#         # The client's IP address is publicly routable on the Internet
-#     else:
-#         # The client's IP address is private
-#
-# # Order of precedence is (Public, Private, Loopback, None)
-# i, r = get_client_ip(request, request_header_order=['X_FORWARDED_FOR', 'REMOTE_ADDR'])

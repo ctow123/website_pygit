@@ -66,7 +66,7 @@ const Navgo = ({ ...props }) => {
           <Nav className="mr-auto">
             <Nav.Link href="/aboutme">About Me</Nav.Link>
             <Nav.Link href="/directory">People</Nav.Link>
-            <Nav.Link href="/notes">Notes</Nav.Link>
+            <Nav.Link href={'/notes?user=' + (typeof user.username === 'undefined' ? 'con' : user.username)}>Notes</Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
             <NavDropdown title="Other" id="basic-nav-dropdown">
               <NavDropdown.Item href="/notesexplained">

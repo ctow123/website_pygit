@@ -10,14 +10,14 @@ import Graph from "react-graph-vis";
 import { useSelector } from "react-redux";
 // https://visjs.github.io/vis-data/data/dataset.html
 import { DataSet } from 'vis-data';
-// import Graph from 'vis-react';
+import {Input} from "reactstrap";
 import {Button, Menu, MenuItem,ListItemText, Switch} from '@material-ui/core';
 import {List,ListItem} from '@material-ui/core';
-
+import {getQueryStringParams} from "./fcns.js";
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { useHistory } from "react-router-dom";
-var array = require('lodash/array');
+
 const { v4: uuidv4 } = require("uuid");
 
 const Viz = ({ classes, ...props }) => {
@@ -28,6 +28,7 @@ let [searchabletags, updateSearchabletags] = React.useState({});
 let history = useHistory();
 let [users, updateUsers] = React.useState([])
 // {path: {user: value}, path: {user:value}}
+let [searchuser, updateSearchUser] = React.useState('');
 let [pathWeight, updatePathWeight] = React.useState({});
 let [gstate, updateG] = React.useState({
   graph : {
@@ -133,7 +134,7 @@ let [gstate, updateG] = React.useState({
       click: function(event) {
       // console.log(event);
       if (typeof event.nodes[0] !== 'undefined'){
-        history.push(`/notes?tag=${event.nodes[0]}`)
+        history.push(`/notes?user=${getQueryStringParams(props.location.search).user}&tag=${event.nodes[0]}`)
       }
       // console.log(event.nodes[0]);
 
@@ -166,7 +167,7 @@ React.useEffect(() => {
         theuser = tuser
       }
       //not logged in
-      if(tuser === 'undefined'){
+      if(tuser === searchuser){
         value += (searchabletags[key])[tuser]
         colornum += 1
         theuser = tuser
@@ -203,7 +204,7 @@ React.useEffect(() => {
           value += (pathWeight[key])[tuser]
         }
         //not logged in
-        if(tuser === 'undefined'){
+        if(tuser === searchuser){
           value += (pathWeight[key])[tuser]
         }
       }
@@ -222,6 +223,7 @@ React.useEffect(() => {
 }, [pathWeight,state]);
 
 
+
 React.useEffect(() => {
   let colorarray = []
   users.forEach((user, index) => {
@@ -232,19 +234,28 @@ React.useEffect(() => {
 }, [users]);
 
   React.useEffect(() => {
-    getSearchableTags();
-    getPathWeights();
-    getUsers();
+
+    // getUsers();
   }, []);
 
+  React.useEffect(() => {
+    if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
+      updateSearchUser(getQueryStringParams(props.location.search).user)
+    }
+
+}, []);
+
+  React.useEffect(() => {
+if (searchuser !== ''){
+      getSearchableTags(searchuser);
+      getPathWeights(searchuser);
+}
+
+}, [searchuser]);
+
   async function getSearchableTags(username) {
-    let res;
-    if (typeof username !== 'undefined'){
-      res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList?username=${username}`);
-    }
-    else{
-      res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList`);
-    }
+  let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList?user=${username}`);
+
     let status = res.status;
     let body = await res.json();
     // error
@@ -254,9 +265,9 @@ React.useEffect(() => {
       let localuser = typeof username !== 'undefined' ? username : user;
       (body.tags).forEach((tag, i) => {
         if (typeof searchabletags[tag] !== 'undefined'){
-          tagsdict[tag] = {...searchabletags[tag], [localuser]: body.tagsCount[tag]}
+          tagsdict[tag] = {...searchabletags[tag], [username]: body.tagsCount[tag]}
         }else{
-          tagsdict[tag] = {[localuser]: body.tagsCount[tag]}
+          tagsdict[tag] = {[username]: body.tagsCount[tag]}
         }
       });
       updateSearchabletags(searchabletags => ({...searchabletags, ...tagsdict}));
@@ -264,28 +275,23 @@ React.useEffect(() => {
   }
 
   async function getPathWeights(username) {
-    let res
-    if (typeof username !== 'undefined'){
-      res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights?username=${username}`);
-    }
-    else{
-      res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights`);
-    }
+      let res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights?user=${username}`);
 
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
-      console.log(body.weights);
+      // console.log(body.weights);
+      // console.log(Object.keys(body.weights[0]).length);
       let pathsdict = {};
-      let localuser = typeof username !== 'undefined' ? username : user;
       for (var key in body.weights[0]){
         if (typeof pathWeight[key] !== 'undefined'){
-          pathsdict[key] = {...pathWeight[key], [localuser]: (body.weights[0])[key]}
+          pathsdict[key] = {...pathWeight[key], [username]: (body.weights[0])[key]}
         }else{
-          pathsdict[key] = {[localuser]: (body.weights[0])[key] }
+          pathsdict[key] = {[username]: (body.weights[0])[key] }
         }
       }
+      console.log(pathsdict);
       updatePathWeight(pathWeight => ({...pathWeight, ...pathsdict}));
 
     }
@@ -293,19 +299,23 @@ React.useEffect(() => {
       console.log(body);
     }
   }
-  async function getUsers() {
-    let res = await makeAPICall("GET", `${apiprefix}/apidb/login`);
+
+
+  async function checkUser(user) {
+    let res = await makeAPICall("GET", `${apiprefix}/apidb/checkuser?user=${user}`);
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
-      body.forEach((loopuser, i) => {
-          setState(state => ( {[user]: false, ...state }))
-      });
+
       // array.remove(body,function(n) {return n === user;})
       // body = body.slice(0,5)
-      updateUsers(body);
+        setState(state => ( {[user]: false, ...state }))
+      updateUsers([...users, user]);
 
+    }
+    else{
+      console.log(body);
     }
   }
 
@@ -419,6 +429,10 @@ const StyledMenuItem = withStyles((theme) => ({
   },
 }))(MenuItem);
 
+function handleSubmit(e) {
+  e.preventDefault()
+  checkUser(document.getElementById('adduser').value)
+}
 
 const handleChange = (event) => {
   setState({ ...state, [event.target.name]: event.target.checked });
@@ -450,9 +464,8 @@ return (
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        users={users}
-      >
 
+      >
 {users.map((puser, index) => (puser !== user ?
     <StyledMenuItem       key={puser+index}>
       <ListItemText primary={puser} />
@@ -469,7 +482,16 @@ return (
 
 
       </StyledMenu>
-    <div className={classes.topLeft} style={{backgroundColor: 'lightgrey', padding: '20px', borderRadius: '15px'}}>
+    <div className={classes.topLeft} style={{backgroundColor: 'lightgrey', padding: '20px', borderRadius: '15px', zIndex: 1}}>
+    <form onSubmit={e => handleSubmit(e)} style={{marginBottom: '5px'}}  >
+    <Input
+    id='adduser'
+
+      placeholder="Add user's graph"
+      type="text"
+      autoComplete="off"
+    ></Input>
+     </form>
     {users.map((puser, index) => (
         <p key={puser} >{puser + ' '}
 <span style={{backgroundColor: colors[index], borderRadius: '50%', display: 'inline-block', height: '15px',width: '15px'}} />

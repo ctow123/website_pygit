@@ -12,6 +12,12 @@ class Note(models.Model):
     class Meta:
         abstract = True
 
+class Favorite(models.Model):
+    otheruser = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
 class LoginInfo(models.Model):
     username = models.CharField(max_length=30, unique=True)
     password = models.CharField(max_length=100, blank=True, null=True)
@@ -20,9 +26,20 @@ class LoginInfo(models.Model):
     fromgoogle = models.BooleanField(default=False)
     googleid = models.CharField(max_length=50, blank=True, null=True)
     note = models.EmbeddedField( model_container=Note)
+    twitterUsername = models.CharField(max_length=50, blank=True, null=True)
+    website = models.CharField(max_length=150, blank=True, null=True)
+    youtubePlaylist = models.CharField(max_length=150, blank=True, null=True)
+    favorites = models.ArrayField(
+        model_container=Favorite, blank=True, null=True
+    )
+    objects = models.DjongoManager()
+    profilePicPath = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
         return self.username
+
+
+
 
 class Usage(models.Model):
     user = models.CharField(max_length=30)

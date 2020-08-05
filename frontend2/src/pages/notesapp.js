@@ -9,14 +9,10 @@ import {
   TabContent,
   TabPane,
   Input,
-  ButtonGroup,
-  DropdownToggle,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
- Container
 } from "reactstrap";
-import useOnClickOutside from "../hooks/useOnClickOutside";
 import useKeypress from "../hooks/useKeyPress";
 import { Tag, TagContainer } from "../components/Body/styles.js";
 import Fab from '@material-ui/core/Fab';
@@ -38,30 +34,33 @@ const { v4: uuidv4 } = require('uuid');
 */
 
 
-const Notes = ({ classes, ...props }) => {
+const Notes = ({ classes, history, ...props }) => {
   // console.log(props);
   // console.log(getQueryStringParams(props.location.search));
-  const titleRef = React.useRef(null);
-  const isMounted = React.useRef(true);
-  const firstSave = React.useRef(true);
-  const makenoteID = React.useRef();
-  const [plainTabs, setPlainTabs] = React.useState("1");
-  const [isTitleActive, setIsTitleActive] = React.useState(false);
-  let [tags, updateTags] = React.useState(["default tag"]);
-  let [searchabletags, updateSearchabletags] = React.useState([]);
-    let [relatedTags, updateRelatedTags] = React.useState([]);
-  let [notes, updateNotes] = React.useState([]);
-  let [saveres, updateSaveres] = React.useState();
-  let [search, updateSearch] = React.useState("startup");
-  let [tweets, updateTweets] = React.useState([]);
-    let [blogs, updateBlogs] = React.useState([]);
-      let [searchuser, updateSearchUser] = React.useState([]);
-  const enter = useKeypress("Enter");
-  var typingTimer; //timer identifier
-  var typingTimer2; //timer identifier
-  var doneTypingInterval = 4000; //time in ms, 5 second for example
-  let [loadingInterval, updateLoading] = React.useState(10);
-  let [tweetLimit, updateTweetLimit] = React.useState(1);
+
+const titleRef = React.useRef(null);
+const isMounted = React.useRef(true);
+const firstSave = React.useRef(true);
+const makenoteID = React.useRef();
+const [plainTabs, setPlainTabs] = React.useState("1");
+const [isTitleActive, setIsTitleActive] = React.useState(false);
+let [tags, updateTags] = React.useState(["default tag"]);
+let [searchabletags, updateSearchabletags] = React.useState([]);
+let [relatedTags, updateRelatedTags] = React.useState([]);
+let [notes, updateNotes] = React.useState([]);
+let [saveres, updateSaveres] = React.useState();
+let [search, updateSearch] = React.useState("startup");
+let [tweets, updateTweets] = React.useState([]);
+let [titles, updateTitles] = React.useState([]);
+let [blogs, updateBlogs] = React.useState([]);
+let [searchuser, updateSearchUser] = React.useState('');
+// let [blogs, updateBlogs] = React.useState([]);
+const enter = useKeypress("Enter");
+var typingTimer; //timer identifier
+var typingTimer2; //timer identifier
+var doneTypingInterval = 3000; //time in ms, 5 second for example
+let [loadingInterval, updateLoading] = React.useState(10);
+let [tweetLimit, updateTweetLimit] = React.useState(100);
 
 // save condition 1
 // problem is adding event listener on load and not putting [tags] so its not updating params w/ new info
@@ -82,58 +81,59 @@ React.useEffect(() => {
       typingTimer2 = setTimeout(saveNote, doneTypingInterval, "title");
     }
   });
-
-  // search query
-  if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
-    updateSearch(getQueryStringParams(props.location.search).tag)
-  }
-  // user query
-  if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
-    console.log(getQueryStringParams(props.location.search));
-    updateSearchUser(getQueryStringParams(props.location.search).user)
-  }
-  getSearchableTags();
-  getTweets();
-  getBlogs();
-}, []);
-
-function trackScrolling() {
-  const wrappedElement = document.getElementById('notesList');
-  if (isBottom(wrappedElement)) {
-    console.log('header bottom reached');
-        document.removeEventListener('scroll', trackScrolling)
-    updateLoading(loadingInterval + 1)
-
-    console.log(loadingInterval);
-    // document.removeEventListener('scroll', trackScrolling);
-  }
-};
-
-function trackScrolling2() {
-  const wrappedElement = document.getElementById('tweetsList');
-  if (isBottom(wrappedElement)) {
-    console.log('header bottom reached');
-        document.removeEventListener('scroll', trackScrolling2)
-    updateLoading(tweetLimit + 10)
-
-  }
-};
-function isBottom(el) {
-  return el.getBoundingClientRect().bottom <= window.innerHeight;
-}
-
-React.useEffect(() => {
-  document.addEventListener('scroll', trackScrolling);
+  const onbeforeunloadFn = () => {
+    saveNote("close");
+  };
+  window.addEventListener("beforeunload", onbeforeunloadFn);
   // Clean up function on page close
   return () => {
-    window.removeEventListener("scroll", trackScrolling);
+    window.removeEventListener("beforeunload", onbeforeunloadFn);
+  };
+  // eslint-disable-next-line
+}, []);
+
+
+function trackScrollGeneric(elemID, updateVal, updateFcn, removeName, interval) {
+  let wrappedElement = document.getElementById(elemID);
+  if (isBottom(wrappedElement)) {
+    console.log('generic bottom reached');
+    document.removeEventListener("scroll", removeName);
+    updateFcn(updateVal + interval)
+    console.log(updateVal);
+  }
+}
+
+// returns true if bottom of element is reached
+function isBottom(el) {
+    return (
+      el.getBoundingClientRect().bottom <= window.innerHeight &&
+      el.getBoundingClientRect().bottom !== 0
+    );
+}
+
+function tweet2(){
+  trackScrollGeneric('tweetContainer', tweetLimit, updateTweetLimit, tweet2, 50)
+}
+function noteScroll(){
+    trackScrollGeneric('notesList', loadingInterval, updateLoading, noteScroll, 10)
+}
+
+
+React.useEffect(() => {
+  document.addEventListener('scroll', noteScroll, false );
+  // Clean up function on page close
+  return () => {
+    window.removeEventListener("scroll", noteScroll);
   };
   // eslint-disable-next-line
 }, [loadingInterval]);
 
 React.useEffect(() => {
-  // document.addEventListener('scroll', trackScrolling2);
-    // eslint-disable-next-line
+   document.getElementById('test').addEventListener('scroll', tweet2);
+   return () => {
+     document.getElementById('test').removeEventListener("scroll", tweet2);
+   };
+// eslint-disable-next-line
 }, [tweetLimit]);
 
 // save condition 2, use mounted to avoid run on page load
@@ -146,19 +146,6 @@ React.useEffect(() => {
   }
   // eslint-disable-next-line
 }, [tags]);
-
-// save condition 3
-React.useEffect(() => {
-  const onbeforeunloadFn = () => {
-    saveNote("close");
-  };
-  window.addEventListener("beforeunload", onbeforeunloadFn);
-  // Clean up function on page close
-  return () => {
-    window.removeEventListener("beforeunload", onbeforeunloadFn);
-  };
-  // eslint-disable-next-line
-});
 
   // watch the Enter key presses, if enter is pressed in title box, switch to textbox
   React.useEffect(() => {
@@ -173,11 +160,43 @@ React.useEffect(() => {
   }, [enter]);
 
 // get notes based on search tag, this will run on page load for default tag
+React.useEffect(() => {
+  if (Object.keys(getQueryStringParams(props.location.search)).length !== 0) {
+    updateSearchUser(getQueryStringParams(props.location.search).user);
+    if (
+      typeof getQueryStringParams(props.location.search).tag !== "undefined"
+    ) {
+      updateSearch(getQueryStringParams(props.location.search).tag);
+    }
+    if (
+      typeof getQueryStringParams(props.location.search).search !== "undefined"
+    ) {
+      updateSearch(getQueryStringParams(props.location.search).search);
+    }
+  }
+  if (searchuser !== "") {
+    if (
+      typeof getQueryStringParams(props.location.search).tag !== "undefined"
+    ) {
+      getNotes(search, "tag");
+    } else {
+      getNotes(search);
+    }
+    getRelatedTags(search);
+  }
+  // eslint-disable-next-line
+}, [search]);
+
+
   React.useEffect(() => {
-    getNotes(search);
-    getRelatedTags(search)
+    if (searchuser !== ""){
+      getSearchableTags();
+      getTweets();
+      getBlogs();
+      getTitles()
+    }
     // eslint-disable-next-line
-  }, [search]);
+  }, [searchuser]);
 
 
   /*
@@ -189,24 +208,6 @@ React.useEffect(() => {
       setIsTitleActive(true);
     }
   }
-
-  // makes title field inactive when other object is clicked on
-  useOnClickOutside(titleRef, () => {
-    if (isTitleActive) {
-      setIsTitleActive(false);
-    }
-  });
-
-  /*
-   */
-  function handleChange(e) {
-    e.preventDefault();
-    // setIsInputActive(true);
-    // let test = document.getElementById("dropdownmenu");
-    // console.log(test);
-    // test.setAttribute("style", "top: auto;display: block;left: auto;");
-  }
-
 
   /* handle tag and search submissions
    */
@@ -220,6 +221,7 @@ React.useEffect(() => {
       e.target.querySelector("input").id === "searchinput" ||
       e.target.querySelector("input").id === "searchinputmobile"
     ) {
+      history.push('/notes' + `?user=${searchuser}&search=${e.target.querySelector("input").value}`)
       updateSearch(e.target.querySelector("input").value);
     }
     else if ( e.target.querySelector("input").id === "bloginput" ) {
@@ -231,7 +233,6 @@ React.useEffect(() => {
 
 // send note to server to save or update
 async function saveNote(type) {
-  console.log(tags);
   let text = document.getElementById("newNoteText").value;
   let title = document.getElementById("newNoteTitle").value;
   let taglist = [];
@@ -242,7 +243,8 @@ async function saveNote(type) {
 
   let notedata = {
     type: type,
-    note: { text: text, title: title, tags: taglist, dateupdated: Date.now() }
+    note: { text: text, title: title, tags: taglist, type: 'note', dateupdated: Date.now() },
+    user: getQueryStringParams(props.location.search).user
   };
   console.log(type, notedata);
   if (firstSave.current && (text !== "" || title !== "")) {
@@ -257,6 +259,7 @@ async function saveNote(type) {
     // error
     if (status !== 200 && status !== 201) {
       updateSaveres(body.error);
+      console.log(body);
     }
     // success
     else {
@@ -289,47 +292,62 @@ async function saveNote(type) {
   }
 
   async function getSearchableTags() {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList`);
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList?user=${searchuser}`);
     let status = res.status;
     let body = await res.json();
-    // error
+    console.log(body);
     if (status === 200) {
       updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
     }
   }
 
   async function getBlogs() {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getBlogs`);
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getBlogs?user=${searchuser}`);
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
       updateBlogs(blogs => [...blogs, ...body.blogs]);
     }
+    else{
+      console.log(body);
+    }
   }
 
   async function getRelatedTags(tag) {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getRelated?tag=${tag}`);
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getRelated?user=${searchuser}&tag=${tag}`);
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
      updateRelatedTags(relatedTags => [...relatedTags, ...body.tags]);
     }
+    else {
+      console.log(body);
+    }
   }
 
-  // async function getTitlenDate() {
-  //   let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTitlesList`);
-  //   let status = res.status;
-  //   let body = await res.json();
-  //   // error
-  //   if (status === 200) {
-  //     updateSearchabletags(searchabletags => [...searchabletags, ...body.tags]);
-  //   }
-  // }
+// title object has id, tags, text, title, date (which is rly date updated)
+  async function getTitles() {
+    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTitlesList?user=${searchuser}`);
+    let status = res.status;
+    let body = await res.json();
+    if (status === 200) {
+      updateTitles(titles => [...titles, ...body.titles]);
+    }
+    else {
+      console.log(body);
+    }
+  }
 
-  async function getNotes(searchterm) {
-    let res = await makeAPICall("GET", `${notesendpoint}/notesapp/searchnotes?lookupBy=tag&lookupField=${searchterm}`);
+  async function getNotes(searchterm, type) {
+    let res
+    if (typeof type === 'undefined'){
+      res = await makeAPICall("GET", `${notesendpoint}/notesapp/searchnotes?user=${searchuser}&lookupField=${searchterm}`);
+    }
+    else{
+      res = await makeAPICall("GET", `${notesendpoint}/notesapp/searchnotes?user=${searchuser}&lookupBy=tag&lookupField=${searchterm}`);
+    }
     let status = res.status;
     let body = await res.json();
 
@@ -342,7 +360,7 @@ async function saveNote(type) {
   }
 
   async function getTweets() {
-    let res = await makeAPICall("GET", `${notesendpoint}/tweet/getTweets`);
+    let res = await makeAPICall("GET", `${notesendpoint}/tweet/getTweets?user=${searchuser}`);
     let status = res.status;
     let body = await res.json();
     console.log(body);
@@ -351,7 +369,8 @@ async function saveNote(type) {
     }
 
   }
-  // component for the Tag
+  // --------------------------------- COMPONENETS ---------------------------
+  // component for the Tag in new note
   function TheTag(props) {
     // console.log(props);
 
@@ -367,7 +386,7 @@ async function saveNote(type) {
     return (
       <>
         <TagContainer>
-          <Tag href="https://www.w3schools.com">{props.text}</Tag>
+          <Tag>{props.text}</Tag>
 
           <Button
             color="primary"
@@ -387,11 +406,10 @@ async function saveNote(type) {
 
   // realated tags
   function RelatedTag(props) {
-
     return (
       <>
         <TagContainer>
-          <Tag href={'/notes?tag=' + props.text}>{props.text}</Tag>
+          <Tag href={'/notes?user='+ searchuser+'&tag=' + props.text}>{props.text}</Tag>
         </TagContainer>
       </>
     );
@@ -412,14 +430,21 @@ function Tweet(props) {
           backgroundColor: "ghostwhite",
           borderRadius: "20px",
           padding: "10px",
-          marginBottom: "20px"
+          marginBottom: "20px",
+          minWidth: '100%'
         }}
         onClick={ (e) => test(e, props)}
       >
         {props.title + " "}
+        <text style={{lineHeight: '1em', maxHeight: '2em', overflow: 'hidden', '-webkit-line-clamp': '2', display: '-webkit-box'}}>
         {props.text}
+        </text>
         <br />
-        {props.tags}
+        {props.tags.length
+          ? props.tags.map((tag, index) => (
+            <text> {tag} </text>
+            ))
+          : null}
       </div>
     </>
   );
@@ -434,18 +459,16 @@ function Tweet(props) {
           <div style={{ maxHeight: "100px", maxWidth: "100vw", display: 'flex', justifyContent: 'center', marginBottom: '10px'}} >
             <img style={{ maxHeight: "100px", maxWidth: "100px" , borderRadius: '50%'}} alt="..." src={require("../assets/img/macmillan.png")}></img>
             <section style={{backgroundColor: "gainsboro", marginLeft: '20px'}} >
-            <h3 className="title" style={{margin: '0', padding: '0' }}>Connor Towler</h3>
+            <h3 className="title" style={{margin: '0', padding: '0' }}>{searchuser}</h3>
             <p className="category" style={{margin: '0', padding: '0' }}>
-              <a href="http://thenubes.ddns.net"> Website</a>
+              <a href={"/notes?user=" + searchuser}> Website</a>
             </p>
             <form onSubmit={e => handleSubmit(e)}>
               <Input
-
                 aria-describedby="searchinput"
                 id="searchinput"
-                placeholder="Search by Tag"
+                placeholder="Search by Title, Text, Tag"
                 type="text"
-                onChange={e => handleChange(e)}
               ></Input>
             </form>
             </section>
@@ -519,6 +542,7 @@ function Tweet(props) {
                         link={note.link}
                         id={note.id}
                         onSave={savehandling}
+                        {...props}
                       />
                     ))
                   : null}
@@ -541,7 +565,7 @@ function Tweet(props) {
               Something else here
             </DropdownItem>
           </DropdownMenu>
-          <Card className="card-nav-tabs card-plain" style={{maxHeight: '90vh', overflow: 'auto'}}>
+          <Card className="card-nav-tabs card-plain" >
             <CardHeader className="card-header-danger">
               <div className="nav-tabs-navigation">
                 <div className="nav-tabs-wrapper">
@@ -564,8 +588,6 @@ function Tweet(props) {
                         href="#pablo"
                         onClick={e => {
                           e.preventDefault();
-                          document.removeEventListener('scroll', trackScrolling)
-                          updateLoading(10);
                           setPlainTabs("2");
                         }}
                       >
@@ -603,14 +625,14 @@ function Tweet(props) {
                           setPlainTabs("5");
                         }}
                       >
-                        Videos
+                        Tags
                       </NavLink>
                     </NavItem>
                   </Nav>
                 </div>
               </div>
             </CardHeader>
-            <CardBody>
+            <CardBody id='test' style={{maxHeight: '70vh', height: '70%', overflow: 'auto'}} >
               <TabContent
                 className="text-center"
                 activeTab={"plainTabs" + plainTabs}
@@ -625,10 +647,10 @@ function Tweet(props) {
                       : null}
                       </div>
                 </TabPane>
-                <TabPane tabId="plainTabs2">
-                  <div id="tweetsList">
+                <TabPane id='tweetContainer' tabId="plainTabs2">
+                  <div id="tweetsList" >
                     {tweets.length
-                      ? tweets.slice(0,100).map((tweet, index) => (
+                      ? tweets.slice(0,tweetLimit).map((tweet, index) => (
                           <Tweet key={tweet.id} id={tweet.id} title={tweet.title} text={tweet.text} tags={tweet.tags} />
                         ))
                       : null}
@@ -636,11 +658,12 @@ function Tweet(props) {
 
                 </TabPane>
                 <TabPane tabId="plainTabs3">
-                <p style={{borderTop: 'grey', borderTopStyle: 'solid'}}>here are a list of tags you can search for</p>
-                <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                  {searchabletags.length
-                    ? searchabletags.map((tag, index) => (
-                        <RelatedTag key={tag+index} text={tag} />
+                <p style={{borderTop: 'grey', borderTopStyle: 'solid'}}>Titles of your notes</p>
+                <div id='miniNotesList' style={{display: 'flex', flexWrap: 'wrap'}}>
+                  {titles.length
+                    ? titles.map((title, index) => (
+                      title.title !== '' ?
+                        <Tweet key={title+index} id={title.id} title={title.title} text={title.text} tags={title.tags} /> : null
                       ))
                     : null}
                     </div>
@@ -649,11 +672,9 @@ function Tweet(props) {
                 <form onSubmit={e => handleSubmit(e)}>
                   <Input
                   className='addblog'
-
                     id="bloginput"
                     placeholder="Add Blog"
                     type="text"
-                    onChange={e => handleChange(e)}
                   ></Input>
                 </form>
                 <p style={{borderBottom: 'grey', borderBottomStyle: 'solid', marginTop: '10px'}}></p>
@@ -683,7 +704,16 @@ function Tweet(props) {
                       url={"https://www.youtube.com/watch?v=lJTsfcmesR4"}
                     />
                 </TabPane>
-
+                <TabPane tabId="plainTabs5">
+                <p style={{borderTop: 'grey', borderTopStyle: 'solid'}}>here are a list of tags you can search for</p>
+                <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                  {searchabletags.length
+                    ? searchabletags.map((tag, index) => (
+                        <RelatedTag key={tag+index} text={tag} />
+                      ))
+                    : null}
+                    </div>
+                </TabPane>
               </TabContent>
             </CardBody>
           </Card>
@@ -695,7 +725,7 @@ function Tweet(props) {
         color="primary"
         className={classes.fab}
         onClick={event => {console.log(event)}}
-href={'/vis'}
+href={'/vis?user=' + searchuser}
       >
 
         <i className="fa fa-arrow-right" aria-hidden="true"> Visualize Thoughts</i>
