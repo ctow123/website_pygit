@@ -10,7 +10,6 @@ def response_error_handler(request, title, year, exception=None):
     return HttpResponse('Error handler content', status=404)
 
 urlpatterns = [
-    # ex: /polls/
     path('login', LoginHandling.as_view(), name='login'),
     path(r'create', AccountCreation.as_view(), name='createaccount'),
     path('comments', Commentview.as_view(), name='comment'),
@@ -24,8 +23,6 @@ urlpatterns = [
     path('userInfo', views.getUserInfo, name='userInfo'),
     path('blog/<title>/<int:year>', response_error_handler, name='blog'),
     # re_path(r'^', response_error_handler),
-    # path('sendimgs/', views.sendimgs, name='sendimages'),
-    # path('downloadimgs/', views.downloadimgs, name='downloadimages'),
     # '^$' means empty string
     # # ex: /polls/5/vote/
     # path('<int:question_id>/vote/', views.vote, name='vote'),

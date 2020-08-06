@@ -7,12 +7,14 @@ let wsprefix = "ws://localhost:80";
 let prodapiprefix = `http://thenubes.ddns.net${process.env.PUBLIC_URL}`;
 let prodwsprefix = 'ws://thenubes.ddns.net';
 let notesendpoint = 'http://localhost:8100';
+let redirectURL = 'http://localhost:3000'
 module.exports = {
     apiprefix: apiprefix,
     wsprefix: wsprefix,
     prodapiprefix: prodapiprefix,
     prodwsprefix: prodwsprefix,
-    notesendpoint: notesendpoint
+    notesendpoint: notesendpoint,
+    redirectURL: redirectURL
 }
 // export default `http://localhost:8000`
 // PROD

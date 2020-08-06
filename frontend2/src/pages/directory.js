@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import { styles } from "./styling.js";
 import { makeAPICall } from "../api/api.js";
-import { apiprefix, notesendpoint } from "../api/apiprefix.js";
+import { apiprefix, redirectURL } from "../api/apiprefix.js";
 
 const Directory = ({ classes, ...props }) => {
   let [users, updateUsers] = React.useState([]);
@@ -64,7 +64,7 @@ const Directory = ({ classes, ...props }) => {
                     {props.user}
                   </h3>
                   <p className="category" style={{ margin: "0", padding: "0" }}>
-                    <a href={'http://thenubes.ddns.net/notes?user=' + props.user}> Website</a>
+                    <a href={redirectURL +'/notes?user=' + props.user}> Website</a>
                   </p>
                 </section>
               </div>

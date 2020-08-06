@@ -81,7 +81,6 @@ class LoginHandling(APIView):
             # only checks against first param
             # test2 = LoginInfo.objects.filter(note__gte={'notecount': 5,'tagcount': 0}).filter(note__gte={'tagcount': 5,'notecount':0})
             test2 = LoginInfo.objects.all()
-            print(test2)
             for userquery in test2:
                 users.append(userquery.username)
             # safe removes restriction that json must be in dictionary form
@@ -89,7 +88,7 @@ class LoginHandling(APIView):
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=400)
 
-# take in username, plain text password, salt, hash and store in DB
+# authenticates user
     def post(self, request, format=None):
         # if settings.DEBUG:
         #     process_request(request)
@@ -114,7 +113,6 @@ class LoginHandling(APIView):
 # passwords shouldn't be stored in plain text, assumes request data has username, password, and fromgoogle
 class AccountCreation(APIView):
     def get(self, request, format=None):
-        # print(request.GET.get('username'))
         try:
             if not checkUserExists(request.GET.get('username')):
                 return JsonResponse({'message': 'no user with this username', 'created': False}, status=200)
@@ -124,6 +122,7 @@ class AccountCreation(APIView):
             return JsonResponse({'message': str(e)}, status=400)
 
 # using googleAPI sending email as username
+# take in username, plain text password, salt, hash and store in DB
     def post(self, request, format=None):
         try:
             if request.data['fromgoogle']:
@@ -161,6 +160,13 @@ def checkUserExists(username):
     except Exception as e:
         print(str(e))
         return False
+
+def checkUserANDPassword(usernamep, password, fromgoogle):
+        user = LoginInfo.objects.get(username=usernamep)
+        retrievedpassword = user.password.encode('utf-8')
+        givenpassword = password.encode('utf-8')
+        return bcrypt.checkpw(givenpassword, retrievedpassword) and not user.fromgoogle
+
 # check if user in database endpoint
 def checkUser(request):
     # authtoken = jwt.decode(request.headers['Authorization'].split(' ')[1],key,algorithm='HS256' )
@@ -173,13 +179,7 @@ def checkUser(request):
     except Exception as e:
         print(e)
 
-def checkUserANDPassword(usernamep, password, fromgoogle):
-        user = LoginInfo.objects.get(username=usernamep)
-        retrievedpassword = user.password.encode('utf-8')
-        givenpassword = password.encode('utf-8')
-        return bcrypt.checkpw(givenpassword, retrievedpassword) and not user.fromgoogle
-
-# change users links in the database
+# change users links in the database, kicks off twitter script
 def changeLinks(request):
     try:
         reqbody = json.loads(request.body)
@@ -191,9 +191,7 @@ def changeLinks(request):
                 raise ValueError('user not unique')
             if 'twitter' in reqbody:
                 print(reqbody['twitter'])
-                # start script
-                # my_thread = TweetThread(reqbody['twitter'])
-                # my_thread.start()
+                # spawns a new thread to not stall api response
                 subprocess.call(['python3',os.getcwd() +'/database/twitter_script.py',reqbody['twitter']])
                 user[0].twitterUsername = reqbody['twitter']
             if 'website' in reqbody:
@@ -210,6 +208,7 @@ def changeLinks(request):
         print(e)
         return JsonResponse({'error': str(e)}, status=400)
 
+# returns info on a user
 def getUserInfo(request):
         try:
             authtoken = jwt.decode(request.headers['Authorization'].split(' ')[1],key,algorithm='HS256' )
@@ -218,7 +217,7 @@ def getUserInfo(request):
                 if len(user) > 1:
                     raise ValueError('user not unique')
                 print(type(user[0].twitterUsername))
-                userinfo = {'twitter': user[0].twitterUsername}         
+                userinfo = {'twitter': user[0].twitterUsername}
                 return JsonResponse(userinfo, safe=False, status=200)
             else:
                 return JsonResponse({'error': 'invalid'}, status=400)
@@ -227,10 +226,8 @@ def getUserInfo(request):
             return JsonResponse({'error': str(e)}, status=400)
 
 class Images(APIView):
-
     def get(self, request, image='00001ML.png', format=None):
         print("The value of var is %s", os.getcwd())
-        # http://localhost:8000/navigator?search_term=arrow
         # request.body or request.get('search_term')
         try:
             print(request.path)
@@ -272,11 +269,9 @@ def authorizationToken(request):
 
 def imagelist(request):
     try:
-        # list = os.path.dirname(os.getcwd() + "/pics/")
         list = os.listdir(os.getcwd() + "/pics/")
         print((os.getcwd()))
         return JsonResponse({'list': list})
-        # return HttpResponse(encoded_string, content_type="text")
     except Exception as e:
         print(e)
 
@@ -299,14 +294,7 @@ class Commentview(APIView):
                     return JsonResponse({'error': str(e)}, status=400)
             else:
                 return JsonResponse({'error': 'invalid fields'}, status=400)
-                # list = details.errors.items()
-                # for key, value in list:
-                #     print(key, value[0])
         # puts and delete
-
-
-
-API_KEY= 'ZCAw9cQsX-ctjUl3dP8lt9uW47llaEy1PMIeSaqxSlPbRBTXciyDvjbyJbAZwKSKPmS4GJqZOdxA0utMF8C8XIhXQeFILEwjwPBLDRKnjp-Tkm2zBsB_6OHHM_hPXnYx'
 
 
 # API constants, you shouldn't have to change these.

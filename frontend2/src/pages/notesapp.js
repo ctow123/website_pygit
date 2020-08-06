@@ -50,6 +50,7 @@ let [relatedTags, updateRelatedTags] = React.useState([]);
 let [notes, updateNotes] = React.useState([]);
 let [saveres, updateSaveres] = React.useState();
 let [search, updateSearch] = React.useState("startup");
+let [searchFilter, updateFilter] = React.useState('');
 let [tweets, updateTweets] = React.useState([]);
 let [titles, updateTitles] = React.useState([]);
 let [blogs, updateBlogs] = React.useState([]);
@@ -229,6 +230,11 @@ React.useEffect(() => {
       // send api call , update blogs list
       test2.value = "";
     }
+  }
+
+  function handleChange(e) {
+    e.preventDefault();
+    updateFilter(e.target.value);
   }
 
 // send note to server to save or update
@@ -436,13 +442,13 @@ function Tweet(props) {
         onClick={ (e) => test(e, props)}
       >
         {props.title + " "}
-        <text style={{lineHeight: '1em', maxHeight: '2em', overflow: 'hidden', '-webkit-line-clamp': '2', display: '-webkit-box'}}>
+        <text style={{lineHeight: '1em', maxHeight: '2em', overflow: 'hidden', 'WebkitLineClamp': '2', display: '-webkit-box'}}>
         {props.text}
         </text>
         <br />
         {props.tags.length
           ? props.tags.map((tag, index) => (
-            <text> {tag} </text>
+            <text key={tag+index}> {tag} </text>
             ))
           : null}
       </div>
@@ -463,7 +469,7 @@ function Tweet(props) {
             <p className="category" style={{margin: '0', padding: '0' }}>
               <a href={"/notes?user=" + searchuser}> Website</a>
             </p>
-            <form onSubmit={e => handleSubmit(e)}>
+            <form onSubmit={e => handleSubmit(e)} onChange={e => handleChange(e)}>
               <Input
                 aria-describedby="searchinput"
                 id="searchinput"
@@ -708,7 +714,7 @@ function Tweet(props) {
                 <p style={{borderTop: 'grey', borderTopStyle: 'solid'}}>here are a list of tags you can search for</p>
                 <div style={{display: 'flex', flexWrap: 'wrap'}}>
                   {searchabletags.length
-                    ? searchabletags.map((tag, index) => (
+                    ? searchabletags.filter(tag => tag.includes(searchFilter)).map((tag, index) => (
                         <RelatedTag key={tag+index} text={tag} />
                       ))
                     : null}
