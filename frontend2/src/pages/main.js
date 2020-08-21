@@ -149,7 +149,7 @@ const Welcome = ({ classes, currentUser, updateUser, ...props }) => {
           <Paragraph>
             Keep scrolling to see the parallax effect (desktop only). This page
             contains some info <Link to={`/aboutme`}>{"about me"}</Link>, my{" "}
-            <Link to={`/faceid`}>{"design portfolio"}</Link>, a place to leave{" "}
+            <Link to={`/design`}>{"design portfolio"}</Link>, a place to leave{" "}
             <Link to={`/comments`}>{"comments"}</Link>, various
             <Link to={`#projects`} onClick={handleScroll}>
               {" projects "}

@@ -25,6 +25,8 @@ import { notesendpoint } from "../api/apiprefix.js";
 import {styles} from './styling.js'
 import {getQueryStringParams} from "./fcns.js";
 import { ReactTinyLink } from 'react-tiny-link'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+ import Loader from 'react-loader-spinner'
 const { v4: uuidv4 } = require('uuid');
 /* conditions for note to be saved\
 1) a set interval after you stop typing in the title or text area
@@ -42,7 +44,8 @@ const titleRef = React.useRef(null);
 const isMounted = React.useRef(true);
 const firstSave = React.useRef(true);
 const makenoteID = React.useRef();
-const [plainTabs, setPlainTabs] = React.useState("1");
+const [plainTabs, setPlainTabs] = React.useState("5");
+const [loader, setLoader] = React.useState(false);
 const [isTitleActive, setIsTitleActive] = React.useState(false);
 let [tags, updateTags] = React.useState(["default tag"]);
 let [searchabletags, updateSearchabletags] = React.useState([]);
@@ -212,25 +215,53 @@ React.useEffect(() => {
 
   /* handle tag and search submissions
    */
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (e.target.querySelector("input").id === "newNoteTags") {
-      let test2 = document.getElementById("newNoteTags");
-      updateTags(tags => [...tags, test2.value]);
-      test2.value = "";
-    } else if (
-      e.target.querySelector("input").id === "searchinput" ||
-      e.target.querySelector("input").id === "searchinputmobile"
-    ) {
-      history.push('/notes' + `?user=${searchuser}&search=${e.target.querySelector("input").value}`)
-      updateSearch(e.target.querySelector("input").value);
+async function handleSubmit(e) {
+  e.preventDefault();
+  if (e.target.querySelector("input").id === "newNoteTags") {
+    let test2 = document.getElementById("newNoteTags");
+    updateTags(tags => [...tags, test2.value]);
+    test2.value = "";
+  } else if (
+    e.target.querySelector("input").id === "searchinput" ||
+    e.target.querySelector("input").id === "searchinputmobile"
+  ) {
+    history.push(
+      `/notes?user=${searchuser}&search=${
+        e.target.querySelector("input").value
+      }`
+    );
+    updateSearch(e.target.querySelector("input").value);
+  } else if (e.target.querySelector("input").id === "bloginput") {
+    let test2 = document.getElementById("bloginput");
+    // send api call , update blogs list
+    // need link and type when making note
+    let notedata = {
+      note: { text: "", title: "", tags: "", type: "blog", link: test2.value }
+    };
+    var pattern = /^((http|https|ftp):\/\/)/;
+    if (pattern.test(test2.value)) {
+      let res = await makeAPICall(
+        "POST",
+        `${notesendpoint}/notesapp/makenote`,
+        notedata
+      );
+      let status = res.status;
+      let body = await res.json();
+      if (status === 201) {
+        // get id from api call
+        updateBlogs(blogs => [...blogs, { id: body.noteid, link: test2.value }]);
+        updateNotes([{ id: body.noteid, tags: [], link: test2.value }]);
+        makenoteID.current = body.noteid;
+      } else {
+        updateSaveres(body.error);
+        console.log(body);
+      }
     }
-    else if ( e.target.querySelector("input").id === "bloginput" ) {
-      let test2 = document.getElementById("bloginput");
-      // send api call , update blogs list
-      test2.value = "";
-    }
+    test2.value = "";
   }
+}
+
+
 
   function handleChange(e) {
     e.preventDefault();
@@ -288,6 +319,23 @@ async function saveNote(type) {
   }
 }
 
+async function getInference() {
+  setLoader(true)
+  let text = document.getElementById("newNoteText").value;
+  let res = await makeAPICall(
+    "GET",
+    `${notesendpoint}/notesapp/getInference?text=${text}`
+  );
+  let status = res.status;
+  let body = await res.json();
+  if (status === 200) {
+    updateTags(body.tags)
+    setLoader(false)
+  } else {
+    console.log(body);
+    setLoader(false)
+  }
+}
 
   function savehandling(params) {
     if (params.status !== 200 && params.status !== 201) {
@@ -442,13 +490,13 @@ function Tweet(props) {
         onClick={ (e) => test(e, props)}
       >
         {props.title + " "}
-        <text style={{lineHeight: '1em', maxHeight: '2em', overflow: 'hidden', 'WebkitLineClamp': '2', display: '-webkit-box'}}>
+        <p  style={{lineHeight: '1em', maxHeight: '2em', overflow: 'hidden', 'WebkitLineClamp': '2', display: '-webkit-box'}}>
         {props.text}
-        </text>
+        </p>
         <br />
         {props.tags.length
           ? props.tags.map((tag, index) => (
-            <text key={tag+index}> {tag} </text>
+            <div style={{display: 'inline'}} key={tag+index}> {tag} </div>
             ))
           : null}
       </div>
@@ -511,16 +559,37 @@ function Tweet(props) {
                     placeholder="enter note text"
                     rows="5"
                   />
+                  <div style={{display: 'flex'}}>
                   <form onSubmit={e => handleSubmit(e)}>
                     <Input
                       className="note"
                       id="newNoteTags"
                       placeholder="Add tags"
                       type="text"
-                      style={{ fontSize: "15px", width: "40%" }}
+                      style={{ fontSize: "15px" }}
                       autoComplete="off"
                     ></Input>
                   </form>
+                  <Button
+                    color="primary"
+                    onClick={e => getInference(e)}
+                    style={{
+                      paddingLeft: "15px",
+                      paddingRight: "15px",
+                      backgroundColor: "darkgrey"
+                    }}
+                  >
+                    Auto gen tags
+                    <Loader
+                      type="Oval"
+                      color="#00BFFF"
+                      height={25}
+                      width={25}
+                      style={{ paddingLeft: "15px" }}
+                      visible={loader}
+                    />
+                  </Button>
+                  </div>
                   <div style={{ display: "flex", flexWrap: 'wrap' }} id='newNoteTagsList'>
                     {tags.length
                       ? tags.map((text, index) => (

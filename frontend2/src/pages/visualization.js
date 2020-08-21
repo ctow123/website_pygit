@@ -30,6 +30,9 @@ let [users, updateUsers] = React.useState([])
 // {path: {user: value}, path: {user:value}}
 let [searchuser, updateSearchUser] = React.useState('');
 let [pathWeight, updatePathWeight] = React.useState({});
+let [zoom, updateZoom] = React.useState(-1);
+let [tagZoom, updateTagZoom] = React.useState(-1);
+let [notesOnly, updateNotesOnly] = React.useState(false);
 let [gstate, updateG] = React.useState({
   graph : {
     nodes : [
@@ -71,16 +74,24 @@ let [gstate, updateG] = React.useState({
 
    },
    physics: {
-    enabled: true,
+    enabled: false,
     solver: "barnesHut",
     barnesHut: {
-         gravitationalConstant: -12000,
-         centralGravity: 0.9,
-         springLength: 95,
-         springConstant: 0.04,
-         damping: 0.09,
-         avoidOverlap: 0
+         gravitationalConstant: -1000,
+         centralGravity: 0,
+         springLength: 200,
+         springConstant: 0,
+         damping: .2,
+         avoidOverlap: 2
        },
+//        repulsion: {
+//     centralGravity: 0,
+//     springLength: 1000,
+//     springConstant: 0.1,
+//     nodeDistance: 500,
+//     damping: 0.09,
+//
+// },
 },
      nodes: {
        shape: 'dot',
@@ -109,10 +120,11 @@ let [gstate, updateG] = React.useState({
      height: (window.innerHeight / 1.1).toString(),
      interaction: {
     hover: true,
+    multiselect: true,
     hoverConnectedEdges: true,
     // hoverEdges: true,
     selectable: true,
-    selectConnectedEdges: false,
+    selectConnectedEdges: true,
     // BIG OPTIONS
     zoomView: true,
     dragView: true
@@ -132,11 +144,16 @@ let [gstate, updateG] = React.useState({
        // console.log(event);
       },
       click: function(event) {
-      // console.log(event);
-      if (typeof event.nodes[0] !== 'undefined'){
-        history.push(`/notes?user=${getQueryStringParams(props.location.search).user}&tag=${event.nodes[0]}`)
-      }
-      // console.log(event.nodes[0]);
+      console.log(event);
+      // if (typeof event.nodes[0] !== 'undefined'){
+      //   history.push(`/notes?user=${getQueryStringParams(props.location.search).user}&tag=${event.nodes[0]}`)
+      // }
+      console.log(event.nodes[0]);
+      console.log(gstate);
+      // console.log(network);
+      //   gstate.graph.nodes[0].font =  {size: 30}
+    // gstate.network.setSelection({nodes:gstate.network.getConnectedNodes(event.nodes[0]) ,edges:gstate.network.getConnectedEdges(event.nodes[0])})
+      //   gstate.graph.nodes[0].color = '#FF3105'
 
     }
   },
@@ -174,7 +191,7 @@ React.useEffect(() => {
       }
     }
     let color = colornum === 1 ? (users.indexOf(theuser) === -1 ?  defaultcolor[0] : colors[users.indexOf(theuser)] ): multicolors[0]
-    if (value !== 0) nodearray.push({ id: key, value: value, label: key, color: color,     font : {
+    if (value !== 0 && value > tagZoom) nodearray.push({ id: key, value: value, label: key, color: color,     font : {
             size : 18,
 
         }});
@@ -185,42 +202,79 @@ React.useEffect(() => {
       edges: [...gstate.graph.edges]
     },
     options: { ...gstate.options },
-    events: { ...gstate.events },
+    events: { ...gstate.events, click: function(event) {
+      console.log(event);
+      console.log(event.nodes[0]);
+      console.log(gstate);
+    } },
     network: gstate.network
   }));
-}, [searchabletags,state]);
+        if(gstate.network !== null){
+    gstate.network.stabilize(1000)
+  }
+}, [searchabletags,state,tagZoom]);
 
 
 
 React.useEffect(() => {
-  var patharray = [];
-  for (var key in pathWeight) {
-    let value = 0
-      for (var tuser in pathWeight[key]) {
-        if(tuser === user){
-          value += (pathWeight[key])[tuser]
-        }
-        if(tuser !== user && state[tuser] === true){
-          value += (pathWeight[key])[tuser]
-        }
-        //not logged in
-        if(tuser === searchuser){
-          value += (pathWeight[key])[tuser]
-        }
+  async function parseit(){
+    var patharray = [];
+    var test = 50
+    for (var key in pathWeight) {
+      if(test % 100 === 0){
+        // breaking even so often to not freeze event loop, yielding to browser every now and then
+         await oneMoment();
       }
+      let value = 0
+        for (var tuser in pathWeight[key]) {
+          if(tuser === user){
+            value += (pathWeight[key])[tuser]
+          }
+          if(tuser !== user && state[tuser] === true){
+            value += (pathWeight[key])[tuser]
+          }
+          //not logged in
+          if(tuser === searchuser){
+            value += (pathWeight[key])[tuser]
+          }
+        }
 
-    if (value > 0) patharray.push({from: key.split("][")[0], to: key.split("][")[1], value: value})
+      if (value > zoom) patharray.push({from: key.split("][")[0], to: key.split("][")[1], value: value})
+      test = test + 1
+    }
+    // this is where the slow up happens
+    updateG(gstate => ({
+      graph: {
+        nodes: [...gstate.graph.nodes],
+        edges: patharray
+      },
+      options: { ...gstate.options },
+      events: {  ...gstate.events },
+      network: gstate.network
+    }));
+    if(gstate.network !== null){
+gstate.network.stabilize(1000)
+}
+  //       if(gstate.network !== null){
+  //   gstate.network.redraw()
+  // }
   }
-  updateG(gstate => ({
-    graph: {
-      nodes: [...gstate.graph.nodes],
-      edges: patharray
-    },
-    options: { ...gstate.options },
-    events: { ...gstate.events },
-    network: gstate.network
-  }));
-}, [pathWeight,state]);
+  if(zoom >= 0 ){
+    parseit()
+  }
+
+}, [pathWeight,state,zoom]);
+
+function oneMoment() {
+  return new Promise(resolve => setTimeout(resolve));
+}
+
+React.useEffect(() => {
+  if(gstate.network !== null && Object.keys(searchabletags).length !== 0 && Object.keys(pathWeight).length !== 0){
+      console.log('running');
+      gstate.network.stabilize(1000)
+  }
+}, [pathWeight,searchabletags]);
 
 
 
@@ -233,10 +287,7 @@ React.useEffect(() => {
 
 }, [users]);
 
-  React.useEffect(() => {
 
-    // getUsers();
-  }, []);
 
   React.useEffect(() => {
     if(Object.keys(getQueryStringParams(props.location.search)).length !== 0){
@@ -251,54 +302,71 @@ if (searchuser !== ''){
       getPathWeights(searchuser);
 }
 
-}, [searchuser]);
+}, [searchuser, notesOnly]);
 
   async function getSearchableTags(username) {
-  let res = await makeAPICall("GET", `${notesendpoint}/notesapp/getTagsList?user=${username}`);
+    let apicall = notesendpoint +'/notesapp/getTagsList?user=' + username + (notesOnly ? '&type=note': '')
+    console.log(apicall);
+  let res = await makeAPICall("GET", apicall);
 
     let status = res.status;
     let body = await res.json();
     // error
     if (status === 200) {
       console.log(body);
+      let filter = Math.floor(body.tagSum / body.tags.length)
+      if( body.tags.length < 250){
+        filter = 0
+      }
+      updateTagZoom(filter)
       let tagsdict = {};
-      let localuser = typeof username !== 'undefined' ? username : user;
       (body.tags).forEach((tag, i) => {
+        // if(body.tagsCount[tag] > filter){
         if (typeof searchabletags[tag] !== 'undefined'){
           tagsdict[tag] = {...searchabletags[tag], [username]: body.tagsCount[tag]}
         }else{
           tagsdict[tag] = {[username]: body.tagsCount[tag]}
         }
+      // }
       });
-      updateSearchabletags(searchabletags => ({...searchabletags, ...tagsdict}));
+      console.log(tagsdict);
+      updateSearchabletags(searchabletags => ({ ...tagsdict}));
     }
   }
 
-  async function getPathWeights(username) {
-      let res  = await makeAPICall("GET", `${notesendpoint}/notesapp/getPathWeights?user=${username}`);
-
-    let status = res.status;
-    let body = await res.json();
-    // error
-    if (status === 200) {
-      // console.log(body.weights);
-      // console.log(Object.keys(body.weights[0]).length);
-      let pathsdict = {};
-      for (var key in body.weights[0]){
-        if (typeof pathWeight[key] !== 'undefined'){
-          pathsdict[key] = {...pathWeight[key], [username]: (body.weights[0])[key]}
-        }else{
-          pathsdict[key] = {[username]: (body.weights[0])[key] }
+async function getPathWeights(username) {
+    let apicall = notesendpoint +'/notesapp/getPathWeights?user=' + username + (notesOnly ? '&type=note': '')
+  let res = await makeAPICall(
+    "GET",
+    apicall
+  );
+  let status = res.status;
+  let body = await res.json();
+  // error
+  if (status === 200) {
+    let pathsdict = {};
+    console.log(body);
+    let filter = Math.ceil(body.edgeSum / body.edgeCount) + 1;
+    if( body.tagsLength < 250){
+      filter = 0
+    }
+    updateZoom(filter);
+    for (var key in body.weights) {
+      // if (body.weights[key] > filter) {
+        if (typeof pathWeight[key] !== "undefined") {
+          pathsdict[key] = {  ...pathWeight[key],[username]: body.weights[key]  };
+        } else {
+          pathsdict[key] = { [username]: body.weights[key] };
         }
-      }
-      console.log(pathsdict);
-      updatePathWeight(pathWeight => ({...pathWeight, ...pathsdict}));
-
+      // }
     }
-    else {
-      console.log(body);
-    }
+    console.log(pathsdict);
+    updatePathWeight(pathWeight => ({ ...pathWeight, ...pathsdict }));
+  } else {
+    console.log(body);
   }
+}
+
 
 
   async function checkUser(user) {
@@ -322,18 +390,21 @@ if (searchuser !== ''){
 const handleClickOpen = (e, zm) => {
   e.preventDefault();
   if (zm === "plus") {
-    console.log(gstate.network.getConnectedNodes('elon'));
-    console.log(gstate.network.getConnectedEdges('elon'));
-  gstate.graph.nodes[0].font =  {size: 30}
-    gstate.network.setSelection({nodes:gstate.network.getConnectedNodes('elon') ,edges:gstate.network.getConnectedEdges('elon')})
-  gstate.graph.nodes[0].color = '#FF3105'
+    updateZoom(zoom => zoom + 1)
+    updateTagZoom(tagZoom => tagZoom + 1)
 
-    var options = {id: 1};
-    var data = new DataSet(options);
-    console.log(data);
-    // get a specific item
-var item1 = data.get(1);
-console.log('item1', item1);
+//     console.log(gstate.network.getConnectedNodes('elon'));
+//     console.log(gstate.network.getConnectedEdges('elon'));
+//   gstate.graph.nodes[0].font =  {size: 30}
+//     gstate.network.setSelection({nodes:gstate.network.getConnectedNodes('elon') ,edges:gstate.network.getConnectedEdges('elon')})
+//   gstate.graph.nodes[0].color = '#FF3105'
+//
+//     var options = {id: 1};
+//     var data = new DataSet(options);
+//     console.log(data);
+//     // get a specific item
+// var item1 = data.get(1);
+// console.log('item1', item1);
     // update an existing item
 // data.updateOnly({id: 2, group: 1});
 
@@ -363,10 +434,16 @@ console.log('item1', item1);
     //   network: gstate.network
     // }));
   } else if (zm === "minus") {
-        gstate.network.redraw()
-    // console.log(searchabletags);
-    // console.log(pathWeight);
-    console.log(gstate);
+    if(zoom > -1){
+      updateZoom(zoom => zoom - 1)
+      updateTagZoom(tagZoom => tagZoom - 1)
+    }
+
+        // gstate.network.redraw()
+        // gstate.network.stabilize(1000)
+
+    // updateZoom(zoom => zoom -1)
+    // console.log(gstate);
   }
 };
 
@@ -499,6 +576,7 @@ return (
 
 
     )) }
+    {zoom}
     </div>
     <Graph
             graph={gstate.graph}
@@ -535,6 +613,15 @@ return (
       onClick={event => handleClickOpen(event, 'minus')}
     >
       <i className="fa fa-minus" aria-hidden="true"></i>
+    </Fab>
+    <Fab
+      variant="extended"
+      size="small"
+      color= {notesOnly ? 'primary' : 'secondary'}
+      className={classes.fab3}
+      onClick={notesOnly => updateNotesOnly(notesOnly => !notesOnly)}
+    >
+      Notes Only
     </Fab>
   </div>
 );
